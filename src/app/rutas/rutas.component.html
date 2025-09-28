@@ -5,8 +5,11 @@
       <p class="page-subtitle">Planificación inteligente y optimización de rutas de distribución</p>
     </div>
     <div class="page-actions">
-      <button class="btn-warning" (click)="optimizarRutas()">Optimizar Rutas</button>
+      <button class="btn-warning" (click)="optimizarRutas()">
+        <span>🚀</span> Optimizar Rutas
+      </button>
       <button class="btn-primary" (click)="toggleFormulario()">
+        <span>{{ mostrarFormulario ? '✖️' : '➕' }}</span>
         {{ mostrarFormulario ? 'Cancelar' : 'Nueva Ruta' }}
       </button>
     </div>

@@ -26,41 +26,81 @@
   gap: 15px;
 }
 
-.btn-primary, .btn-optimize {
+/* Botones específicos para rutas */
+.page-actions .btn-primary, 
+.page-actions .btn-warning,
+.form-actions .btn-primary,
+.form-actions .btn-secondary {
   color: white;
   border: none;
   padding: 12px 24px;
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
-  font-weight: 500;
-  transition: all 0.3s ease;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.9rem;
+  text-transform: none;
+  letter-spacing: 0.3px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 120px;
+  position: relative;
+  overflow: hidden;
 }
 
-.btn-primary {
-  background: #28a745;
+.page-actions .btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.25);
 }
 
-.btn-optimize {
-  background: #fd7e14;
-  animation: pulse 2s infinite;
+.page-actions .btn-warning {
+  background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+  box-shadow: 0 4px 15px rgba(255, 107, 53, 0.25);
+  animation: pulse-gentle 4s infinite;
 }
 
-.btn-primary:hover {
-  background: #218838;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+.page-actions .btn-primary:hover {
+  background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.35);
 }
 
-.btn-optimize:hover {
-  background: #e8650e;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+.page-actions .btn-warning:hover {
+  background: linear-gradient(135deg, #e55a2b 0%, #de7c1a 100%);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(255, 107, 53, 0.35);
+  animation: none;
 }
 
-@keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
+/* Iconos en botones */
+.page-actions button span {
+  margin-right: 8px;
+  font-size: 1rem;
+  display: inline-flex;
+  align-items: center;
+}
+
+.page-actions {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+@keyframes pulse-gentle {
+  0% { 
+    transform: scale(1);
+    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.25);
+  }
+  50% { 
+    transform: scale(1.015);
+    box-shadow: 0 6px 20px rgba(255, 107, 53, 0.35);
+  }
+  100% { 
+    transform: scale(1);
+    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.25);
+  }
 }
 
 .btn-secondary {
@@ -415,14 +455,18 @@
 
 /* Responsive */
 @media (max-width: 768px) {
-  .header {
+  .page-actions {
     flex-direction: column;
-    gap: 15px;
-    text-align: center;
+    gap: 10px;
+    width: 100%;
   }
-
-  .header-actions {
-    justify-content: center;
+  
+  .page-actions .btn-primary, 
+  .page-actions .btn-warning {
+    width: 100%;
+    max-width: 250px;
+    padding: 14px 20px;
+    font-size: 0.95rem;
   }
 
   .form-row {
