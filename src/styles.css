@@ -7,12 +7,20 @@
   box-sizing: border-box;
 }
 
+html {
+  overflow-x: hidden;
+  width: 100%;
+}
+
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   line-height: 1.6;
   color: #333;
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+  position: relative;
 }
 
 /* Variables CSS para consistencia */
@@ -662,4 +670,144 @@ select.form-control {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--secondary-color);
+}
+
+/* Mejoras específicas para responsive - Tablets */
+@media (min-width: 769px) and (max-width: 1024px) {
+  /* Ajustes para tablets */
+  .page-header {
+    padding: 2.5rem 1.5rem;
+    min-height: 200px;
+  }
+  
+  .page-title {
+    font-size: 2.2rem;
+  }
+  
+  .page-subtitle {
+    font-size: 1rem;
+  }
+  
+  .page-header-content {
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: flex-start;
+    text-align: left;
+  }
+  
+  .page-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  
+  /* Contenedores principales */
+  .inventario-container,
+  .clientes-container,
+  .proveedores-container,
+  .rutas-container,
+  .foda-container {
+    padding: 1.5rem;
+  }
+  
+  /* Cards y estadísticas */
+  .inventory-summary,
+  .summary-cards,
+  .stats-grid {
+    gap: 1rem;
+  }
+  
+  .summary-card {
+    min-width: calc(50% - 0.5rem);
+  }
+}
+
+/* Prevenir overflow horizontal en toda la aplicación */
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* Contenedores principales sin overflow */
+.app-container,
+.main-content,
+.page-content,
+.container {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+/* Asegurar que las tablas no causen overflow horizontal */
+.table-container,
+.inventory-table-container {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table {
+  min-width: 600px; /* Ancho mínimo para mantener legibilidad */
+}
+
+@media (max-width: 768px) {
+  .table {
+    min-width: 500px;
+    font-size: 0.85rem;
+  }
+  
+  .table th,
+  .table td {
+    padding: 8px 6px;
+  }
+}
+
+/* Mejoras para formularios en tablets */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .form-row {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  
+  .form-row .form-group {
+    flex: 1;
+    min-width: 250px;
+  }
+  
+  .search-controls {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  
+  .search-input {
+    flex: 2;
+    min-width: 200px;
+  }
+  
+  .filter-select {
+    flex: 1;
+    min-width: 150px;
+  }
+}
+
+/* Mejoras para botones en tablets */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .btn {
+    padding: 12px 24px;
+    font-size: 14px;
+  }
+  
+  .btn-primary {
+    min-width: auto;
+  }
+  
+  .action-btn {
+    padding: 8px 12px;
+    margin: 0 2px;
+  }
 }
