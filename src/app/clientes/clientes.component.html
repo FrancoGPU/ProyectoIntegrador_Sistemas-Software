@@ -1,0 +1,118 @@
+<div class="page-header clientes">
+  <div class="page-header-content">
+    <div>
+      <h1 class="page-title">Gestión de Clientes</h1>
+      <p class="page-subtitle">Administración integral de la cartera de clientes</p>
+    </div>
+    <div class="page-actions">
+      <button class="btn-primary" (click)="toggleFormulario()">
+        {{ mostrarFormulario ? 'Cancelar' : 'Nuevo Cliente' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="clientes-container">
+
+  <!-- Formulario para agregar/editar cliente -->
+  <div class="formulario-container" *ngIf="mostrarFormulario">
+    <h3>{{ clienteEditando ? 'Editar Cliente' : 'Nuevo Cliente' }}</h3>
+    <form (ngSubmit)="guardarCliente()" #clienteForm="ngForm">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="nombre">Nombre:</label>
+          <input type="text" id="nombre" [(ngModel)]="clienteTemp.nombre" name="nombre" required>
+        </div>
+        <div class="form-group">
+          <label for="empresa">Empresa:</label>
+          <input type="text" id="empresa" [(ngModel)]="clienteTemp.empresa" name="empresa" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="email">Email:</label>
+          <input type="email" id="email" [(ngModel)]="clienteTemp.email" name="email" required>
+        </div>
+        <div class="form-group">
+          <label for="telefono">Teléfono:</label>
+          <input type="tel" id="telefono" [(ngModel)]="clienteTemp.telefono" name="telefono" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="direccion">Dirección:</label>
+          <input type="text" id="direccion" [(ngModel)]="clienteTemp.direccion" name="direccion" required>
+        </div>
+        <div class="form-group">
+          <label for="categoria">Categoría:</label>
+          <select id="categoria" [(ngModel)]="clienteTemp.categoria" name="categoria" required>
+            <option value="Premium">Premium</option>
+            <option value="Corporativo">Corporativo</option>
+            <option value="Regular">Regular</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn-primary" [disabled]="!clienteForm.form.valid">
+          {{ clienteEditando ? 'Actualizar' : 'Guardar' }}
+        </button>
+        <button type="button" class="btn-secondary" (click)="cancelarEdicion()">Cancelar</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Estadísticas de clientes -->
+  <div class="stats-container">
+    <div class="stat-card">
+      <h3>Total Clientes</h3>
+      <p class="stat-number">{{ clientes.length }}</p>
+    </div>
+    <div class="stat-card">
+      <h3>Clientes Premium</h3>
+      <p class="stat-number">{{ contarPorCategoria('Premium') }}</p>
+    </div>
+    <div class="stat-card">
+      <h3>Clientes Corporativos</h3>
+      <p class="stat-number">{{ contarPorCategoria('Corporativo') }}</p>
+    </div>
+    <div class="stat-card">
+      <h3>Clientes Regulares</h3>
+      <p class="stat-number">{{ contarPorCategoria('Regular') }}</p>
+    </div>
+  </div>
+
+  <!-- Tabla de clientes -->
+  <div class="tabla-container">
+    <table class="clientes-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Empresa</th>
+          <th>Email</th>
+          <th>Teléfono</th>
+          <th>Categoría</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let cliente of clientes">
+          <td>{{ cliente.id }}</td>
+          <td>{{ cliente.nombre }}</td>
+          <td>{{ cliente.empresa }}</td>
+          <td>{{ cliente.email }}</td>
+          <td>{{ cliente.telefono }}</td>
+          <td>
+            <span class="categoria-badge" [ngClass]="'categoria-' + cliente.categoria.toLowerCase()">
+              {{ cliente.categoria }}
+            </span>
+          </td>
+          <td class="acciones">
+            <button class="btn-edit" (click)="editarCliente(cliente)">Editar</button>
+            <button class="btn-delete" (click)="eliminarCliente(cliente.id)">Eliminar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

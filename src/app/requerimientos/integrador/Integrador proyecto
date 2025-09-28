@@ -1,0 +1,270 @@
+Facultad de Ingeniería
+Carrera
+Sistemas e Informática
+Curso: Sistemas Software
+TRABAJO DE INVESTIGACIÓN
+“Plataforma de Distribución Estratégica “
+Estudiantes:
+Aburto Ricapa, Aldo Jhonatan U21322413
+Condori Sotelo, Marlon Gerardo U23223423
+García Urbano, Franco Paolo U23240522
+Parraga Quincho, Henry Raul U21203028
+Docente: Danila Raquel Neira SacaskiLima, Perú
+Agosto, 2025-II
+ÍNDICE GENERAL
+CAPÍTULO I: ANALISIS DEL CONTEXTO DE LA EMPRESA 3
+1 ............................................................................................................ Descripción de la empresa 3
+2 ................................................................................................................................ Visión, Misión 4
+3 .................................................................................................................................. Matriz FODA 5
+4 .................................................................................................................................. Organigrama 6
+5 ................................................................................................................... Objetivos estratégicos 8
+6 .......................................................................................................................................... Entorno 9
+7 ......................................................................................................................Definir el problema 10
+8 ........................................................................................................................................ Alcance 11
+9 ..................................................................................... Requisitos funcionales y no funcionales 11
+10 ....................................................................................................................Modelo de negocio 13
+11 ....................................................................................................................................Prototipo 14
+12 ................................................................................................................................. Bibliografia 15
+INTRODUCCIÓNEn el dinámico y competitivo sector de la logística, la eficiencia en la cadena de suministro es un
+factor crítico para el éxito de las empresas. LogiStock Solutions, una compañía dedicada a la distribución
+de productos enfrenta desafíos significativos que impactan directamente en su rentabilidad y en la
+satisfacción de sus clientes. La dependencia de procesos manuales para la gestión de inventario, la
+planificación de rutas y el seguimiento de pedidos ha generado una serie de ineficiencias, incluyendo
+errores en los despachos, tiempos de entrega prolongados y una falta de visibilidad operativa que limita
+la capacidad de la empresa para responder rápidamente a las demandas del mercado.
+El presente trabajo de investigación se centra en el diseño e implementación de un sistema de
+distribución de productos que busca resolver estas problemáticas a través de la digitalización y la
+automatización de la cadena de suministro. Este sistema proporcionará una plataforma centralizada para
+la gestión de inventario, optimizará las rutas de entrega y ofrecerá seguimiento en tiempo real de los
+envíos, transformando así los desafíos actuales en oportunidades de crecimiento. El objetivo es mejorar
+la eficiencia operativa, reducir costos y fortalecer la ventaja competitiva de LogiStock Solutions.
+A lo largo de este documento, se detallará el análisis del entorno de la empresa, la definición del
+problema y el alcance del proyecto, los requisitos funcionales y no funcionales, y el modelo de negocio. La
+culminación de este esfuerzo es la creación de una solución robusta y escalable que no solo optimizará las
+operaciones internas, sino que también mejorará la experiencia del cliente y posicionará a LogiStock como
+un líder innovador en el mercado de la logística.
+CAPÍTULO I: ANALISIS DEL CONTEXTO DE LA EMPRESA
+1
+Descripción de la empresa
+LogiStock Solutions es una empresa de distribución y logística especializada en el
+movimiento de productos desde múltiples centros de almacenamiento hacia una red de tiendasminoristas y sucursales. Su misión es garantizar que cada tienda esté siempre abastecida con los
+productos correctos en el momento adecuado, maximizando la eficiencia operativa y minimizando
+los costos de transporte.
+2
+Visión, Misión
+Misión: Nuestra misión es optimizar la cadena de suministro de nuestros clientes a través
+de la innovación tecnológica y la excelencia operativa. Buscamos ser el socio logístico confiable
+que garantiza la entrega precisa y puntual de cada producto, automatizando la complejidad para
+que nuestros clientes puedan enfocarse en lo que mejor saben hacer: servir a sus propios clientes.
+Nos comprometemos a reducir los costos de transporte, minimizar los errores de inventario y
+proveer una visibilidad completa de la distribución en todo momento.
+Visión: Nuestra visión es ser el estándar de oro en la gestión de distribución, liderando la
+industria con una plataforma tecnológica que convierte la logística en una ventaja competitiva.
+Aspiramos a un futuro donde la planificación de rutas es predictiva, el inventario es completamente
+visible en tiempo real y la colaboración entre almacenes y tiendas es fluida y sin fisuras. A través
+de la innovación continua, transformaremos la forma en que los productos se mueven en el mundo,
+haciendo la distribución más inteligente, rápida y sostenible.3
+Matriz FODA
+El análisis de la matriz FODA de LogiStock Solutions destaca la oportunidad de utilizar la fortaleza de su
+equipo y su experiencia para mitigar la amenaza de la competencia y la volatilidad de los precios. La
+debilidad en sus procesos manuales puede transformarse en una fortaleza al adoptar una solución
+tecnológica que automatice y digitalice las operaciones. Finalmente, el proyecto de software busca
+aprovechar la oportunidad del crecimiento del e-commerce para mejorar la eficiencia y la satisfacción del
+cliente, convirtiendo a LogiStock en un líder innovador del sector.4
+Organigrama
+El proyecto está organizado en una estructura funcional, liderada por un Gerente de Proyecto que
+supervisa la planificación y la ejecución. El equipo central incluye a un Analista de Negocio, encargado de
+traducir las necesidades de la empresa en requisitos técnicos, y un Líder de Desarrollo de Software, que
+dirige al equipo de programadores. El equipo se complementa con un Analista de Calidad que garantiza el
+correcto funcionamiento del sistema y un Especialista en Bases de Datos que asegura la gestión de la
+información. Esta organización asegura que cada fase del proyecto, desde la conceptualización hasta la
+implementación, se gestione de forma eficiente y coordinada.5
+Objetivos estratégicos
+•
+Mejorar la Eficiencia Operativa: Digitalizar y automatizar los procesos clave
+de la cadena de suministro, desde la gestión de inventario hasta la planificación
+de rutas y la ejecución de entregas.
+•
+Aumentar la Satisfacción del Cliente: Proveer una visibilidad completa y en
+tiempo real del estado de los pedidos, aumentando la transparencia y la
+confiabilidad del servicio de distribución.
+•
+Reducir Costos Operacionales: Optimizar las rutas de transporte y minimizar
+los errores de inventario, lo que se traducirá en una reducción de los costos
+asociados a la logística y el transporte.
+•
+Fortalecer la Ventaja Competitiva: Utilizar la innovación tecnológica para
+ofrecer un servicio de distribución ágil y superior, diferenciando a la empresa
+en un mercado competitivo.
+•
+Garantizar la Escalabilidad: Diseñar una arquitectura de sistema robusta y
+adaptable que pueda soportar el crecimiento futuro de la empresa sin
+comprometer el rendimiento.6
+Entorno
+FactorDescripción y Relevancia para el Proyecto
+PolíticoRegulaciones de transporte: Normativas sobre horarios de entrega,
+pesos máximos de carga y zonas de acceso restringido en áreas urbanas. El
+sistema debe ser capaz de integrar estas reglas para la planificación de
+rutas.
+Políticas de comercio: Acuerdos comerciales y aranceles que
+pueden afectar la importación y exportación de productos, influenciando el
+volumen de carga. El sistema debe ser lo suficientemente flexible para
+adaptarse a estos cambios.
+Económico
+Costo del combustible: Las fluctuaciones en el precio del
+combustible impactan directamente en los costos de transporte. El sistema,
+al optimizar rutas, busca mitigar este riesgo.
+Tasas de interés e inflación: Pueden afectar la inversión en nuevos
+vehículos o tecnologías. La eficiencia del sistema debe justificar la inversión
+a pesar de las condiciones económicas.
+Socio-cultural
+Expectativas del consumidor: La creciente demanda por entregas
+rápidas y transparentes (seguimiento en tiempo real). El sistema responde a
+esta necesidad con la funcionalidad de seguimiento de envíos.
+Cambios demográficos: La urbanización y la concentración de
+población en ciudades afectan la densidad de las rutas de entrega. El
+sistema debe ser capaz de manejar rutas complejas en entornos urbanos
+densos.Tecnológico
+Tecnología de logística: El avance en la IA para la optimización de
+rutas, el Internet de las Cosas (IoT) para el seguimiento de activos y los
+sensores de vehículos son cruciales. El nuevo sistema debe incorporar estas
+tecnologías.
+Transformación digital: La digitalización general de la industria de la
+logística es una tendencia clave. El sistema de LogiStock se posiciona a la
+vanguardia de esta transformación.
+Ecológico
+Conciencia ambiental: La presión por reducir las emisiones de
+carbono en la logística. El sistema ayuda a lograr este objetivo optimizando
+las rutas y reduciendo el consumo de combustible.
+Gestión de residuos: Normativas sobre embalaje y reciclaje. El
+sistema debe ser compatible con prácticas logísticas sostenibles.
+Legal
+Leyes de privacidad de datos: Regulaciones como GDPR o leyes
+locales que protegen los datos del cliente. El sistema debe implementar
+estrictas medidas de seguridad para el manejo de la información.
+Leyes laborales: Normativas sobre las horas de trabajo de los
+transportistas y la seguridad en el transporte. El sistema debe considerar
+estos factores al planificar las rutas para asegurar el cumplimiento.
+7
+Definir el problema
+LogiStock Solutions opera una red de distribución fragmentada, caracterizada por la falta de
+visibilidad en tiempo real y una dependencia excesiva de procesos manuales. Actualmente, la gestión de
+inventario, la planificación de rutas y el seguimiento de pedidos se realizan de manera ineficiente, lo que
+genera retrasos en las entregas, errores en los despachos y un aumento en los costos operativos. Laempresa carece de una plataforma centralizada que le permita optimizar la cadena de suministro, lo que
+se traduce en una menor satisfacción del cliente y una desventaja competitiva frente a empresas con
+sistemas más avanzados.
+8
+Alcance
+El alcance de este proyecto es el diseño e implementación de un sistema de distribución de
+productos que automatice y centralice las operaciones logísticas. El sistema permitirá la gestión
+integral de inventario en los almacenes, la creación y validación de pedidos desde las tiendas, la
+optimización automática de rutas de entrega y el seguimiento en tiempo real de los envíos. Se
+incluirá un módulo de notificaciones para mantener informados a los usuarios sobre el estado de
+sus pedidos y una herramienta de generación de reportes para el análisis del rendimiento. La
+funcionalidad del sistema estará limitada a las operaciones de distribución interna, es decir, del
+almacén a las tiendas, y no incluirá la gestión de la cadena de suministro con proveedores externos.
+9
+9.1
+Requisitos funcionales y no funcionales
+Requerimientos Funcionales
+Los requerimientos funcionales definen las tareas específicas que el sistema debe realizar.
+9.1.1 Gestión de Pedidos
+●
+RF1.1: Los usuarios deben poder seguir el estado de su pedido, desde la creación
+hasta la entrega final.
+9.1.2 Planificación y Gestión de Rutas
+●
+RF2.1: El sistema debe optimizar las rutas de entrega para los vehículos,
+considerando la ubicación de las tiendas, el tráfico y la capacidad de carga.●
+RF2.2: Debe ser posible agrupar pedidos de múltiples tiendas en una sola ruta de
+entrega para maximizar la eficiencia.
+●
+RF2.3: El sistema debe proporcionar una visualización en un mapa de la ruta
+planificada y el progreso del vehículo en tiempo real.
+9.1.3 Generación de Reportes y Notificaciones
+●
+RF3.1: El sistema debe enviar notificaciones por correo electrónico o mensajes de
+texto a los clientes cuando su pedido sea despachado o rechazado.
+●
+RF3.2: El sistema debe generar reportes sobre el rendimiento de la distribución,
+abarcando tiempo de entrega y el nivel de servicio.
+●
+RF3.3: Debe haber un reporte que detalle los CECO (centro de costos) de transporte
+asociados a cada ruta de entrega.
+9.2
+Requerimientos No Funcionales
+Los requerimientos no funcionales se centran en la calidad y las limitaciones del sistema.
+9.2.1 Adaptabilidad
+●
+RNF1.1: El sistema debe tener una interfaz de usuario limpia, intuitiva y fácil de
+navegar, optimizada para dispositivos móviles y de escritorio.
+9.2.2 Rendimiento y Escalabilidad
+●
+RNF2.1: Las consultas de inventario y los cálculos de ruta deben ser procesados en
+menos de 5 segundos.
+●
+RNF2.2: El sistema debe soportar un mínimo de 1,000 pedidos concurrentes por
+día sin degradación del rendimiento o caídas en el sistema.●
+RNF2.3: La arquitectura del sistema debe ser escalable para adaptarse a un
+crecimiento.
+9.2.3 Seguridad y Confiabilidad
+●
+RNF3.1: Debe contar con un sistema de autenticación de usuarios robusto (por
+ejemplo, con autenticación de dos factores) y un control de acceso basado en roles
+para asegurar que cada usuario solo pueda ver la información relevante para su
+puesto.
+●
+RNF3.2: Todos los datos, tanto en tránsito como en espera, deben estar encriptados
+para prevenir accesos no autorizados.
+●
+RNF3.3: La disponibilidad del sistema debe ser del 99.9% anual, minimizando el
+tiempo de inactividad no planificado.
+9.2.4 Mantenibilidad
+●
+RNF4.1: El código fuente debe estar bien documentado y seguir estándares de
+codificación para facilitar futuras actualizaciones y correcciones.
+●
+RNF4.2: Debe ser posible realizar actualizaciones de software sin interrumpir el
+funcionamiento del sistema para los usuarios finales.
+10
+Modelo de negocio
+COMPONENTE DEL
+DESCRIPCIÓN PARA EL PROYECTO DE LOGISTOCK
+MODELO
+Segmentos
+de
+Empresas de retail con múltiples sucursales que necesitan una gestión de inventario y distribución más eficiente.
+ClientesTambién incluye a los usuarios internos como gerentes de almacén y transportistas.
+Propuesta de ValorEl sistema ofrece entregas precisas y puntuales, con visibilidad completa del proceso. Para la empresa, reduce los
+costos operativos y optimiza los recursos al automatizar procesos.Canales
+Se utilizará una aplicación web para la gestión administrativa y una aplicación móvil para los transportistas y gerentes
+de tienda.
+Relación
+con
+Se construirá una relación basada en la transparencia, ofreciendo seguimiento en tiempo real de los envíos. El soporte
+Clientestécnico se brindará a través de la plataforma para resolver dudas y problemas.
+Fuentes de IngresosEste proyecto generará valor económico a través de la reducción de costos operativos (combustible, mano de obra) y
+un aumento en la eficiencia que permitirá manejar más pedidos.
+Recursos Clave
+Los recursos principales son la plataforma tecnológica del sistema de distribución, las bases de datos, y el equipo
+humano de desarrollo y soporte.
+Actividades Clave
+Las actividades más importantes incluyen el desarrollo de software, la gestión de la arquitectura del sistema, el
+mantenimiento continuo y la capacitación de los usuarios.
+Socios ClaveSe trabajará con proveedores de servicios en la nube y proveedores de APIs de mapas para la optimización de rutas.
+Estructura de CostosLos costos principales son los salarios del equipo de desarrollo, el costo de la infraestructura tecnológica (servidores
+y hosting), y las licencias de software o APIs.
+11
+Prototipo12
+Bibliografia
+1. Ballou, R. H. (2004). Logística: Administración de la cadena de suministro.
+Pearson Educación.
+2. Christopher, M. (2016). Logística y gestión de la cadena de suministro.
+Cengage Learning.
+3. Google. (2025, 27 de agosto). Routes API. Google for Developers. Recuperado
+de https://developers.google.com/maps/documentation/routes
+4. McKinsey & Company. (2019, septiembre). Tech-enabled transformations: A
+CEO's guide to maximizing impact in industrials. Recuperado de
+https://www.mckinsey.com/~/media/mckinsey/industries/advanced%20electro
+nics/our%20insights/tech%20enabled%20transformations/tech-enabled-
+transformations-a-ceos-guide-to-maximizing-impact-in-industrials.pdf

@@ -1,0 +1,137 @@
+<div class="page-header proveedores">
+  <div class="page-header-content">
+    <div>
+      <h1 class="page-title">Gestión de Proveedores</h1>
+      <p class="page-subtitle">Administración y evaluación de la cadena de suministro</p>
+    </div>
+    <div class="page-actions">
+      <button class="btn-primary" (click)="toggleFormulario()">
+        {{ mostrarFormulario ? 'Cancelar' : 'Nuevo Proveedor' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="proveedores-container">
+
+  <!-- Formulario para agregar/editar proveedor -->
+  <div class="formulario-container" *ngIf="mostrarFormulario">
+    <h3>{{ proveedorEditando ? 'Editar Proveedor' : 'Nuevo Proveedor' }}</h3>
+    <form (ngSubmit)="guardarProveedor()" #proveedorForm="ngForm">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="nombre">Nombre:</label>
+          <input type="text" id="nombre" [(ngModel)]="proveedorTemp.nombre" name="nombre" required>
+        </div>
+        <div class="form-group">
+          <label for="empresa">Empresa:</label>
+          <input type="text" id="empresa" [(ngModel)]="proveedorTemp.empresa" name="empresa" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="email">Email:</label>
+          <input type="email" id="email" [(ngModel)]="proveedorTemp.email" name="email" required>
+        </div>
+        <div class="form-group">
+          <label for="telefono">Teléfono:</label>
+          <input type="tel" id="telefono" [(ngModel)]="proveedorTemp.telefono" name="telefono" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="direccion">Dirección:</label>
+          <input type="text" id="direccion" [(ngModel)]="proveedorTemp.direccion" name="direccion" required>
+        </div>
+        <div class="form-group">
+          <label for="categoria">Categoría:</label>
+          <select id="categoria" [(ngModel)]="proveedorTemp.categoria" name="categoria" required>
+            <option value="Estratégico">Estratégico</option>
+            <option value="Preferido">Preferido</option>
+            <option value="Estándar">Estándar</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="calificacion">Calificación (1-5):</label>
+          <input type="number" id="calificacion" [(ngModel)]="proveedorTemp.calificacion" 
+                 name="calificacion" min="1" max="5" required>
+        </div>
+        <div class="form-group">
+          <label for="tiempoEntrega">Tiempo Entrega (días):</label>
+          <input type="number" id="tiempoEntrega" [(ngModel)]="proveedorTemp.tiempoEntrega" 
+                 name="tiempoEntrega" min="1" required>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn-primary" [disabled]="!proveedorForm.form.valid">
+          {{ proveedorEditando ? 'Actualizar' : 'Guardar' }}
+        </button>
+        <button type="button" class="btn-secondary" (click)="cancelarEdicion()">Cancelar</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Estadísticas de proveedores -->
+  <div class="stats-container">
+    <div class="stat-card">
+      <h3>Total Proveedores</h3>
+      <p class="stat-number">{{ proveedores.length }}</p>
+    </div>
+    <div class="stat-card">
+      <h3>Estratégicos</h3>
+      <p class="stat-number">{{ contarPorCategoria('Estratégico') }}</p>
+    </div>
+    <div class="stat-card">
+      <h3>Calificación Promedio</h3>
+      <p class="stat-number">{{ calcularCalificacionPromedio() | number:'1.1-1' }}</p>
+    </div>
+    <div class="stat-card">
+      <h3>Tiempo Promedio</h3>
+      <p class="stat-number">{{ calcularTiempoPromedio() | number:'1.0-0' }} días</p>
+    </div>
+  </div>
+
+  <!-- Tabla de proveedores -->
+  <div class="tabla-container">
+    <table class="proveedores-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Empresa</th>
+          <th>Email</th>
+          <th>Categoría</th>
+          <th>Calificación</th>
+          <th>Tiempo Entrega</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let proveedor of proveedores">
+          <td>{{ proveedor.id }}</td>
+          <td>{{ proveedor.nombre }}</td>
+          <td>{{ proveedor.empresa }}</td>
+          <td>{{ proveedor.email }}</td>
+          <td>
+            <span class="categoria-badge" [ngClass]="'categoria-' + proveedor.categoria.toLowerCase()">
+              {{ proveedor.categoria }}
+            </span>
+          </td>
+          <td>
+            <div class="rating">
+              <span *ngFor="let star of getStars(proveedor.calificacion)" 
+                    [ngClass]="star.filled ? 'star-filled' : 'star-empty'">★</span>
+            </div>
+          </td>
+          <td>{{ proveedor.tiempoEntrega }} días</td>
+          <td class="acciones">
+            <button class="btn-edit" (click)="editarProveedor(proveedor)">Editar</button>
+            <button class="btn-delete" (click)="eliminarProveedor(proveedor.id)">Eliminar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

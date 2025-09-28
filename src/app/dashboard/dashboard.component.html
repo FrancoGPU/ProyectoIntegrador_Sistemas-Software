@@ -1,0 +1,169 @@
+<div class="page-header dashboard">
+  <div class="page-header-content">
+    <div>
+      <h1 class="page-title">Dashboard LogiStock Solutions</h1>
+      <p class="page-subtitle">Sistema de Gestión Logística Integrada</p>
+    </div>
+  </div>
+</div>
+
+<div class="dashboard-container">
+
+  <div class="metrics-grid">
+    <div class="metric-card primary">
+      <div class="metric-icon">📦</div>
+      <div class="metric-content">
+        <h3>{{totalInventario}}</h3>
+        <p>Productos en Inventario</p>
+        <span class="metric-change positive">+12% vs mes anterior</span>
+      </div>
+    </div>
+
+    <div class="metric-card success">
+      <div class="metric-icon">👥</div>
+      <div class="metric-content">
+        <h3>{{totalClientes}}</h3>
+        <p>Clientes Activos</p>
+        <span class="metric-change positive">+8% vs mes anterior</span>
+      </div>
+    </div>
+
+    <div class="metric-card warning">
+      <div class="metric-icon">🚚</div>
+      <div class="metric-content">
+        <h3>{{rutasActivas}}</h3>
+        <p>Rutas en Proceso</p>
+        <span class="metric-change neutral">Estable</span>
+      </div>
+    </div>
+
+    <div class="metric-card info">
+      <div class="metric-icon">🏭</div>
+      <div class="metric-content">
+        <h3>{{totalProveedores}}</h3>
+        <p>Proveedores Registrados</p>
+        <span class="metric-change positive">+3 nuevos</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gráficos y análisis avanzados -->
+  <div class="analytics-section">
+    <div class="chart-container">
+      <h3>📊 Rendimiento Mensual</h3>
+      <div class="chart-placeholder">
+        <div class="chart-bars">
+          <div class="bar" style="height: 60%" data-value="85">
+            <span class="bar-label">Ene</span>
+            <span class="bar-value">85%</span>
+          </div>
+          <div class="bar" style="height: 75%" data-value="92">
+            <span class="bar-label">Feb</span>
+            <span class="bar-value">92%</span>
+          </div>
+          <div class="bar" style="height: 85%" data-value="96">
+            <span class="bar-label">Mar</span>
+            <span class="bar-value">96%</span>
+          </div>
+          <div class="bar" style="height: 70%" data-value="88">
+            <span class="bar-label">Abr</span>
+            <span class="bar-value">88%</span>
+          </div>
+          <div class="bar" style="height: 90%" data-value="98">
+            <span class="bar-label">May</span>
+            <span class="bar-value">98%</span>
+          </div>
+          <div class="bar" style="height: 95%" data-value="99">
+            <span class="bar-label">Jun</span>
+            <span class="bar-value">99%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="kpi-container">
+      <h3>🎯 KPIs Clave</h3>
+      <div class="kpi-list">
+        <div class="kpi-item">
+          <span class="kpi-label">Tiempo promedio de entrega</span>
+          <span class="kpi-value">2.3 días</span>
+          <span class="kpi-status good">✓</span>
+        </div>
+        <div class="kpi-item">
+          <span class="kpi-label">Satisfacción del cliente</span>
+          <span class="kpi-value">94.5%</span>
+          <span class="kpi-status excellent">★</span>
+        </div>
+        <div class="kpi-item">
+          <span class="kpi-label">Costos operativos</span>
+          <span class="kpi-value">-12.3%</span>
+          <span class="kpi-status good">↓</span>
+        </div>
+        <div class="kpi-item">
+          <span class="kpi-label">Rotación de inventario</span>
+          <span class="kpi-value">8.2x</span>
+          <span class="kpi-status warning">⚠</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dashboard-content">
+    <div class="content-section">
+      <div class="section-card">
+        <h2>Resumen de Operaciones</h2>
+        <div class="operation-summary">
+          <div class="operation-item">
+            <span class="operation-label">Entregas Completadas Hoy:</span>
+            <span class="operation-value">{{entregasHoy}}</span>
+          </div>
+          <div class="operation-item">
+            <span class="operation-label">Eficiencia de Rutas:</span>
+            <span class="operation-value success">{{eficienciaRutas}}%</span>
+          </div>
+          <div class="operation-item">
+            <span class="operation-label">Tiempo Promedio de Entrega:</span>
+            <span class="operation-value">{{tiempoPromedio}} horas</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <h2>Análisis Estratégico</h2>
+        <div class="strategic-points">
+          <div class="strategic-item strength">
+            <h4>💪 Fortalezas Clave</h4>
+            <p>Capacidad de distribución amplia y experiencia consolidada en el mercado</p>
+          </div>
+          <div class="strategic-item opportunity">
+            <h4>🎯 Oportunidades</h4>
+            <p>Expansión de distribución y atracción de nuevos clientes mediante tecnología</p>
+          </div>
+        </div>
+        <button class="btn-primary" routerLink="/foda">Ver Análisis FODA Completo</button>
+      </div>
+    </div>
+
+    <div class="quick-actions">
+      <h2>Acciones Rápidas</h2>
+      <div class="actions-grid">
+        <button class="action-btn" routerLink="/inventario">
+          <span class="action-icon">📦</span>
+          Gestionar Inventario
+        </button>
+        <button class="action-btn" routerLink="/clientes">
+          <span class="action-icon">👥</span>
+          Ver Clientes
+        </button>
+        <button class="action-btn" routerLink="/rutas">
+          <span class="action-icon">🗺️</span>
+          Optimizar Rutas
+        </button>
+        <button class="action-btn" routerLink="/proveedores">
+          <span class="action-icon">🏭</span>
+          Gestionar Proveedores
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
