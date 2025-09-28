@@ -40,3 +40,10 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# Additional Angular and Node specific
+/e2e/test-output/
+/package-lock.json
+/yarn.lock
+/.env
+*.tsbuildinfo

@@ -1,59 +1,78 @@
-# ProyectoIntegrador
+# 🚚 LogiStock Solutions
+*Sistema de Gestión Logística Completo*
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.17.
+## 📋 Descripción
 
-## Development server
+LogiStock Solutions es una aplicación web desarrollada con Angular que proporciona una solución integral para la gestión logística empresarial. El sistema incluye módulos especializados para inventario, clientes, proveedores, rutas de distribución y análisis estratégico FODA.
 
-To start a local development server, run:
+## ✨ Características Principales
 
+- 📊 **Dashboard Ejecutivo** - Panel principal con métricas y estadísticas
+- 📦 **Gestión de Inventario** - Control completo de productos y categorías
+- 👥 **Administración de Clientes** - Base de datos de clientes con información detallada
+- 🏢 **Gestión de Proveedores** - Directorio completo de proveedores
+- 🚚 **Optimización de Rutas** - Planificación inteligente de rutas de distribución
+- 📊 **Análisis FODA** - Herramienta de análisis estratégico empresarial
+
+## 🎨 Diseño y UX
+
+- **Responsive Design** - Optimizado para desktop, tablet y móvil
+- **Menú móvil inteligente** - Navegación fluida con auto-cierre al scroll
+- **Gradientes únicos** - Cada sección tiene su identidad visual distintiva
+- **Glassmorphism effects** - Interfaz moderna con efectos de vidrio
+- **Animaciones suaves** - Transiciones y efectos hover profesionales
+
+## 🛠️ Tecnologías Utilizadas
+
+- **Angular 19.2.17** - Framework principal
+- **TypeScript** - Programación tipada
+- **CSS Grid & Flexbox** - Layouts responsivos
+- **CSS Custom Properties** - Sistema de variables para temas
+- **Angular Router** - Navegación SPA
+- **Angular Forms** - Formularios reactivos
+
+## 🚀 Instalación y Uso
+
+### Prerrequisitos
+- Node.js 18+ 
+- Angular CLI 19+
+
+### Instalación
 ```bash
+# Clonar el repositorio
+git clone https://github.com/FrancoGPU/ProyectoIntegrador_Sistemas-Software.git
+
+# Instalar dependencias
+cd ProyectoIntegrador_Sistemas-Software
+npm install
+
+# Ejecutar en modo desarrollo
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
+### Servidor de Desarrollo
 ```bash
-ng generate component component-name
+ng serve
 ```
+Navega a `http://localhost:4200/` para ver la aplicación.
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
+### Construcción
 ```bash
 ng build
 ```
+Los archivos de build se almacenarán en el directorio `dist/`.
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## 📱 Compatibilidad
 
-## Running unit tests
+- ✅ Chrome, Firefox, Safari, Edge
+- ✅ iOS Safari, Chrome Mobile
+- ✅ Responsive desde 320px hasta 4K
+- ✅ Touch-friendly para dispositivos móviles
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+## 👨‍💻 Autor
 
-```bash
-ng test
-```
+**FrancoGPU** - Desarrollador Full Stack
 
-## Running end-to-end tests
+## 📄 Licencia
 
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Este proyecto es parte de un proyecto integrador académico.
