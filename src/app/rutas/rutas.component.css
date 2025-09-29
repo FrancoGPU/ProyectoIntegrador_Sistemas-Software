@@ -454,6 +454,68 @@
 }
 
 /* Responsive */
+/* Responsive para tablets */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .rutas-container {
+    padding: 15px;
+  }
+  
+  /* Asegurar que las tablas se vean correctamente en tablets */
+  .tabla-container {
+    overflow-x: auto;
+    border-radius: 10px;
+  }
+  
+  .rutas-table {
+    min-width: 900px;
+  }
+  
+  /* Mejorar la columna de acciones para tablets */
+  .rutas-table th:last-child,
+  .rutas-table td:last-child {
+    min-width: 160px;
+    width: 160px;
+    text-align: center;
+    white-space: nowrap;
+  }
+  
+  .route-actions {
+    justify-content: center;
+    gap: 0.4rem;
+    flex-wrap: nowrap;
+  }
+  
+  .btn-sm {
+    padding: 8px 12px;
+    font-size: 0.8rem;
+    min-width: auto;
+  }
+  
+  /* Mejorar el scroll horizontal en tablets */
+  .tabla-container::-webkit-scrollbar {
+    height: 8px;
+  }
+  
+  .tabla-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+  
+  .tabla-container::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+  }
+  
+  .tabla-container::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+  }
+  
+  .stats-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+}
+
 @media (max-width: 768px) {
   .page-actions {
     flex-direction: column;

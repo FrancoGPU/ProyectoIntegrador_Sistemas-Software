@@ -1,0 +1,105 @@
+version: '3.8'
+
+services:
+  # Base de datos MongoDB
+  mongodb:
+    image: mongo:7.0
+    container_name: logistock-mongo
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME:-admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-password123}
+      MONGO_INITDB_DATABASE: ${MONGO_DATABASE:-logistock}
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+      - ./mongo-init:/docker-entrypoint-initdb.d
+    networks:
+      - logistock-network
+
+  # Backend Java (Spring Boot)
+  backend-java:
+    build:
+      context: ./backend-java
+      dockerfile: Dockerfile
+    container_name: logistock-backend-java
+    restart: unless-stopped
+    environment:
+      # MongoDB configuration
+      SPRING_DATA_MONGODB_HOST: mongodb
+      SPRING_DATA_MONGODB_PORT: 27017
+      SPRING_DATA_MONGODB_DATABASE: ${MONGO_DATABASE:-logistock}
+      SPRING_DATA_MONGODB_USERNAME: ${MONGO_USERNAME:-admin}
+      SPRING_DATA_MONGODB_PASSWORD: ${MONGO_PASSWORD:-password123}
+      SPRING_DATA_MONGODB_AUTHENTICATION_DATABASE: admin
+      
+      # Application configuration
+      SPRING_PROFILES_ACTIVE: docker
+      SERVER_PORT: 8080
+      
+      # Logging
+      LOGGING_LEVEL_COM_LOGISTOCK: DEBUG
+      LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_DATA_MONGODB: DEBUG
+      
+      # JVM Options
+      JAVA_OPTS: "-Xmx1g -Xms512m"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongodb
+    networks:
+      - logistock-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/dashboard/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+
+  # Frontend Angular (para desarrollo)
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: logistock-frontend
+    restart: unless-stopped
+    ports:
+      - "4200:4200"
+    environment:
+      - NODE_ENV=development
+      - API_BASE_URL=http://backend-java:8080
+    depends_on:
+      - backend-java
+    networks:
+      - logistock-network
+    volumes:
+      - ./src:/app/src
+      - ./angular.json:/app/angular.json
+      - ./package.json:/app/package.json
+      - ./tsconfig.json:/app/tsconfig.json
+
+  # Nginx (proxy reverso para producción)
+  nginx:
+    image: nginx:alpine
+    container_name: logistock-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./ssl:/etc/nginx/ssl
+    depends_on:
+      - backend-java
+      - frontend
+    networks:
+      - logistock-network
+
+volumes:
+  mongodb_data:
+    driver: local
+
+networks:
+  logistock-network:
+    driver: bridge

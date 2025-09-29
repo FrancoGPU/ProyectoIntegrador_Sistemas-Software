@@ -74,10 +74,20 @@ export class InventarioComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
-          this.products = response.data;
-          this.totalProducts = response.pagination.total;
-          this.totalPages = response.pagination.pages;
-          this.currentPage = response.pagination.current;
+          console.log('Backend response:', response); // Debug log
+          
+          // Validamos que la respuesta exista
+          if (!response) {
+            console.error('Response is null or undefined');
+            this.loadFallbackData();
+            return;
+          }
+          
+          // Adaptamos la respuesta del backend Java: {total, size, totalPages, page, products}
+          this.products = response.products || response.data || [];
+          this.totalProducts = response.total || 0;
+          this.totalPages = response.totalPages || 1;
+          this.currentPage = response.page || 0;
           this.loading = false;
         },
         error: (error) => {
@@ -92,26 +102,22 @@ export class InventarioComponent implements OnInit, OnDestroy {
   loadStats(): void {
     this.loadingStats = true;
     
-    this.inventarioService.getInventoryStats()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (stats: InventoryStats) => {
-          // Convertir las estadísticas del backend al formato local
-          this.stats = {
-            totalProducts: stats.general.totalProducts,
-            totalValue: stats.general.totalValue,
-            lowStock: stats.general.lowStockCount,
-            categories: stats.byCategory.length
-          };
-          this.loadingStats = false;
-        },
-        error: (error: any) => {
-          console.error('Error al cargar estadísticas:', error);
-          this.loadingStats = false;
-          // Calcular estadísticas localmente como fallback
-          this.calculateLocalStats();
-        }
-      });
+    // Backend Java no tiene endpoint de stats todavía
+    // Calculamos estadísticas localmente por ahora
+    try {
+      this.calculateLocalStats();
+      this.loadingStats = false;
+    } catch (error) {
+      console.error('Error al calcular estadísticas locales:', error);
+      this.loadingStats = false;
+      // Fallback con valores por defecto
+      this.stats = {
+        totalProducts: 0,
+        totalValue: 0,
+        lowStock: 0,
+        categories: 0
+      };
+    }
   }
 
   loadFallbackData(): void {

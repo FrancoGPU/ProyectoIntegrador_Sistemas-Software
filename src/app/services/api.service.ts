@@ -43,15 +43,9 @@ export class ApiService {
       });
     }
 
-    return this.http.get<ApiResponse<T>>(`${this.baseUrl}/${endpoint}`, { params: httpParams })
+    return this.http.get<T>(`${this.baseUrl}/${endpoint}`, { params: httpParams })
       .pipe(
-        map(response => {
-          this.setLoading(false);
-          if (response.success) {
-            return response.data!;
-          }
-          throw new Error(response.error || 'Error en la respuesta');
-        }),
+        finalize(() => this.setLoading(false)),
         catchError(this.handleError.bind(this))
       );
   }
@@ -62,15 +56,9 @@ export class ApiService {
   post<T>(endpoint: string, data: any): Observable<T> {
     this.setLoading(true);
     
-    return this.http.post<ApiResponse<T>>(`${this.baseUrl}/${endpoint}`, data)
+    return this.http.post<T>(`${this.baseUrl}/${endpoint}`, data)
       .pipe(
-        map(response => {
-          this.setLoading(false);
-          if (response.success) {
-            return response.data!;
-          }
-          throw new Error(response.error || 'Error en la respuesta');
-        }),
+        finalize(() => this.setLoading(false)),
         catchError(this.handleError.bind(this))
       );
   }
@@ -81,15 +69,9 @@ export class ApiService {
   put<T>(endpoint: string, data: any): Observable<T> {
     this.setLoading(true);
     
-    return this.http.put<ApiResponse<T>>(`${this.baseUrl}/${endpoint}`, data)
+    return this.http.put<T>(`${this.baseUrl}/${endpoint}`, data)
       .pipe(
-        map(response => {
-          this.setLoading(false);
-          if (response.success) {
-            return response.data!;
-          }
-          throw new Error(response.error || 'Error en la respuesta');
-        }),
+        finalize(() => this.setLoading(false)),
         catchError(this.handleError.bind(this))
       );
   }
@@ -100,15 +82,9 @@ export class ApiService {
   patch<T>(endpoint: string, data: any): Observable<T> {
     this.setLoading(true);
     
-    return this.http.patch<ApiResponse<T>>(`${this.baseUrl}/${endpoint}`, data)
+    return this.http.patch<T>(`${this.baseUrl}/${endpoint}`, data)
       .pipe(
-        map(response => {
-          this.setLoading(false);
-          if (response.success) {
-            return response.data!;
-          }
-          throw new Error(response.error || 'Error en la respuesta');
-        }),
+        finalize(() => this.setLoading(false)),
         catchError(this.handleError.bind(this))
       );
   }
@@ -119,15 +95,9 @@ export class ApiService {
   delete<T>(endpoint: string): Observable<T> {
     this.setLoading(true);
     
-    return this.http.delete<ApiResponse<T>>(`${this.baseUrl}/${endpoint}`)
+    return this.http.delete<T>(`${this.baseUrl}/${endpoint}`)
       .pipe(
-        map(response => {
-          this.setLoading(false);
-          if (response.success) {
-            return response.data!;
-          }
-          throw new Error(response.error || 'Error en la respuesta');
-        }),
+        finalize(() => this.setLoading(false)),
         catchError(this.handleError.bind(this))
       );
   }

@@ -66,16 +66,17 @@ export class InventarioService {
   /**
    * Obtener todos los productos con filtros y paginación
    */
-  getProducts(filters: InventoryFilters = {}): Observable<PaginatedProducts> {
-    return this.apiService.get<PaginatedProducts>('inventario', filters);
+  getProducts(filters: InventoryFilters = {}): Observable<any> {
+    return this.apiService.get<any>('inventario', filters);
   }
 
   /**
    * Obtener estadísticas del inventario
+   * NOTA: Temporalmente deshabilitado hasta implementar en backend Java
    */
-  getInventoryStats(): Observable<InventoryStats> {
-    return this.apiService.get<InventoryStats>('inventario/stats');
-  }
+  // getInventoryStats(): Observable<InventoryStats> {
+  //   return this.apiService.get<InventoryStats>('inventario/stats');
+  // }
 
   /**
    * Obtener un producto por ID
@@ -102,7 +103,7 @@ export class InventarioService {
    * Actualizar solo el stock de un producto
    */
   updateStock(id: string, stock: number): Observable<Product> {
-    return this.apiService.patch<Product>(`inventario/${id}/stock`, { stock });
+    return this.apiService.patch<Product>(`inventario/${id}`, { stock });
   }
 
   /**
@@ -116,12 +117,7 @@ export class InventarioService {
    * Obtener productos con stock bajo
    */
   getLowStockProducts(): Observable<Product[]> {
-    return this.apiService.get<PaginatedProducts>('inventario', { 
-      stockStatus: 'low', 
-      limit: 50 
-    }).pipe(
-      map((response: any) => response.data || response)
-    );
+    return this.apiService.get<Product[]>('inventario/low-stock');
   }
 
   /**
