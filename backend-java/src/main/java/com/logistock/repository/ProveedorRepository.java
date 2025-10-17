@@ -30,8 +30,17 @@ public interface ProveedorRepository extends MongoRepository<Proveedor, String> 
     // Buscar proveedores activos
     List<Proveedor> findByIsActiveTrue();
 
+    // Buscar proveedores activos con paginación
+    Page<Proveedor> findByIsActiveTrue(Pageable pageable);
+
+    // Buscar por tipo (solo activos)
+    List<Proveedor> findByTipoAndIsActiveTrue(String tipo);
+
     // Buscar por tipo con paginación
     Page<Proveedor> findByTipoAndIsActiveTrue(String tipo, Pageable pageable);
+    
+    // Buscar por nombre o empresa (contiene texto)
+    List<Proveedor> findByNombreContainingIgnoreCaseOrEmpresaContainingIgnoreCase(String nombre, String empresa);
 
     // Buscar por texto en nombre o empresa
     @Query("{ $text: { $search: ?0 }, 'isActive': true }")

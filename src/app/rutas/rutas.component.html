@@ -44,14 +44,25 @@
       </div>
       <div class="form-row">
         <div class="form-group">
-          <label for="distancia">Distancia (km):</label>
-          <input type="number" id="distancia" [(ngModel)]="rutaTemp.distancia" 
-                 name="distancia" min="1" step="0.1" required>
+          <label for="distanciaKm">Distancia (km):</label>
+          <input type="number" id="distanciaKm" [(ngModel)]="rutaTemp.distanciaKm" 
+                 name="distanciaKm" min="1" step="0.1" required>
         </div>
         <div class="form-group">
-          <label for="tiempoEstimado">Tiempo Estimado (horas):</label>
-          <input type="number" id="tiempoEstimado" [(ngModel)]="rutaTemp.tiempoEstimado" 
-                 name="tiempoEstimado" min="0.1" step="0.1" required>
+          <label for="tiempoEstimadoHoras">Tiempo Estimado (horas):</label>
+          <input type="number" id="tiempoEstimadoHoras" [(ngModel)]="rutaTemp.tiempoEstimadoHoras" 
+                 name="tiempoEstimadoHoras" min="0.1" step="0.1" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="vehiculo">Vehículo:</label>
+          <input type="text" id="vehiculo" [(ngModel)]="rutaTemp.vehiculo" name="vehiculo" required>
+        </div>
+        <div class="form-group">
+          <label for="costoEstimado">Costo Estimado (S/):</label>
+          <input type="number" id="costoEstimado" [(ngModel)]="rutaTemp.costoEstimado" 
+                 name="costoEstimado" min="0" step="0.01" required>
         </div>
       </div>
       <div class="form-row">
@@ -59,17 +70,9 @@
           <label for="estado">Estado:</label>
           <select id="estado" [(ngModel)]="rutaTemp.estado" name="estado" required>
             <option value="Planificada">Planificada</option>
-            <option value="En Tránsito">En Tránsito</option>
+            <option value="En Proceso">En Proceso</option>
             <option value="Completada">Completada</option>
-            <option value="Retrasada">Retrasada</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="prioridad">Prioridad:</label>
-          <select id="prioridad" [(ngModel)]="rutaTemp.prioridad" name="prioridad" required>
-            <option value="Alta">Alta</option>
-            <option value="Media">Media</option>
-            <option value="Baja">Baja</option>
+            <option value="Suspendida">Suspendida</option>
           </select>
         </div>
       </div>
@@ -89,16 +92,16 @@
       <p class="stat-number">{{ rutas.length }}</p>
     </div>
     <div class="stat-card">
-      <h3>En Tránsito</h3>
-      <p class="stat-number">{{ contarPorEstado('En Tránsito') }}</p>
+      <h3>En Proceso</h3>
+      <p class="stat-number">{{ contarPorEstado('En Proceso') }}</p>
     </div>
     <div class="stat-card">
       <h3>Distancia Total</h3>
       <p class="stat-number">{{ calcularDistanciaTotal() | number:'1.1-1' }} km</p>
     </div>
     <div class="stat-card">
-      <h3>Eficiencia Promedio</h3>
-      <p class="stat-number">{{ calcularEficienciaPromedio() | number:'1.1-1' }}%</p>
+      <h3>Costo Total</h3>
+      <p class="stat-number">S/ {{ calcularCostoTotal() | number:'1.2-2' }}</p>
     </div>
   </div>
 
@@ -122,23 +125,22 @@
     <table class="rutas-table">
       <thead>
         <tr>
-          <th>ID</th>
+          <th>Código</th>
           <th>Nombre</th>
           <th>Conductor</th>
           <th>Ruta</th>
           <th>Distancia</th>
           <th>Tiempo Est.</th>
+          <th>Costo</th>
           <th>Estado</th>
-          <th>Prioridad</th>
-          <th>Eficiencia</th>
           <th>Acciones</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let ruta of rutas">
-          <td>{{ ruta.id }}</td>
+          <td>{{ ruta.codigo }}</td>
           <td>{{ ruta.nombre }}</td>
-          <td>{{ ruta.conductor }}</td>
+          <td>{{ ruta.conductorAsignado || ruta.conductor || 'N/A' }}</td>
           <td>
             <div class="ruta-info">
               <span class="origen">{{ ruta.origen }}</span>
@@ -146,29 +148,17 @@
               <span class="destino">{{ ruta.destino }}</span>
             </div>
           </td>
-          <td>{{ ruta.distancia }} km</td>
-          <td>{{ ruta.tiempoEstimado }}h</td>
+          <td>{{ ruta.distanciaKm | number:'1.1-1' }} km</td>
+          <td>{{ (ruta.tiempoEstimadoMinutos ? ruta.tiempoEstimadoMinutos / 60 : ruta.tiempoEstimadoHoras || 0) | number:'1.1-1' }}h</td>
+          <td>S/ {{ (ruta.costoTotal || ruta.costoEstimado || 0) | number:'1.2-2' }}</td>
           <td>
             <span class="estado-badge" [ngClass]="'estado-' + ruta.estado.toLowerCase().replace(' ', '-')">
               {{ ruta.estado }}
             </span>
           </td>
-          <td>
-            <span class="prioridad-badge" [ngClass]="'prioridad-' + ruta.prioridad.toLowerCase()">
-              {{ ruta.prioridad }}
-            </span>
-          </td>
-          <td>
-            <div class="eficiencia">
-              <div class="eficiencia-bar">
-                <div class="eficiencia-fill" [style.width.%]="ruta.eficiencia"></div>
-              </div>
-              <span>{{ ruta.eficiencia }}%</span>
-            </div>
-          </td>
           <td class="acciones">
             <button class="btn-edit" (click)="editarRuta(ruta)">Editar</button>
-            <button class="btn-delete" (click)="eliminarRuta(ruta.id)">Eliminar</button>
+            <button class="btn-delete" (click)="eliminarRuta(ruta.id || '')">Eliminar</button>
           </td>
         </tr>
       </tbody>

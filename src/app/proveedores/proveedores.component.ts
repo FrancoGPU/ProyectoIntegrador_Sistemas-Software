@@ -1,18 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-
-interface Proveedor {
-  id: number;
-  nombre: string;
-  empresa: string;
-  email: string;
-  telefono: string;
-  direccion: string;
-  categoria: 'Estratégico' | 'Preferido' | 'Estándar';
-  calificacion: number;
-  tiempoEntrega: number;
-}
+import { ProveedoresService, Proveedor } from '../services/proveedores.service';
 
 @Component({
   selector: 'app-proveedores',
@@ -21,79 +10,58 @@ interface Proveedor {
   templateUrl: './proveedores.component.html',
   styleUrl: './proveedores.component.css'
 })
-export class ProveedoresComponent {
+export class ProveedoresComponent implements OnInit {
   mostrarFormulario = false;
   proveedorEditando: Proveedor | null = null;
+  loading = false;
+  error: string | null = null;
   
-  proveedorTemp: Proveedor = {
-    id: 0,
-    nombre: '',
-    empresa: '',
-    email: '',
-    telefono: '',
-    direccion: '',
-    categoria: 'Estándar',
-    calificacion: 3,
-    tiempoEntrega: 7
-  };
+  proveedorTemp: Proveedor = this.getEmptyProveedor();
 
-  proveedores: Proveedor[] = [
-    {
-      id: 1,
-      nombre: 'Roberto Silva',
-      empresa: 'Transportes Rápidos SA',
-      email: 'roberto@transportes.com',
-      telefono: '987654321',
-      direccion: 'Av. Logística 100',
-      categoria: 'Estratégico',
-      calificacion: 5,
-      tiempoEntrega: 2
-    },
-    {
-      id: 2,
-      nombre: 'Carmen Torres',
-      empresa: 'Almacenes Unidos',
-      email: 'carmen@almacenes.com',
-      telefono: '987654322',
-      direccion: 'Jr. Industrial 250',
-      categoria: 'Preferido',
-      calificacion: 4,
-      tiempoEntrega: 3
-    },
-    {
-      id: 3,
-      nombre: 'Miguel Herrera',
-      empresa: 'Distribuciones Norte',
-      email: 'miguel@norte.com',
-      telefono: '987654323',
-      direccion: 'Av. Norte 180',
-      categoria: 'Estándar',
-      calificacion: 3,
-      tiempoEntrega: 5
-    },
-    {
-      id: 4,
-      nombre: 'Laura Mendoza',
-      empresa: 'Logística Express',
-      email: 'laura@express.com',
-      telefono: '987654324',
-      direccion: 'Calle Express 90',
-      categoria: 'Estratégico',
-      calificacion: 5,
-      tiempoEntrega: 1
-    },
-    {
-      id: 5,
-      nombre: 'Diego Vargas',
-      empresa: 'Servicios Integrales',
-      email: 'diego@servicios.com',
-      telefono: '987654325',
-      direccion: 'Av. Servicios 300',
-      categoria: 'Preferido',
-      calificacion: 4,
-      tiempoEntrega: 4
-    }
-  ];
+  proveedores: Proveedor[] = [];
+
+  constructor(private proveedoresService: ProveedoresService) {}
+
+  ngOnInit() {
+    this.loadProveedores();
+  }
+
+  loadProveedores() {
+    this.loading = true;
+    this.error = null;
+    
+    this.proveedoresService.getProveedores({ page: 0, size: 50 }).subscribe({
+      next: (response: any) => {
+        console.log('Proveedores recibidos:', response);
+        // El backend devuelve un objeto con la propiedad 'proveedores'
+        this.proveedores = response.proveedores || response.content || response;
+        console.log('Proveedores parseados:', this.proveedores);
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Error al cargar proveedores:', error);
+        this.error = 'No se pudieron cargar los proveedores. Verifica que el backend esté corriendo.';
+        this.loading = false;
+      }
+    });
+  }
+
+  getEmptyProveedor(): Proveedor {
+    return {
+      nombre: '',
+      empresa: '',
+      email: '',
+      telefono: '',
+      direccion: '',
+      tipo: 'Nacional',
+      rucNit: '',
+      pais: 'Perú',
+      ciudad: '',
+      diasPago: 30,
+      descuentoGeneral: 0,
+      isActive: true
+    };
+  }
 
   toggleFormulario() {
     this.mostrarFormulario = !this.mostrarFormulario;
@@ -103,20 +71,33 @@ export class ProveedoresComponent {
   }
 
   guardarProveedor() {
-    if (this.proveedorEditando) {
+    if (this.proveedorEditando && this.proveedorEditando.id) {
       // Actualizar proveedor existente
-      const index = this.proveedores.findIndex(p => p.id === this.proveedorEditando!.id);
-      if (index !== -1) {
-        this.proveedores[index] = { ...this.proveedorTemp };
-      }
+      this.proveedoresService.updateProveedor(this.proveedorEditando.id, this.proveedorTemp).subscribe({
+        next: () => {
+          this.loadProveedores();
+          this.cancelarEdicion();
+          this.mostrarFormulario = false;
+        },
+        error: (error) => {
+          console.error('Error al actualizar:', error);
+          alert('No se pudo actualizar el proveedor');
+        }
+      });
     } else {
       // Agregar nuevo proveedor
-      const nuevoId = Math.max(...this.proveedores.map(p => p.id)) + 1;
-      this.proveedores.push({ ...this.proveedorTemp, id: nuevoId });
+      this.proveedoresService.createProveedor(this.proveedorTemp).subscribe({
+        next: () => {
+          this.loadProveedores();
+          this.cancelarEdicion();
+          this.mostrarFormulario = false;
+        },
+        error: (error) => {
+          console.error('Error al crear:', error);
+          alert('No se pudo crear el proveedor');
+        }
+      });
     }
-    
-    this.cancelarEdicion();
-    this.mostrarFormulario = false;
   }
 
   editarProveedor(proveedor: Proveedor) {
@@ -125,47 +106,45 @@ export class ProveedoresComponent {
     this.mostrarFormulario = true;
   }
 
-  eliminarProveedor(id: number) {
+  eliminarProveedor(id: string) {
     if (confirm('¿Está seguro de eliminar este proveedor?')) {
-      this.proveedores = this.proveedores.filter(p => p.id !== id);
+      this.proveedoresService.deleteProveedor(id).subscribe({
+        next: () => {
+          this.loadProveedores();
+        },
+        error: (error) => {
+          console.error('Error al eliminar:', error);
+          alert('No se pudo eliminar el proveedor');
+        }
+      });
     }
   }
 
   cancelarEdicion() {
     this.proveedorEditando = null;
-    this.proveedorTemp = {
-      id: 0,
-      nombre: '',
-      empresa: '',
-      email: '',
-      telefono: '',
-      direccion: '',
-      categoria: 'Estándar',
-      calificacion: 3,
-      tiempoEntrega: 7
-    };
+    this.proveedorTemp = this.getEmptyProveedor();
   }
 
-  contarPorCategoria(categoria: 'Estratégico' | 'Preferido' | 'Estándar'): number {
-    return this.proveedores.filter(p => p.categoria === categoria).length;
+  contarPorTipo(tipo: string): number {
+    return this.proveedores.filter(p => p.tipo === tipo).length;
   }
 
-  calcularCalificacionPromedio(): number {
+  calcularDiasPagoPromedio(): number {
     if (this.proveedores.length === 0) return 0;
-    const suma = this.proveedores.reduce((acc, p) => acc + p.calificacion, 0);
-    return suma / this.proveedores.length;
+    const suma = this.proveedores.reduce((acc, p) => acc + p.diasPago, 0);
+    return Math.round(suma / this.proveedores.length);
   }
 
-  calcularTiempoPromedio(): number {
+  calcularDescuentoPromedio(): number {
     if (this.proveedores.length === 0) return 0;
-    const suma = this.proveedores.reduce((acc, p) => acc + p.tiempoEntrega, 0);
-    return suma / this.proveedores.length;
+    const suma = this.proveedores.reduce((acc, p) => acc + p.descuentoGeneral, 0);
+    return Math.round((suma / this.proveedores.length) * 10) / 10;
   }
 
-  getStars(calificacion: number): { filled: boolean }[] {
+  getStars(rating: number = 0): { filled: boolean }[] {
     const stars = [];
     for (let i = 1; i <= 5; i++) {
-      stars.push({ filled: i <= calificacion });
+      stars.push({ filled: i <= rating });
     }
     return stars;
   }

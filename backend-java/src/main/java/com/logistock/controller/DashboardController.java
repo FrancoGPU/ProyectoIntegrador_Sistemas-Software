@@ -2,6 +2,8 @@ package com.logistock.controller;
 
 import com.logistock.service.ProductService;
 import com.logistock.service.ClienteService;
+import com.logistock.service.ProveedorService;
+import com.logistock.service.RutaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,8 @@ public class DashboardController {
 
     private final ProductService productService;
     private final ClienteService clienteService;
+    private final ProveedorService proveedorService;
+    private final RutaService rutaService;
 
     /**
      * Obtener estadísticas generales del sistema
@@ -75,17 +79,27 @@ public class DashboardController {
             clientesStats.put("categories", clienteCategories);
             clientesStats.put("topClientes", topClientes);
             
+            // Estadísticas de proveedores
+            Map<String, Object> proveedoresStats = proveedorService.getStats();
+            
+            // Estadísticas de rutas
+            Map<String, Object> rutasStats = rutaService.getStats();
+            long rutasEnProceso = (Long) rutasStats.get("rutasEnProceso");
+            
             Map<String, Object> response = new HashMap<>();
             response.put("inventario", inventarioStats);
             response.put("clientes", clientesStats);
+            response.put("proveedores", proveedoresStats);
+            response.put("rutas", rutasStats);
             
             // Métricas adicionales para tarjetas del dashboard
             response.put("productosEnInventario", totalProducts);
             response.put("clientesActivos", totalClientes);
-            response.put("rutasEnProceso", 15); // Placeholder - se implementará con RutaService
+            response.put("rutasEnProceso", rutasEnProceso);
+            response.put("proveedoresActivos", proveedoresStats.get("totalProveedores"));
             response.put("estadoEstable", lowStockCount == 0 ? "Estable" : "Atención Requerida");
             
-            // Cambios vs mes anterior (placeholder)
+            // Cambios vs mes anterior (placeholder - en producción calcular con datos reales)
             response.put("cambioProductos", "+12%");
             response.put("cambioClientes", "+8%");
             response.put("cambioRutas", "Estable");

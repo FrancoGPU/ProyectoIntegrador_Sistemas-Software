@@ -46,7 +46,6 @@ export class InventarioComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadProducts();
-    this.loadStats();
   }
 
   ngOnDestroy(): void {
@@ -89,6 +88,9 @@ export class InventarioComponent implements OnInit, OnDestroy {
           this.totalPages = response.totalPages || 1;
           this.currentPage = response.page || 0;
           this.loading = false;
+          
+          // Calcular estadísticas después de cargar productos
+          this.calculateLocalStats();
         },
         error: (error) => {
           console.error('Error al cargar productos:', error);
@@ -99,26 +101,7 @@ export class InventarioComponent implements OnInit, OnDestroy {
       });
   }
 
-  loadStats(): void {
-    this.loadingStats = true;
-    
-    // Backend Java no tiene endpoint de stats todavía
-    // Calculamos estadísticas localmente por ahora
-    try {
-      this.calculateLocalStats();
-      this.loadingStats = false;
-    } catch (error) {
-      console.error('Error al calcular estadísticas locales:', error);
-      this.loadingStats = false;
-      // Fallback con valores por defecto
-      this.stats = {
-        totalProducts: 0,
-        totalValue: 0,
-        lowStock: 0,
-        categories: 0
-      };
-    }
-  }
+
 
   loadFallbackData(): void {
     // Datos de fallback para cuando el backend no esté disponible
@@ -180,16 +163,41 @@ export class InventarioComponent implements OnInit, OnDestroy {
       }
     ];
     this.totalProducts = this.products.length;
+    this.loading = false;
     this.calculateLocalStats();
   }
 
   calculateLocalStats(): void {
+    console.log('Calculando estadísticas con productos:', this.products);
+    console.log('Total de productos desde backend:', this.totalProducts);
+    
+    // Calcular el valor total con los productos actuales en la página
+    const totalValue = this.products.reduce((total, product) => {
+      const productValue = product.stock * product.price;
+      console.log(`Producto: ${product.name}, Stock: ${product.stock}, Precio: ${product.price}, Valor: ${productValue}`);
+      return total + productValue;
+    }, 0);
+    
+    console.log('Valor total calculado:', totalValue);
+    
+    // Contar productos con stock bajo
+    const lowStockCount = this.products.filter(product => {
+      const isLowStock = product.stock <= product.minStock;
+      if (isLowStock) {
+        console.log(`Stock bajo detectado: ${product.name} (${product.stock} <= ${product.minStock})`);
+      }
+      return isLowStock;
+    }).length;
+    
+    // Usar el total del backend, no solo los productos de la página actual
     this.stats = {
-      totalProducts: this.products.length,
-      totalValue: this.products.reduce((total, product) => total + (product.stock * product.price), 0),
-      lowStock: this.products.filter(product => product.stock <= product.minStock).length,
+      totalProducts: this.totalProducts || this.products.length,
+      totalValue: totalValue,
+      lowStock: lowStockCount,
       categories: [...new Set(this.products.map(p => p.category))].length
     };
+    
+    console.log('Estadísticas finales:', this.stats);
   }
 
   getEmptyProduct(): Product {
@@ -203,6 +211,11 @@ export class InventarioComponent implements OnInit, OnDestroy {
       price: 0,
       isActive: true
     };
+  }
+
+  // Helper para obtener el ID del producto (compatible con ambos formatos)
+  getProductId(product: Product): string | undefined {
+    return product.id || product._id;
   }
 
   // Métodos de búsqueda y filtrado
@@ -282,8 +295,9 @@ export class InventarioComponent implements OnInit, OnDestroy {
   // Métodos CRUD
   saveProduct(): void {
     if (this.isValidProduct()) {
-      if (this.isEditing && this.currentProduct._id) {
-        this.updateProductApi(this.currentProduct._id, this.currentProduct);
+      const productId = this.getProductId(this.currentProduct);
+      if (this.isEditing && productId) {
+        this.updateProductApi(productId, this.currentProduct);
       } else {
         this.createProductApi(this.currentProduct);
       }
@@ -296,7 +310,6 @@ export class InventarioComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (newProduct) => {
           this.loadProducts();
-          this.loadStats();
           this.closeModal();
         },
         error: (error) => {
@@ -312,7 +325,6 @@ export class InventarioComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (updatedProduct) => {
           this.loadProducts();
-          this.loadStats();
           this.closeModal();
         },
         error: (error) => {
@@ -324,20 +336,21 @@ export class InventarioComponent implements OnInit, OnDestroy {
 
   updateStock(product: Product): void {
     const newStock = prompt(`Ingrese el nuevo stock para ${product.name}:`, product.stock.toString());
-    if (newStock !== null && !isNaN(Number(newStock)) && product._id) {
+    const productId = this.getProductId(product);
+    if (newStock !== null && !isNaN(Number(newStock)) && productId) {
       const updatedProduct = { ...product, stock: Number(newStock) };
-      this.updateProductApi(product._id, updatedProduct);
+      this.updateProductApi(productId, updatedProduct);
     }
   }
 
   deleteProduct(product: Product): void {
-    if (confirm(`¿Está seguro de eliminar el producto ${product.name}?`) && product._id) {
-      this.inventarioService.deleteProduct(product._id)
+    const productId = this.getProductId(product);
+    if (confirm(`¿Está seguro de eliminar el producto ${product.name}?`) && productId) {
+      this.inventarioService.deleteProduct(productId)
         .pipe(takeUntil(this.destroy$))
         .subscribe({
           next: () => {
             this.loadProducts();
-            this.loadStats();
           },
           error: (error) => {
             console.error('Error al eliminar producto:', error);

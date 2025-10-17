@@ -14,6 +14,19 @@
 
 <div class="proveedores-container">
 
+  <!-- Mensaje de carga -->
+  <div *ngIf="loading" class="loading-message">
+    <div class="spinner"></div>
+    <p>Cargando proveedores...</p>
+  </div>
+
+  <!-- Mensaje de error -->
+  <div *ngIf="error && !loading" class="error-message">
+    <p>⚠️ {{error}}</p>
+    <button (click)="loadProveedores()" class="btn-retry">Reintentar</button>
+  </div>
+
+  <div *ngIf="!loading && !error">
   <!-- Formulario para agregar/editar proveedor -->
   <div class="formulario-container" *ngIf="mostrarFormulario">
     <h3>{{ proveedorEditando ? 'Editar Proveedor' : 'Nuevo Proveedor' }}</h3>
@@ -44,24 +57,48 @@
           <input type="text" id="direccion" [(ngModel)]="proveedorTemp.direccion" name="direccion" required>
         </div>
         <div class="form-group">
-          <label for="categoria">Categoría:</label>
-          <select id="categoria" [(ngModel)]="proveedorTemp.categoria" name="categoria" required>
-            <option value="Estratégico">Estratégico</option>
-            <option value="Preferido">Preferido</option>
-            <option value="Estándar">Estándar</option>
+          <label for="tipo">Tipo:</label>
+          <select id="tipo" [(ngModel)]="proveedorTemp.tipo" name="tipo" required>
+            <option value="Nacional">Nacional</option>
+            <option value="Internacional">Internacional</option>
+            <option value="Regional">Regional</option>
+            <option value="Local">Local</option>
           </select>
         </div>
       </div>
       <div class="form-row">
         <div class="form-group">
-          <label for="calificacion">Calificación (1-5):</label>
-          <input type="number" id="calificacion" [(ngModel)]="proveedorTemp.calificacion" 
-                 name="calificacion" min="1" max="5" required>
+          <label for="rucNit">RUC/NIT:</label>
+          <input type="text" id="rucNit" [(ngModel)]="proveedorTemp.rucNit" name="rucNit" required>
         </div>
         <div class="form-group">
-          <label for="tiempoEntrega">Tiempo Entrega (días):</label>
-          <input type="number" id="tiempoEntrega" [(ngModel)]="proveedorTemp.tiempoEntrega" 
-                 name="tiempoEntrega" min="1" required>
+          <label for="pais">País:</label>
+          <input type="text" id="pais" [(ngModel)]="proveedorTemp.pais" name="pais" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="ciudad">Ciudad:</label>
+          <input type="text" id="ciudad" [(ngModel)]="proveedorTemp.ciudad" name="ciudad" required>
+        </div>
+        <div class="form-group">
+          <label for="diasPago">Días de Pago:</label>
+          <input type="number" id="diasPago" [(ngModel)]="proveedorTemp.diasPago" 
+                 name="diasPago" min="0" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="descuentoGeneral">Descuento General (%):</label>
+          <input type="number" id="descuentoGeneral" [(ngModel)]="proveedorTemp.descuentoGeneral" 
+                 name="descuentoGeneral" min="0" max="100" step="0.1" required>
+        </div>
+        <div class="form-group">
+          <label for="isActive">Estado:</label>
+          <select id="isActive" [(ngModel)]="proveedorTemp.isActive" name="isActive" required>
+            <option [value]="true">Activo</option>
+            <option [value]="false">Inactivo</option>
+          </select>
         </div>
       </div>
       <div class="form-actions">
@@ -80,16 +117,16 @@
       <p class="stat-number">{{ proveedores.length }}</p>
     </div>
     <div class="stat-card">
-      <h3>Estratégicos</h3>
-      <p class="stat-number">{{ contarPorCategoria('Estratégico') }}</p>
+      <h3>Proveedores Nacionales</h3>
+      <p class="stat-number">{{ contarPorTipo('Nacional') }}</p>
     </div>
     <div class="stat-card">
-      <h3>Calificación Promedio</h3>
-      <p class="stat-number">{{ calcularCalificacionPromedio() | number:'1.1-1' }}</p>
+      <h3>Descuento Promedio</h3>
+      <p class="stat-number">{{ calcularDescuentoPromedio() | number:'1.1-1' }}%</p>
     </div>
     <div class="stat-card">
-      <h3>Tiempo Promedio</h3>
-      <p class="stat-number">{{ calcularTiempoPromedio() | number:'1.0-0' }} días</p>
+      <h3>Días Pago Promedio</h3>
+      <p class="stat-number">{{ calcularDiasPagoPromedio() | number:'1.0-0' }} días</p>
     </div>
   </div>
 
@@ -98,40 +135,44 @@
     <table class="proveedores-table">
       <thead>
         <tr>
-          <th>ID</th>
           <th>Nombre</th>
           <th>Empresa</th>
           <th>Email</th>
-          <th>Categoría</th>
-          <th>Calificación</th>
-          <th>Tiempo Entrega</th>
+          <th>Teléfono</th>
+          <th>Tipo</th>
+          <th>Ciudad</th>
+          <th>Días Pago</th>
+          <th>Descuento</th>
+          <th>Estado</th>
           <th>Acciones</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let proveedor of proveedores">
-          <td>{{ proveedor.id }}</td>
           <td>{{ proveedor.nombre }}</td>
           <td>{{ proveedor.empresa }}</td>
           <td>{{ proveedor.email }}</td>
+          <td>{{ proveedor.telefono }}</td>
           <td>
-            <span class="categoria-badge" [ngClass]="'categoria-' + proveedor.categoria.toLowerCase()">
-              {{ proveedor.categoria }}
+            <span class="tipo-badge" [ngClass]="'tipo-' + proveedor.tipo.toLowerCase()">
+              {{ proveedor.tipo }}
             </span>
           </td>
+          <td>{{ proveedor.ciudad }}</td>
+          <td>{{ proveedor.diasPago }} días</td>
+          <td>{{ proveedor.descuentoGeneral }}%</td>
           <td>
-            <div class="rating">
-              <span *ngFor="let star of getStars(proveedor.calificacion)" 
-                    [ngClass]="star.filled ? 'star-filled' : 'star-empty'">★</span>
-            </div>
+            <span class="estado-badge" [ngClass]="proveedor.isActive ? 'activo' : 'inactivo'">
+              {{ proveedor.isActive ? 'Activo' : 'Inactivo' }}
+            </span>
           </td>
-          <td>{{ proveedor.tiempoEntrega }} días</td>
           <td class="acciones">
             <button class="btn-edit" (click)="editarProveedor(proveedor)">Editar</button>
-            <button class="btn-delete" (click)="eliminarProveedor(proveedor.id)">Eliminar</button>
+            <button class="btn-delete" (click)="eliminarProveedor(proveedor.id!)">Eliminar</button>
           </td>
         </tr>
       </tbody>
     </table>
+  </div>
   </div>
 </div>

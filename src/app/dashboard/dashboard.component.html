@@ -9,7 +9,21 @@
 
 <div class="dashboard-container">
 
-  <div class="metrics-grid">
+  <!-- Mensaje de carga -->
+  <div *ngIf="loading" class="loading-message">
+    <div class="spinner"></div>
+    <p>Cargando datos del dashboard...</p>
+  </div>
+
+  <!-- Mensaje de error -->
+  <div *ngIf="error && !loading" class="error-message">
+    <p>⚠️ {{error}}</p>
+    <button (click)="loadDashboardData()" class="btn-retry">Reintentar</button>
+  </div>
+
+  <!-- Contenido del dashboard -->
+  <div *ngIf="!loading && !error">
+    <div class="metrics-grid">
     <div class="metric-card primary">
       <div class="metric-icon">📦</div>
       <div class="metric-content">
@@ -166,4 +180,6 @@
       </div>
     </div>
   </div>
+  </div>
+
 </div>

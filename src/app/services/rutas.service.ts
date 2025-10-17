@@ -2,93 +2,46 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from './api.service';
 
-export interface Delivery {
-  id: number;
-  address: string;
-  priority?: 'alta' | 'media' | 'baja';
-  timeWindow?: {
-    start: string;
-    end: string;
-  };
-  weight?: number;
-  volume?: number;
+// Interfaz que coincide con el modelo del backend Java
+export interface Ruta {
+  id?: string;
+  codigo: string;
+  nombre: string;
+  origen: string;
+  destino: string;
+  distanciaKm: number;
+  tiempoEstimadoHoras?: number;
+  tiempoEstimadoMinutos?: number;
+  estado: string; // "Planificada", "En Proceso", "Completada", "Suspendida"
+  vehiculo?: string;
+  vehiculoAsignado?: string;
+  conductor?: string;
+  conductorAsignado?: string;
+  costoEstimado?: number;
+  costoTotal?: number;
+  costoCombustible?: number;
+  costoPeajes?: number;
+  otrosCostos?: number;
+  fechaSalida?: Date;
+  fechaLlegadaEstimada?: Date;
+  fechaLlegadaReal?: Date;
+  fechaPlanificada?: Date;
+  observaciones?: string;
+  descripcion?: string;
+  paradas?: string[];
+  cargaKg?: number;
+  prioridad?: string;
+  isActive?: boolean;
 }
 
-export interface Vehicle {
-  id: number;
-  driver: string;
-  capacity: {
-    weight?: number;
-    volume?: number;
-  };
-  type?: string;
-  startLocation?: string;
-}
-
-export interface OptimizationPreferences {
-  optimizeBy?: 'time' | 'distance' | 'cost';
-  avoidTolls?: boolean;
-  avoidHighways?: boolean;
-}
-
-export interface RouteStop {
-  stop: number;
-  address: string;
-  coordinates?: {
-    lat: number;
-    lng: number;
-  };
-  deliveryId?: number;
-  estimatedTime: string;
-  priority?: string;
-}
-
-export interface OptimizedRoute {
-  vehicleId: number;
-  driver: string;
-  vehicle: Vehicle;
-  route: RouteStop[];
-  metrics: {
-    totalStops: number;
-    estimatedDuration: number;
-    totalDistance: number;
-    efficiency: number;
-  };
-}
-
-export interface OptimizationResult {
-  optimizedRoutes: OptimizedRoute[];
-  metrics: {
-    totalRoutes: number;
-    totalDistance: number;
-    totalTime: number;
-    averageEfficiency: number;
-    estimatedSavings: {
-      distance: number;
-      time: number;
-      cost: number;
-    };
-  };
-  provider: string;
-}
-
-export interface GeocodeResult {
-  address: string;
-  lat: number | null;
-  lng: number | null;
-  formattedAddress?: string;
-  success: boolean;
-  error?: string;
-}
-
-export interface MapProviderInfo {
-  current: string;
-  available: string[];
-  hasGoogleKey: boolean;
-  recommendations: {
-    google: string;
-    openstreetmap: string;
-  };
+export interface RutaStats {
+  total: number;
+  planificadas: number;
+  enProceso: number;
+  completadas: number;
+  canceladas: number;
+  distanciaTotal: number;
+  costoTotal: number;
 }
 
 @Injectable({
@@ -99,190 +52,202 @@ export class RutasService {
   constructor(private apiService: ApiService) {}
 
   /**
-   * Optimizar rutas de entrega
+   * Obtener todas las rutas con paginación y filtros
    */
-  optimizeRoutes(
-    deliveries: Delivery[], 
-    vehicles: Vehicle[] = [], 
-    preferences: OptimizationPreferences = {}
-  ): Observable<OptimizationResult> {
-    const payload = {
-      deliveries,
-      vehicles,
-      preferences
-    };
-
-    return this.apiService.post<OptimizationResult>('rutas/optimize', payload);
-  }
-
-  /**
-   * Geocodificar direcciones
-   */
-  geocodeAddresses(addresses: string[]): Observable<{
-    data: GeocodeResult[];
-    provider: string;
-    summary: {
-      total: number;
-      successful: number;
-      failed: number;
-    };
-  }> {
-    return this.apiService.post('rutas/geocode', { addresses });
-  }
-
-  /**
-   * Obtener información del proveedor de mapas actual
-   */
-  getMapProviderInfo(): Observable<MapProviderInfo> {
-    return this.apiService.get<MapProviderInfo>('rutas/provider');
-  }
-
-  /**
-   * Cambiar proveedor de mapas
-   */
-  setMapProvider(provider: 'google' | 'openstreetmap'): Observable<{
-    message: string;
-    data: MapProviderInfo;
-  }> {
-    return this.apiService.post('rutas/provider', { provider });
-  }
-
-  /**
-   * Validar dirección
-   */
-  validateAddress(address: string): boolean {
-    return address.trim().length >= 10;
-  }
-
-  /**
-   * Formatear tiempo estimado
-   */
-  formatEstimatedTime(minutes: number): string {
-    const hours = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-    
-    if (hours > 0) {
-      return `${hours}h ${mins}m`;
+  getRutas(params?: {
+    page?: number;
+    size?: number;
+    estado?: string;
+    conductor?: string;
+    search?: string;
+  }): Observable<any> {
+    let queryParams = '';
+    if (params) {
+      const paramArray = [];
+      if (params.page !== undefined) paramArray.push(`page=${params.page}`);
+      if (params.size !== undefined) paramArray.push(`size=${params.size}`);
+      if (params.estado) paramArray.push(`estado=${params.estado}`);
+      if (params.conductor) paramArray.push(`conductor=${params.conductor}`);
+      if (params.search) paramArray.push(`search=${params.search}`);
+      if (paramArray.length > 0) {
+        queryParams = '?' + paramArray.join('&');
+      }
     }
-    return `${mins}m`;
+    return this.apiService.get(`rutas${queryParams}`);
   }
 
   /**
-   * Calcular ahorro de costos
+   * Obtener una ruta por ID
    */
-  calculateSavings(originalDistance: number, optimizedDistance: number, costPerKm: number = 2.5): {
-    distanceSaved: number;
-    costSaved: number;
-    percentageSaved: number;
-  } {
-    const distanceSaved = originalDistance - optimizedDistance;
-    const costSaved = distanceSaved * costPerKm;
-    const percentageSaved = (distanceSaved / originalDistance) * 100;
+  getRutaById(id: string): Observable<Ruta> {
+    return this.apiService.get<Ruta>(`rutas/${id}`);
+  }
+
+  /**
+   * Crear una nueva ruta
+   */
+  createRuta(ruta: Ruta): Observable<Ruta> {
+    return this.apiService.post<Ruta>('rutas', ruta);
+  }
+
+  /**
+   * Actualizar una ruta existente
+   */
+  updateRuta(id: string, ruta: Ruta): Observable<Ruta> {
+    return this.apiService.put<Ruta>(`rutas/${id}`, ruta);
+  }
+
+  /**
+   * Eliminar una ruta
+   */
+  deleteRuta(id: string): Observable<void> {
+    return this.apiService.delete<void>(`rutas/${id}`);
+  }
+
+  /**
+   * Cambiar el estado de una ruta
+   */
+  cambiarEstado(id: string, nuevoEstado: string): Observable<Ruta> {
+    return this.apiService.patch<Ruta>(`rutas/${id}/estado`, { estado: nuevoEstado });
+  }
+
+  /**
+   * Obtener estadísticas de rutas
+   */
+  getStats(): Observable<RutaStats> {
+    return this.apiService.get<RutaStats>('rutas/stats');
+  }
+
+  /**
+   * Obtener rutas activas (planificadas o en proceso)
+   */
+  getRutasActivas(): Observable<Ruta[]> {
+    return this.apiService.get<Ruta[]>('rutas/activas');
+  }
+
+  /**
+   * Buscar rutas por conductor
+   */
+  getRutasPorConductor(conductor: string): Observable<Ruta[]> {
+    return this.apiService.get<Ruta[]>(`rutas?conductor=${conductor}`);
+  }
+
+  /**
+   * Obtener color para el estado
+   */
+  getEstadoColor(estado: string): string {
+    const colores: { [key: string]: string } = {
+      'PLANIFICADA': '#007bff',
+      'EN_PROCESO': '#ffc107',
+      'COMPLETADA': '#28a745',
+      'CANCELADA': '#dc3545'
+    };
+    return colores[estado] || '#6c757d';
+  }
+
+  /**
+   * Obtener badge para el estado
+   */
+  getEstadoBadge(estado: string): string {
+    const badges: { [key: string]: string } = {
+      'PLANIFICADA': 'badge-primary',
+      'EN_PROCESO': 'badge-warning',
+      'COMPLETADA': 'badge-success',
+      'CANCELADA': 'badge-danger'
+    };
+    return badges[estado] || 'badge-secondary';
+  }
+
+  /**
+   * Formatear tiempo de ruta
+   */
+  formatTiempo(horas: number): string {
+    const h = Math.floor(horas);
+    const m = Math.round((horas - h) * 60);
+    return `${h}h ${m}m`;
+  }
+
+  /**
+   * Calcular costo por kilómetro
+   */
+  calcularCostoPorKm(costoTotal: number, distancia: number): number {
+    return distancia > 0 ? Math.round((costoTotal / distancia) * 100) / 100 : 0;
+  }
+
+  /**
+   * Validar ruta
+   */
+  validateRuta(ruta: Partial<Ruta>): { isValid: boolean; errors: string[] } {
+    const errors: string[] = [];
+
+    if (!ruta.codigo?.trim()) {
+      errors.push('El código es requerido');
+    }
+    if (!ruta.nombre?.trim()) {
+      errors.push('El nombre es requerido');
+    }
+    if (!ruta.origen?.trim()) {
+      errors.push('El origen es requerido');
+    }
+    if (!ruta.destino?.trim()) {
+      errors.push('El destino es requerido');
+    }
+    if (!ruta.vehiculo?.trim()) {
+      errors.push('El vehículo es requerido');
+    }
+    if (!ruta.conductor?.trim()) {
+      errors.push('El conductor es requerido');
+    }
+    if (!ruta.distanciaKm || ruta.distanciaKm <= 0) {
+      errors.push('La distancia debe ser mayor a 0');
+    }
+    if (!ruta.tiempoEstimadoHoras || ruta.tiempoEstimadoHoras <= 0) {
+      errors.push('El tiempo estimado debe ser mayor a 0');
+    }
+    if (!ruta.costoEstimado || ruta.costoEstimado <= 0) {
+      errors.push('El costo estimado debe ser mayor a 0');
+    }
 
     return {
-      distanceSaved: Math.round(distanceSaved * 100) / 100,
-      costSaved: Math.round(costSaved * 100) / 100,
-      percentageSaved: Math.round(percentageSaved * 100) / 100
-    };
-  }
-
-  /**
-   * Obtener clase CSS para prioridad
-   */
-  getPriorityClass(priority: string): string {
-    const classes: { [key: string]: string } = {
-      'alta': 'priority-high',
-      'media': 'priority-medium', 
-      'baja': 'priority-low'
-    };
-    return classes[priority] || 'priority-medium';
-  }
-
-  /**
-   * Obtener color para eficiencia
-   */
-  getEfficiencyColor(efficiency: number): string {
-    if (efficiency >= 90) return '#4CAF50'; // Verde
-    if (efficiency >= 75) return '#FF9800'; // Naranja
-    if (efficiency >= 60) return '#FFC107'; // Amarillo
-    return '#F44336'; // Rojo
-  }
-
-  /**
-   * Generar datos de ejemplo para pruebas
-   */
-  generateSampleData(): {
-    deliveries: Delivery[];
-    vehicles: Vehicle[];
-  } {
-    return {
-      deliveries: [
-        {
-          id: 1,
-          address: 'Av. Javier Prado 123, San Isidro, Lima',
-          priority: 'alta'
-        },
-        {
-          id: 2,
-          address: 'Jr. Comercio 456, Breña, Lima',
-          priority: 'media'
-        },
-        {
-          id: 3,
-          address: 'Av. Industrial 789, Ate, Lima',
-          priority: 'baja'
-        },
-        {
-          id: 4,
-          address: 'Av. Arequipa 1000, Lince, Lima',
-          priority: 'alta'
-        }
-      ],
-      vehicles: [
-        {
-          id: 1,
-          driver: 'Carlos Mendoza',
-          capacity: { weight: 1000, volume: 10 },
-          type: 'Camión'
-        },
-        {
-          id: 2,
-          driver: 'Ana Rodríguez',
-          capacity: { weight: 800, volume: 8 },
-          type: 'Van'
-        }
-      ]
+      isValid: errors.length === 0,
+      errors
     };
   }
 
   /**
    * Exportar rutas a CSV
    */
-  exportRoutesToCSV(routes: OptimizedRoute[]): string {
-    const headers = ['Vehículo', 'Conductor', 'Parada', 'Dirección', 'Hora Estimada', 'Prioridad'];
-    let csv = headers.join(',') + '\n';
+  exportToCSV(rutas: Ruta[]): string {
+    const headers = [
+      'Código', 'Nombre', 'Origen', 'Destino', 'Distancia (km)', 'Tiempo (h)',
+      'Estado', 'Vehículo', 'Conductor', 'Costo', 'Fecha Salida', 'Fecha Llegada'
+    ];
 
-    routes.forEach(route => {
-      route.route.forEach(stop => {
-        const row = [
-          route.vehicleId,
-          route.driver,
-          stop.stop,
-          `"${stop.address}"`,
-          stop.estimatedTime,
-          stop.priority || 'media'
-        ];
-        csv += row.join(',') + '\n';
-      });
-    });
+    const csvContent = [
+      headers.join(','),
+      ...rutas.map(r => [
+        r.codigo,
+        `"${r.nombre}"`,
+        `"${r.origen}"`,
+        `"${r.destino}"`,
+        r.distanciaKm,
+        r.tiempoEstimadoHoras || (r.tiempoEstimadoMinutos ? r.tiempoEstimadoMinutos / 60 : 0),
+        r.estado,
+        r.vehiculoAsignado || r.vehiculo || '',
+        r.conductorAsignado || r.conductor || '',
+        r.costoTotal || r.costoEstimado || 0,
+        r.fechaSalida ? new Date(r.fechaSalida).toLocaleDateString() : '',
+        r.fechaLlegadaEstimada ? new Date(r.fechaLlegadaEstimada).toLocaleDateString() : ''
+      ].join(','))
+    ].join('\n');
 
-    return csv;
+    return csvContent;
   }
 
   /**
    * Descargar archivo CSV
    */
-  downloadCSV(content: string, filename: string = 'rutas_optimizadas.csv'): void {
+  downloadCSV(content: string, filename: string = 'rutas.csv'): void {
     const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     
@@ -295,5 +260,20 @@ export class RutasService {
       link.click();
       document.body.removeChild(link);
     }
+  }
+
+  /**
+   * Generar código de ruta
+   */
+  generarCodigo(): string {
+    const timestamp = Date.now().toString().slice(-6);
+    return `RT-${timestamp}`;
+  }
+
+  /**
+   * Calcular eficiencia de ruta (km/h)
+   */
+  calcularEficiencia(distancia: number, tiempo: number): number {
+    return tiempo > 0 ? Math.round((distancia / tiempo) * 100) / 100 : 0;
   }
 }

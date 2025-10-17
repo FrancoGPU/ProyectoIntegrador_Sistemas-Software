@@ -30,8 +30,14 @@ public interface RutaRepository extends MongoRepository<Ruta, String> {
     // Buscar rutas activas
     List<Ruta> findByIsActiveTrue();
 
+    // Buscar rutas activas con paginación
+    Page<Ruta> findByIsActiveTrue(Pageable pageable);
+
     // Buscar por estado con paginación
     Page<Ruta> findByEstadoAndIsActiveTrue(String estado, Pageable pageable);
+    
+    // Buscar por código o nombre (búsqueda de texto)
+    List<Ruta> findByCodigoContainingIgnoreCaseOrNombreContainingIgnoreCase(String codigo, String nombre);
 
     // Buscar por prioridad con paginación
     Page<Ruta> findByPrioridadAndIsActiveTrue(String prioridad, Pageable pageable);

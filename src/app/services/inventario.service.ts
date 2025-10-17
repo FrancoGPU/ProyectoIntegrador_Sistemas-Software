@@ -3,7 +3,8 @@ import { Observable } from 'rxjs';
 import { ApiService } from './api.service';
 
 export interface Product {
-  _id?: string;
+  id?: string;
+  _id?: string;  // Mantener compatibilidad
   code: string;
   name: string;
   description?: string;
@@ -16,8 +17,8 @@ export interface Product {
   isActive?: boolean;
   stockStatus?: 'low' | 'medium' | 'good';
   totalValue?: number;
-  createdAt?: Date;
-  updatedAt?: Date;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
 }
 
 export interface InventoryFilters {
