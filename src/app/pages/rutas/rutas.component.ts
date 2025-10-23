@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { RutasService, Ruta } from '../services/rutas.service';
+import { RutasService, Ruta } from '../../services/rutas.service';
 
 @Component({
   selector: 'app-rutas',

@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
-import { InventarioService, Product, InventoryFilters, InventoryStats } from '../services/inventario.service';
+import { InventarioService, Product, InventoryFilters, InventoryStats } from '../../services/inventario.service';
 
 @Component({
   selector: 'app-inventario',

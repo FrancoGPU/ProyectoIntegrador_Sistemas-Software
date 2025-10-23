@@ -40,10 +40,9 @@ export interface TopProveedor {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ProveedoresService {
-
   constructor(private apiService: ApiService) {}
 
   /**
@@ -62,7 +61,8 @@ export class ProveedoresService {
       if (params.page !== undefined) paramArray.push(`page=${params.page}`);
       if (params.size !== undefined) paramArray.push(`size=${params.size}`);
       if (params.tipo) paramArray.push(`tipo=${params.tipo}`);
-      if (params.activos !== undefined) paramArray.push(`activos=${params.activos}`);
+      if (params.activos !== undefined)
+        paramArray.push(`activos=${params.activos}`);
       if (params.search) paramArray.push(`search=${params.search}`);
       if (paramArray.length > 0) {
         queryParams = '?' + paramArray.join('&');
@@ -110,7 +110,9 @@ export class ProveedoresService {
    * Obtener top proveedores
    */
   getTopProveedores(limit: number = 5): Observable<TopProveedor[]> {
-    return this.apiService.get<TopProveedor[]>(`proveedores/top?limit=${limit}`);
+    return this.apiService.get<TopProveedor[]>(
+      `proveedores/top?limit=${limit}`
+    );
   }
 
   /**
@@ -170,27 +172,40 @@ export class ProveedoresService {
    */
   exportToCSV(proveedores: Proveedor[]): string {
     const headers = [
-      'ID', 'Nombre', 'Empresa', 'Email', 'Teléfono', 'Dirección',
-      'Tipo', 'RUC/NIT', 'País', 'Ciudad', 'Días Pago', 'Descuento', 'Estado'
+      'ID',
+      'Nombre',
+      'Empresa',
+      'Email',
+      'Teléfono',
+      'Dirección',
+      'Tipo',
+      'RUC/NIT',
+      'País',
+      'Ciudad',
+      'Días Pago',
+      'Descuento',
+      'Estado',
     ];
 
     const csvContent = [
       headers.join(','),
-      ...proveedores.map(p => [
-        p.id,
-        p.nombre,
-        p.empresa,
-        p.email,
-        p.telefono,
-        `"${p.direccion}"`,
-        p.tipo,
-        p.rucNit,
-        p.pais,
-        p.ciudad,
-        p.diasPago,
-        p.descuentoGeneral,
-        p.isActive ? 'Activo' : 'Inactivo'
-      ].join(','))
+      ...proveedores.map((p) =>
+        [
+          p.id,
+          p.nombre,
+          p.empresa,
+          p.email,
+          p.telefono,
+          `"${p.direccion}"`,
+          p.tipo,
+          p.rucNit,
+          p.pais,
+          p.ciudad,
+          p.diasPago,
+          p.descuentoGeneral,
+          p.isActive ? 'Activo' : 'Inactivo',
+        ].join(',')
+      ),
     ].join('\n');
 
     return csvContent;
@@ -202,7 +217,7 @@ export class ProveedoresService {
   downloadCSV(content: string, filename: string = 'proveedores.csv'): void {
     const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
-    
+
     if (link.download !== undefined) {
       const url = URL.createObjectURL(blob);
       link.setAttribute('href', url);
