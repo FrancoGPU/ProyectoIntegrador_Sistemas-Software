@@ -8,14 +8,14 @@ import { RutasService, Ruta } from '../../services/rutas.service';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './rutas.component.html',
-  styleUrl: './rutas.component.css'
+  styleUrl: './rutas.component.css',
 })
 export class RutasComponent implements OnInit {
   mostrarFormulario = false;
   rutaEditando: Ruta | null = null;
   loading = false;
   error: string | null = null;
-  
+
   rutaTemp!: Ruta;
   rutas: Ruta[] = [];
   optimizedRoutes: any[] = []; // Para almacenar sugerencias de optimización
@@ -32,7 +32,7 @@ export class RutasComponent implements OnInit {
   loadRutas() {
     this.loading = true;
     this.error = null;
-    
+
     this.rutasService.getRutas({ page: 0, size: 50 }).subscribe({
       next: (response: any) => {
         console.log('Rutas recibidas:', response);
@@ -43,9 +43,10 @@ export class RutasComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error al cargar rutas:', error);
-        this.error = 'No se pudieron cargar las rutas. Verifica que el backend esté corriendo.';
+        this.error =
+          'No se pudieron cargar las rutas. Verifica que el backend esté corriendo.';
         this.loading = false;
-      }
+      },
     });
   }
 
@@ -65,7 +66,7 @@ export class RutasComponent implements OnInit {
       costoPeajes: 0,
       otrosCostos: 0,
       fechaPlanificada: new Date(),
-      isActive: true
+      isActive: true,
     };
   }
 
@@ -78,17 +79,19 @@ export class RutasComponent implements OnInit {
 
   guardarRuta() {
     if (this.rutaEditando && this.rutaEditando.id) {
-      this.rutasService.updateRuta(this.rutaEditando.id, this.rutaTemp).subscribe({
-        next: () => {
-          this.loadRutas();
-          this.cancelarEdicion();
-          this.mostrarFormulario = false;
-        },
-        error: (error) => {
-          console.error('Error al actualizar:', error);
-          alert('No se pudo actualizar la ruta');
-        }
-      });
+      this.rutasService
+        .updateRuta(this.rutaEditando.id, this.rutaTemp)
+        .subscribe({
+          next: () => {
+            this.loadRutas();
+            this.cancelarEdicion();
+            this.mostrarFormulario = false;
+          },
+          error: (error) => {
+            console.error('Error al actualizar:', error);
+            alert('No se pudo actualizar la ruta');
+          },
+        });
     } else {
       this.rutasService.createRuta(this.rutaTemp).subscribe({
         next: () => {
@@ -99,7 +102,7 @@ export class RutasComponent implements OnInit {
         error: (error) => {
           console.error('Error al crear:', error);
           alert('No se pudo crear la ruta');
-        }
+        },
       });
     }
   }
@@ -119,7 +122,7 @@ export class RutasComponent implements OnInit {
         error: (error) => {
           console.error('Error al eliminar:', error);
           alert('No se pudo eliminar la ruta');
-        }
+        },
       });
     }
   }
@@ -133,7 +136,7 @@ export class RutasComponent implements OnInit {
         error: (error) => {
           console.error('Error al cambiar estado:', error);
           alert('No se pudo cambiar el estado');
-        }
+        },
       });
     }
   }
@@ -144,7 +147,7 @@ export class RutasComponent implements OnInit {
   }
 
   contarPorEstado(estado: string): number {
-    return this.rutas.filter(r => r.estado === estado).length;
+    return this.rutas.filter((r) => r.estado === estado).length;
   }
 
   calcularDistanciaTotal(): number {
@@ -152,7 +155,10 @@ export class RutasComponent implements OnInit {
   }
 
   calcularCostoTotal(): number {
-    return this.rutas.reduce((total, r) => total + (r.costoTotal || r.costoEstimado || 0), 0);
+    return this.rutas.reduce(
+      (total, r) => total + (r.costoTotal || r.costoEstimado || 0),
+      0
+    );
   }
 
   getEstadoColor(estado: string): string {
@@ -165,16 +171,18 @@ export class RutasComponent implements OnInit {
 
   calcularEficienciaPromedio(): number {
     if (this.rutas.length === 0) return 0;
-    
+
     // Calcular eficiencia basada en la relación distancia/tiempo
-    const eficiencias = this.rutas.map(ruta => {
-      const tiempoHoras = ruta.tiempoEstimadoHoras || (ruta.tiempoEstimadoMinutos ? ruta.tiempoEstimadoMinutos / 60 : 0);
+    const eficiencias = this.rutas.map((ruta) => {
+      const tiempoHoras =
+        ruta.tiempoEstimadoHoras ||
+        (ruta.tiempoEstimadoMinutos ? ruta.tiempoEstimadoMinutos / 60 : 0);
       if (tiempoHoras === 0) return 0;
       const velocidadPromedio = ruta.distanciaKm / tiempoHoras;
       // Normalizar a un porcentaje (asumiendo 60 km/h como 100% eficiente)
       return Math.min(100, (velocidadPromedio / 60) * 100);
     });
-    
+
     const sumaEficiencias = eficiencias.reduce((sum, ef) => sum + ef, 0);
     return sumaEficiencias / this.rutas.length;
   }
@@ -184,24 +192,26 @@ export class RutasComponent implements OnInit {
     this.optimizedRoutes = [
       {
         tipo: 'Consolidación de Rutas',
-        descripcion: 'Se pueden combinar 2 rutas con destinos cercanos para reducir costos',
+        descripcion:
+          'Se pueden combinar 2 rutas con destinos cercanos para reducir costos',
         ahorroTiempo: 2.5,
-        ahorroDistancia: 45
+        ahorroDistancia: 45,
       },
       {
         tipo: 'Ruta Alternativa',
-        descripcion: 'Usar vía de evitamiento puede reducir tiempo en ruta Lima-Arequipa',
+        descripcion:
+          'Usar vía de evitamiento puede reducir tiempo en ruta Lima-Arequipa',
         ahorroTiempo: 1.2,
-        ahorroDistancia: 15
+        ahorroDistancia: 15,
       },
       {
         tipo: 'Mejor Horario',
         descripcion: 'Salir 2 horas antes evitaría tráfico en 3 rutas urbanas',
         ahorroTiempo: 3.0,
-        ahorroDistancia: 0
-      }
+        ahorroDistancia: 0,
+      },
     ];
-    
+
     alert('Análisis de optimización completado. Revisa las sugerencias abajo.');
   }
 }

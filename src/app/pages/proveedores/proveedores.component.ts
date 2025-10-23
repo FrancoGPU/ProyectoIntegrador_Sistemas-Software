@@ -1,21 +1,24 @@
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { ProveedoresService, Proveedor } from '../../services/proveedores.service';
+import {
+  ProveedoresService,
+  Proveedor,
+} from '../../services/proveedores.service';
 
 @Component({
   selector: 'app-proveedores',
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './proveedores.component.html',
-  styleUrl: './proveedores.component.css'
+  styleUrl: './proveedores.component.css',
 })
 export class ProveedoresComponent implements OnInit {
   mostrarFormulario = false;
   proveedorEditando: Proveedor | null = null;
   loading = false;
   error: string | null = null;
-  
+
   proveedorTemp: Proveedor = this.getEmptyProveedor();
 
   proveedores: Proveedor[] = [];
@@ -29,7 +32,7 @@ export class ProveedoresComponent implements OnInit {
   loadProveedores() {
     this.loading = true;
     this.error = null;
-    
+
     this.proveedoresService.getProveedores({ page: 0, size: 50 }).subscribe({
       next: (response: any) => {
         console.log('Proveedores recibidos:', response);
@@ -40,9 +43,10 @@ export class ProveedoresComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error al cargar proveedores:', error);
-        this.error = 'No se pudieron cargar los proveedores. Verifica que el backend esté corriendo.';
+        this.error =
+          'No se pudieron cargar los proveedores. Verifica que el backend esté corriendo.';
         this.loading = false;
-      }
+      },
     });
   }
 
@@ -59,7 +63,7 @@ export class ProveedoresComponent implements OnInit {
       ciudad: '',
       diasPago: 30,
       descuentoGeneral: 0,
-      isActive: true
+      isActive: true,
     };
   }
 
@@ -73,17 +77,19 @@ export class ProveedoresComponent implements OnInit {
   guardarProveedor() {
     if (this.proveedorEditando && this.proveedorEditando.id) {
       // Actualizar proveedor existente
-      this.proveedoresService.updateProveedor(this.proveedorEditando.id, this.proveedorTemp).subscribe({
-        next: () => {
-          this.loadProveedores();
-          this.cancelarEdicion();
-          this.mostrarFormulario = false;
-        },
-        error: (error) => {
-          console.error('Error al actualizar:', error);
-          alert('No se pudo actualizar el proveedor');
-        }
-      });
+      this.proveedoresService
+        .updateProveedor(this.proveedorEditando.id, this.proveedorTemp)
+        .subscribe({
+          next: () => {
+            this.loadProveedores();
+            this.cancelarEdicion();
+            this.mostrarFormulario = false;
+          },
+          error: (error) => {
+            console.error('Error al actualizar:', error);
+            alert('No se pudo actualizar el proveedor');
+          },
+        });
     } else {
       // Agregar nuevo proveedor
       this.proveedoresService.createProveedor(this.proveedorTemp).subscribe({
@@ -95,7 +101,7 @@ export class ProveedoresComponent implements OnInit {
         error: (error) => {
           console.error('Error al crear:', error);
           alert('No se pudo crear el proveedor');
-        }
+        },
       });
     }
   }
@@ -115,7 +121,7 @@ export class ProveedoresComponent implements OnInit {
         error: (error) => {
           console.error('Error al eliminar:', error);
           alert('No se pudo eliminar el proveedor');
-        }
+        },
       });
     }
   }
@@ -126,7 +132,7 @@ export class ProveedoresComponent implements OnInit {
   }
 
   contarPorTipo(tipo: string): number {
-    return this.proveedores.filter(p => p.tipo === tipo).length;
+    return this.proveedores.filter((p) => p.tipo === tipo).length;
   }
 
   calcularDiasPagoPromedio(): number {
@@ -137,7 +143,10 @@ export class ProveedoresComponent implements OnInit {
 
   calcularDescuentoPromedio(): number {
     if (this.proveedores.length === 0) return 0;
-    const suma = this.proveedores.reduce((acc, p) => acc + p.descuentoGeneral, 0);
+    const suma = this.proveedores.reduce(
+      (acc, p) => acc + p.descuentoGeneral,
+      0
+    );
     return Math.round((suma / this.proveedores.length) * 10) / 10;
   }
 

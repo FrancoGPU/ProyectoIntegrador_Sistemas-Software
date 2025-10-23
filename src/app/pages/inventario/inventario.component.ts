@@ -2,43 +2,48 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
-import { InventarioService, Product, InventoryFilters, InventoryStats } from '../../services/inventario.service';
+import {
+  InventarioService,
+  Product,
+  InventoryFilters,
+  InventoryStats,
+} from '../../services/inventario.service';
 
 @Component({
   selector: 'app-inventario',
   imports: [CommonModule, FormsModule],
   templateUrl: './inventario.component.html',
-  styleUrl: './inventario.component.css'
+  styleUrl: './inventario.component.css',
 })
 export class InventarioComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
-  
+
   // Estado de la aplicación
   products: Product[] = [];
   stats = {
     totalProducts: 0,
     totalValue: 0,
     lowStock: 0,
-    categories: 0
+    categories: 0,
   };
-  
+
   // Estado de la UI
   searchTerm: string = '';
   selectedCategory: string = '';
   showModal: boolean = false;
   isEditing: boolean = false;
   currentProduct: Product = this.getEmptyProduct();
-  
+
   // Estados de carga
   loading = false;
   loadingStats = false;
-  
+
   // Paginación
   currentPage = 1;
   pageSize = 10;
   totalProducts = 0;
   totalPages = 0;
-  
+
   // Filtros
   filter: { busqueda?: string; categoria?: string; stockBajo?: boolean } = {};
 
@@ -55,40 +60,41 @@ export class InventarioComponent implements OnInit, OnDestroy {
 
   loadProducts(): void {
     this.loading = true;
-    
+
     // Preparar filtros
     const filters: InventoryFilters = {
       page: this.currentPage,
-      limit: this.pageSize
+      limit: this.pageSize,
     };
-    
+
     if (this.searchTerm.trim()) {
       filters.search = this.searchTerm.trim();
     }
     if (this.selectedCategory && this.selectedCategory !== 'todos') {
       filters.category = this.selectedCategory;
     }
-    
-    this.inventarioService.getProducts(filters)
+
+    this.inventarioService
+      .getProducts(filters)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
           console.log('Backend response:', response); // Debug log
-          
+
           // Validamos que la respuesta exista
           if (!response) {
             console.error('Response is null or undefined');
             this.loadFallbackData();
             return;
           }
-          
+
           // Adaptamos la respuesta del backend Java: {total, size, totalPages, page, products}
           this.products = response.products || response.data || [];
           this.totalProducts = response.total || 0;
           this.totalPages = response.totalPages || 1;
           this.currentPage = response.page || 0;
           this.loading = false;
-          
+
           // Calcular estadísticas después de cargar productos
           this.calculateLocalStats();
         },
@@ -97,11 +103,9 @@ export class InventarioComponent implements OnInit, OnDestroy {
           this.loading = false;
           // Usar datos de fallback en caso de error
           this.loadFallbackData();
-        }
+        },
       });
   }
-
-
 
   loadFallbackData(): void {
     // Datos de fallback para cuando el backend no esté disponible
@@ -115,7 +119,7 @@ export class InventarioComponent implements OnInit, OnDestroy {
         stock: 25,
         minStock: 10,
         price: 3500,
-        isActive: true
+        isActive: true,
       },
       {
         _id: '2',
@@ -126,7 +130,7 @@ export class InventarioComponent implements OnInit, OnDestroy {
         stock: 8,
         minStock: 15,
         price: 450,
-        isActive: true
+        isActive: true,
       },
       {
         _id: '3',
@@ -137,7 +141,7 @@ export class InventarioComponent implements OnInit, OnDestroy {
         stock: 32,
         minStock: 12,
         price: 850,
-        isActive: true
+        isActive: true,
       },
       {
         _id: '4',
@@ -148,7 +152,7 @@ export class InventarioComponent implements OnInit, OnDestroy {
         stock: 5,
         minStock: 8,
         price: 1200,
-        isActive: true
+        isActive: true,
       },
       {
         _id: '5',
@@ -159,8 +163,8 @@ export class InventarioComponent implements OnInit, OnDestroy {
         stock: 150,
         minStock: 50,
         price: 25,
-        isActive: true
-      }
+        isActive: true,
+      },
     ];
     this.totalProducts = this.products.length;
     this.loading = false;
@@ -170,33 +174,37 @@ export class InventarioComponent implements OnInit, OnDestroy {
   calculateLocalStats(): void {
     console.log('Calculando estadísticas con productos:', this.products);
     console.log('Total de productos desde backend:', this.totalProducts);
-    
+
     // Calcular el valor total con los productos actuales en la página
     const totalValue = this.products.reduce((total, product) => {
       const productValue = product.stock * product.price;
-      console.log(`Producto: ${product.name}, Stock: ${product.stock}, Precio: ${product.price}, Valor: ${productValue}`);
+      console.log(
+        `Producto: ${product.name}, Stock: ${product.stock}, Precio: ${product.price}, Valor: ${productValue}`
+      );
       return total + productValue;
     }, 0);
-    
+
     console.log('Valor total calculado:', totalValue);
-    
+
     // Contar productos con stock bajo
-    const lowStockCount = this.products.filter(product => {
+    const lowStockCount = this.products.filter((product) => {
       const isLowStock = product.stock <= product.minStock;
       if (isLowStock) {
-        console.log(`Stock bajo detectado: ${product.name} (${product.stock} <= ${product.minStock})`);
+        console.log(
+          `Stock bajo detectado: ${product.name} (${product.stock} <= ${product.minStock})`
+        );
       }
       return isLowStock;
     }).length;
-    
+
     // Usar el total del backend, no solo los productos de la página actual
     this.stats = {
       totalProducts: this.totalProducts || this.products.length,
       totalValue: totalValue,
       lowStock: lowStockCount,
-      categories: [...new Set(this.products.map(p => p.category))].length
+      categories: [...new Set(this.products.map((p) => p.category))].length,
     };
-    
+
     console.log('Estadísticas finales:', this.stats);
   }
 
@@ -209,7 +217,7 @@ export class InventarioComponent implements OnInit, OnDestroy {
       stock: 0,
       minStock: 0,
       price: 0,
-      isActive: true
+      isActive: true,
     };
   }
 
@@ -247,11 +255,11 @@ export class InventarioComponent implements OnInit, OnDestroy {
   // Métodos de utilidad para la UI
   getCategoryClass(category: string): string {
     const classes: { [key: string]: string } = {
-      'Tecnología': 'tech',
-      'Oficina': 'office',
-      'Industrial': 'industrial',
-      'Consumo': 'consumer',
-      'Otros': 'others'
+      Tecnología: 'tech',
+      Oficina: 'office',
+      Industrial: 'industrial',
+      Consumo: 'consumer',
+      Otros: 'others',
     };
     return classes[category] || 'others';
   }
@@ -305,7 +313,8 @@ export class InventarioComponent implements OnInit, OnDestroy {
   }
 
   createProductApi(product: Product): void {
-    this.inventarioService.createProduct(product)
+    this.inventarioService
+      .createProduct(product)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (newProduct) => {
@@ -315,12 +324,13 @@ export class InventarioComponent implements OnInit, OnDestroy {
         error: (error) => {
           console.error('Error al crear producto:', error);
           alert('Error al crear el producto. Intente nuevamente.');
-        }
+        },
       });
   }
 
   updateProductApi(id: string, product: Product): void {
-    this.inventarioService.updateProduct(id, product)
+    this.inventarioService
+      .updateProduct(id, product)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (updatedProduct) => {
@@ -330,12 +340,15 @@ export class InventarioComponent implements OnInit, OnDestroy {
         error: (error) => {
           console.error('Error al actualizar producto:', error);
           alert('Error al actualizar el producto. Intente nuevamente.');
-        }
+        },
       });
   }
 
   updateStock(product: Product): void {
-    const newStock = prompt(`Ingrese el nuevo stock para ${product.name}:`, product.stock.toString());
+    const newStock = prompt(
+      `Ingrese el nuevo stock para ${product.name}:`,
+      product.stock.toString()
+    );
     const productId = this.getProductId(product);
     if (newStock !== null && !isNaN(Number(newStock)) && productId) {
       const updatedProduct = { ...product, stock: Number(newStock) };
@@ -345,8 +358,12 @@ export class InventarioComponent implements OnInit, OnDestroy {
 
   deleteProduct(product: Product): void {
     const productId = this.getProductId(product);
-    if (confirm(`¿Está seguro de eliminar el producto ${product.name}?`) && productId) {
-      this.inventarioService.deleteProduct(productId)
+    if (
+      confirm(`¿Está seguro de eliminar el producto ${product.name}?`) &&
+      productId
+    ) {
+      this.inventarioService
+        .deleteProduct(productId)
         .pipe(takeUntil(this.destroy$))
         .subscribe({
           next: () => {
@@ -355,18 +372,20 @@ export class InventarioComponent implements OnInit, OnDestroy {
           error: (error) => {
             console.error('Error al eliminar producto:', error);
             alert('Error al eliminar el producto. Intente nuevamente.');
-          }
+          },
         });
     }
   }
 
   private isValidProduct(): boolean {
-    return this.currentProduct.code.trim() !== '' &&
-           this.currentProduct.name.trim() !== '' &&
-           this.currentProduct.category &&
-           this.currentProduct.price > 0 &&
-           this.currentProduct.stock >= 0 &&
-           this.currentProduct.minStock >= 0;
+    return (
+      this.currentProduct.code.trim() !== '' &&
+      this.currentProduct.name.trim() !== '' &&
+      this.currentProduct.category &&
+      this.currentProduct.price > 0 &&
+      this.currentProduct.stock >= 0 &&
+      this.currentProduct.minStock >= 0
+    );
   }
 
   // Métodos de formato
@@ -375,7 +394,7 @@ export class InventarioComponent implements OnInit, OnDestroy {
       style: 'currency',
       currency: 'PEN',
       minimumFractionDigits: 0,
-      maximumFractionDigits: 0
+      maximumFractionDigits: 0,
     }).format(amount);
   }
 

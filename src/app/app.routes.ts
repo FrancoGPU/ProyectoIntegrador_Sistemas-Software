@@ -5,7 +5,6 @@ import {
   ClientesComponent,
   ProveedoresComponent,
   RutasComponent,
-  FodaComponent
 } from './pages';
 
 export const routes: Routes = [
@@ -15,6 +14,5 @@ export const routes: Routes = [
   { path: 'clientes', component: ClientesComponent },
   { path: 'proveedores', component: ProveedoresComponent },
   { path: 'rutas', component: RutasComponent },
-  { path: 'foda', component: FodaComponent },
-  { path: '**', redirectTo: '/dashboard' }
+  { path: '**', redirectTo: '/dashboard' },
 ];

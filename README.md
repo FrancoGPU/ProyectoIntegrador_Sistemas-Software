@@ -1,9 +1,10 @@
 # 🚚 LogiStock Solutions
-*Sistema de Gestión Logística Completo*
+
+_Sistema de Gestión Logística Completo_
 
 ## 📋 Descripción
 
-LogiStock Solutions es una aplicación web full-stack desarrollada con **Angular** (frontend) y **Spring Boot** (backend) que proporciona una solución integral para la gestión logística empresarial. El sistema incluye módulos especializados para inventario, clientes, proveedores, rutas de distribución y análisis estratégico FODA.
+LogiStock Solutions es una aplicación web full-stack desarrollada con **Angular** (frontend) y **Spring Boot** (backend) que proporciona una solución integral para la gestión logística empresarial. El sistema incluye módulos especializados para inventario, clientes, proveedores y rutas de distribución.
 
 ## 🏗️ Arquitectura del Proyecto
 
@@ -26,8 +27,7 @@ ProyectoIntegrador_Sistemas-Software/
     │   ├── inventario/          # Gestión de productos
     │   ├── proveedores/         # Gestión de proveedores
     │   ├── rutas/               # Optimización de rutas
-    │   ├── clientes/            # Gestión de clientes
-    │   └── foda/                # Análisis FODA
+    │   └── clientes/            # Gestión de clientes
     │
     ├── services/                # Servicios HTTP
     │   ├── api.service.ts       # Cliente HTTP base
@@ -46,7 +46,6 @@ ProyectoIntegrador_Sistemas-Software/
 - 👥 **Administración de Clientes** - Base de datos de clientes con información detallada
 - 🏢 **Gestión de Proveedores** - Directorio completo de proveedores
 - 🚚 **Optimización de Rutas** - Planificación inteligente de rutas de distribución
-- 📊 **Análisis FODA** - Herramienta de análisis estratégico empresarial
 
 ## 🎨 Diseño y UX
 
@@ -59,6 +58,7 @@ ProyectoIntegrador_Sistemas-Software/
 ## 🛠️ Tecnologías Utilizadas
 
 ### Frontend
+
 - **Angular 19.2.17** - Framework principal
 - **TypeScript** - Programación tipada
 - **CSS Grid & Flexbox** - Layouts responsivos
@@ -68,6 +68,7 @@ ProyectoIntegrador_Sistemas-Software/
 - **RxJS** - Programación reactiva
 
 ### Backend
+
 - **Spring Boot 3.2.x** - Framework Java
 - **MongoDB** - Base de datos NoSQL
 - **Spring Data MongoDB** - ORM para MongoDB
@@ -78,13 +79,15 @@ ProyectoIntegrador_Sistemas-Software/
 ## 🚀 Instalación y Uso
 
 ### Prerrequisitos
-- Node.js 18+ 
+
+- Node.js 18+
 - Angular CLI 19+
 - Java 17+
 - Maven 3.8+
 - MongoDB 6.0+
 
 ### Instalación del Backend
+
 ```bash
 # Navegar al directorio del backend
 cd backend-java
@@ -97,6 +100,7 @@ java -jar target/logistock-backend-1.0.0.jar
 ```
 
 ### Instalación del Frontend
+
 ```bash
 # Instalar dependencias
 npm install
@@ -106,6 +110,7 @@ ng serve
 ```
 
 ### Acceso a la Aplicación
+
 - **Frontend**: `http://localhost:4200/`
 - **Backend API**: `http://localhost:8080/api/`
 - **Swagger UI**: `http://localhost:8080/swagger-ui.html`

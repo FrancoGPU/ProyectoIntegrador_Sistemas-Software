@@ -9,4 +9,3 @@ export { InventarioComponent } from './inventario/inventario.component';
 export { ClientesComponent } from './clientes/clientes.component';
 export { ProveedoresComponent } from './proveedores/proveedores.component';
 export { RutasComponent } from './rutas/rutas.component';
-export { FodaComponent } from './foda/foda.component';
