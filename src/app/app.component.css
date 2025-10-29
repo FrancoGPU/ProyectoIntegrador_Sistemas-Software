@@ -571,3 +571,65 @@
     transform: translateY(0);
   }
 }
+/* Estilos para botón de cerrar sesión */
+.logout-button,
+.logout-button-mobile {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #f56565 0%, #c53030 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+.logout-button svg,
+.logout-button-mobile svg {
+  width: 18px;
+  height: 18px;
+}
+
+.logout-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(245, 101, 101, 0.4);
+}
+
+.logout-button:active {
+  transform: translateY(0);
+}
+
+.logout-button-mobile {
+  width: 100%;
+  justify-content: center;
+  padding: 12px 20px;
+  margin-top: 10px;
+}
+
+.logout-item {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 10px;
+  margin-top: 10px;
+}
+
+.main-content.no-navbar {
+  margin-top: 0;
+  padding: 0;
+}
+
+@media (max-width: 768px) {
+  .logout-button {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+  }
+  
+  .logout-button svg {
+    width: 16px;
+    height: 16px;
+  }
+}

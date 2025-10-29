@@ -5,6 +5,8 @@
  */
 
 export { ApiService } from './api.service';
+export { AuthService } from './auth.service';
+export type { User } from './auth.service';
 export { DashboardService } from './dashboard.service';
 export { InventarioService } from './inventario.service';
 export type {

@@ -1,6 +1,6 @@
 
 <div class="app-container">
-  <nav class="navbar">
+  <nav class="navbar" *ngIf="!isLoginPage">
     <div class="navbar-content">
       <div class="logo">LogiStock Solutions</div>
       <!-- Menú para escritorio -->
@@ -10,6 +10,16 @@
         <li class="nav-item"><a routerLink="/clientes" routerLinkActive="active">Clientes</a></li>
         <li class="nav-item"><a routerLink="/proveedores" routerLinkActive="active">Proveedores</a></li>
         <li class="nav-item"><a routerLink="/rutas" routerLinkActive="active">Rutas</a></li>
+        <li class="nav-item user-menu" *ngIf="authService.isAuthenticated()">
+          <button class="logout-button" (click)="logout()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              <polyline points="16 17 21 12 16 7"></polyline>
+              <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+            Cerrar Sesión
+          </button>
+        </li>
       </ul>
       <div class="hamburger" [class.active]="isMenuOpen" (click)="toggleMenu()">
         <span></span>
@@ -20,18 +30,28 @@
   </nav>
   
   <!-- Overlay para menú móvil -->
-  <div class="menu-overlay" [class.active]="isMenuOpen" (click)="closeMenu()"></div>
+  <div class="menu-overlay" [class.active]="isMenuOpen" (click)="closeMenu()" *ngIf="!isLoginPage"></div>
   
   <!-- Menú móvil independiente -->
-  <ul class="nav-menu" [class.open]="isMenuOpen">
+  <ul class="nav-menu" [class.open]="isMenuOpen" *ngIf="!isLoginPage">
     <li class="nav-item"><a routerLink="/dashboard" routerLinkActive="active" (click)="closeMenu()">Dashboard</a></li>
     <li class="nav-item"><a routerLink="/inventario" routerLinkActive="active" (click)="closeMenu()">Inventario</a></li>
     <li class="nav-item"><a routerLink="/clientes" routerLinkActive="active" (click)="closeMenu()">Clientes</a></li>
     <li class="nav-item"><a routerLink="/proveedores" routerLinkActive="active" (click)="closeMenu()">Proveedores</a></li>
     <li class="nav-item"><a routerLink="/rutas" routerLinkActive="active" (click)="closeMenu()">Rutas</a></li>
+    <li class="nav-item logout-item" *ngIf="authService.isAuthenticated()">
+      <button class="logout-button-mobile" (click)="logout()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+          <polyline points="16 17 21 12 16 7"></polyline>
+          <line x1="21" y1="12" x2="9" y2="12"></line>
+        </svg>
+        Cerrar Sesión
+      </button>
+    </li>
   </ul>
   
-  <main class="main-content">
+  <main class="main-content" [class.no-navbar]="isLoginPage">
     <router-outlet></router-outlet>
   </main>
 </div>
