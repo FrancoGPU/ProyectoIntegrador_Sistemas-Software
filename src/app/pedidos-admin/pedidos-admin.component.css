@@ -1,3 +1,7 @@
+/* Componente Pedidos Admin - Estilos optimizados
+   Los estilos base de botones, tarjetas, modales y formularios
+   están en src/app/shared/shared-styles.css */
+
 .pedidos-admin-container {
   padding: 2rem;
   max-width: 1400px;
@@ -259,13 +263,6 @@
   padding: 0.75rem 1rem;
 }
 
-/* Botones */
-/* Reutilizado desde estilos globales: botones, variantes y grupos.
-  Las definiciones comunes se han movido a `src/styles.css` para evitar
-  duplicación y reducir el tamaño de los bundles por componente. */
-
-/* Modal estilos movidos a `src/styles.css` para reutilización global */
-
 /* Secciones del formulario con pasos */
 .form-section {
   background: #ffffff;
@@ -497,22 +494,24 @@ button:disabled:hover {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
 }
 
-/* Responsive para modal */
+/* Responsive - Modal y formularios delegados a shared-styles.css */
 @media (max-width: 768px) {
-  .modal-dialog {
-    margin: 0.5rem;
-    width: calc(100% - 1rem);
-    max-width: none;
+  .pedidos-admin-container {
+    padding: 1rem;
   }
 
-  .modal-body {
-    padding: 1rem;
-    max-height: calc(100vh - 180px);
+  .header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
   }
 
-  .modal-header,
-  .modal-footer {
-    padding: 1rem;
+  .estadisticas {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .filtros {
+    flex-direction: column;
   }
 
   .form-section {
@@ -536,95 +535,4 @@ button:disabled:hover {
   .productos-list {
     padding: 1rem;
   }
-}
-
-/* Badges */
-.badge {
-  padding: 0.4em 0.8em;
-  font-weight: 500;
-  border-radius: 6px;
-}
-
-/* Formularios */
-.form-control,
-.form-select {
-  border-radius: 8px;
-  border: 1px solid #ced4da;
-  padding: 0.5rem 0.75rem;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.form-control:focus,
-.form-select:focus {
-  border-color: #80bdff;
-  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-  outline: none;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .pedidos-admin-container {
-    padding: 1rem;
-  }
-
-  .header {
-    flex-direction: column;
-    gap: 1rem;
-    align-items: stretch;
-  }
-
-  .estadisticas {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .filtros {
-    flex-direction: column;
-  }
-
-  .modal-dialog {
-    margin: 1rem;
-    max-width: calc(100% - 2rem);
-  }
-
-  .table {
-    font-size: 0.875rem;
-  }
-
-  .btn-group {
-    flex-direction: column;
-  }
-}
-
-/* Botones de acción - Mismo estilo que Inventario */
-.product-actions {
-  display: flex;
-  gap: 0.5rem;
-  justify-content: center;
-}
-
-.action-btn {
-  padding: 0.5rem;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.2s ease;
-  background: transparent;
-}
-
-.action-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-.action-btn.edit:hover:not(:disabled) {
-  background: #e2e8f0;
-}
-
-.action-btn.cancel:hover:not(:disabled) {
-  background: #fed7d7;
-}
-
-.action-btn.delete:hover:not(:disabled) {
-  background: #fed7d7;
 }
