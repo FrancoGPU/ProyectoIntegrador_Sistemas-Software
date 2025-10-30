@@ -1,0 +1,172 @@
+<div class="entregas-container">
+  <h1>Mis Entregas</h1>
+
+  <!-- Mensaje de error -->
+  <div class="alert alert-danger" *ngIf="mensajeError">
+    <i class="bi bi-exclamation-circle"></i> {{ mensajeError }}
+  </div>
+
+  <!-- Loader -->
+  <div class="loader" *ngIf="cargando">
+    <div class="spinner"></div>
+    <p>Cargando...</p>
+  </div>
+
+  <!-- Mis entregas activas -->
+  <section class="section-mis-entregas" *ngIf="!cargando">
+    <h2>
+      <i class="bi bi-truck"></i> Entregas Activas
+      <span class="badge bg-primary">{{ misEntregas.length }}</span>
+    </h2>
+
+    <div class="entregas-grid" *ngIf="misEntregas.length > 0">
+      <div class="entrega-card" *ngFor="let pedido of misEntregas">
+        <div class="card-header">
+          <span class="badge" [ngClass]="'bg-' + getEstadoColor(pedido.estado!)">
+            {{ getEstadoTexto(pedido.estado!) }}
+          </span>
+          <span class="pedido-id">#{{ pedido.id?.substring(0, 8) }}</span>
+        </div>
+
+        <div class="card-body">
+          <div class="cliente-info">
+            <h3>
+              <i class="bi bi-person-circle"></i>
+              {{ pedido.clienteNombre }}
+            </h3>
+            <p>
+              <i class="bi bi-telephone"></i>
+              {{ pedido.clienteTelefono }}
+            </p>
+          </div>
+
+          <div class="direccion-info">
+            <p>
+              <i class="bi bi-geo-alt"></i>
+              <strong>Dirección:</strong>
+            </p>
+            <p class="direccion">{{ pedido.direccionEntrega }}</p>
+          </div>
+
+          <div class="productos-info">
+            <p>
+              <i class="bi bi-box-seam"></i>
+              <strong>{{ pedido.productos.length }} productos</strong>
+              ({{ calcularTotalProductos(pedido.productos) }} items)
+            </p>
+            <p class="total">
+              <strong>Total: ${{ pedido.total?.toFixed(2) }}</strong>
+            </p>
+          </div>
+
+          <div class="observaciones" *ngIf="pedido.observaciones">
+            <p><strong>Observaciones:</strong></p>
+            <p class="obs-text">{{ pedido.observaciones }}</p>
+          </div>
+
+          <div class="fechas">
+            <small *ngIf="pedido.fechaAsignacion">
+              <i class="bi bi-clock"></i>
+              Asignado: {{ pedido.fechaAsignacion | date:'short' }}
+            </small>
+          </div>
+        </div>
+
+        <div class="card-actions">
+          <button 
+            class="btn btn-warning" 
+            *ngIf="pedido.estado === 'ASIGNADO'"
+            (click)="iniciarEntrega(pedido)">
+            <i class="bi bi-truck"></i> Iniciar Entrega
+          </button>
+
+          <button 
+            class="btn btn-success" 
+            *ngIf="pedido.estado === 'EN_CAMINO'"
+            (click)="marcarEntregado(pedido)">
+            <i class="bi bi-check-circle"></i> Marcar como Entregado
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="misEntregas.length === 0">
+      <i class="bi bi-inbox"></i>
+      <p>No tienes entregas activas</p>
+      <small>Toma pedidos disponibles para comenzar</small>
+    </div>
+  </section>
+
+  <!-- Pedidos disponibles -->
+  <section class="section-disponibles" *ngIf="!cargando">
+    <h2>
+      <i class="bi bi-box-seam"></i> Pedidos Disponibles
+      <span class="badge bg-success">{{ pedidosDisponibles.length }}</span>
+    </h2>
+
+    <div class="pedidos-grid" *ngIf="pedidosDisponibles.length > 0">
+      <div class="pedido-card" *ngFor="let pedido of pedidosDisponibles">
+        <div class="card-header">
+          <span class="badge bg-success">Disponible</span>
+          <span class="pedido-id">#{{ pedido.id?.substring(0, 8) }}</span>
+        </div>
+
+        <div class="card-body">
+          <div class="cliente-info">
+            <h3>
+              <i class="bi bi-person-circle"></i>
+              {{ pedido.clienteNombre }}
+            </h3>
+            <p>
+              <i class="bi bi-telephone"></i>
+              {{ pedido.clienteTelefono }}
+            </p>
+          </div>
+
+          <div class="direccion-info">
+            <p>
+              <i class="bi bi-geo-alt"></i>
+              <strong>Dirección:</strong>
+            </p>
+            <p class="direccion">{{ pedido.direccionEntrega }}</p>
+          </div>
+
+          <div class="productos-info">
+            <p>
+              <i class="bi bi-box-seam"></i>
+              {{ pedido.productos.length }} productos
+              ({{ calcularTotalProductos(pedido.productos) }} items)
+            </p>
+            <p class="total">
+              Total: <strong>${{ pedido.total?.toFixed(2) }}</strong>
+            </p>
+          </div>
+
+          <div class="observaciones" *ngIf="pedido.observaciones">
+            <p><strong>Observaciones:</strong></p>
+            <p class="obs-text">{{ pedido.observaciones }}</p>
+          </div>
+
+          <div class="fechas">
+            <small>
+              <i class="bi bi-calendar"></i>
+              Creado: {{ pedido.fechaCreacion | date:'short' }}
+            </small>
+          </div>
+        </div>
+
+        <div class="card-actions">
+          <button class="btn btn-primary" (click)="tomarPedido(pedido)">
+            <i class="bi bi-hand-thumbs-up"></i> Tomar Pedido
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="pedidosDisponibles.length === 0">
+      <i class="bi bi-check-circle"></i>
+      <p>No hay pedidos disponibles en este momento</p>
+      <small>Vuelve más tarde para ver nuevos pedidos</small>
+    </div>
+  </section>
+</div>

@@ -22,9 +22,9 @@ export class LoginComponent {
     private authService: AuthService,
     private router: Router
   ) {
-    // Si ya está autenticado, redirigir al dashboard
+    // Si ya está autenticado, redirigir según rol
     if (this.authService.isAuthenticated()) {
-      this.router.navigate(['/dashboard']);
+      this.redirectByRole();
     }
   }
 
@@ -41,7 +41,7 @@ export class LoginComponent {
       next: (success) => {
         this.loading = false;
         if (success) {
-          this.router.navigate(['/dashboard']);
+          this.redirectByRole();
         } else {
           this.errorMessage = 'Usuario o contraseña incorrectos';
         }
@@ -51,6 +51,14 @@ export class LoginComponent {
         this.errorMessage = error.message || 'Error al intentar iniciar sesión';
       }
     });
+  }
+
+  private redirectByRole(): void {
+    if (this.authService.isAdmin()) {
+      this.router.navigate(['/dashboard']);
+    } else {
+      this.router.navigate(['/entregas']);
+    }
   }
 
   togglePasswordVisibility(): void {
