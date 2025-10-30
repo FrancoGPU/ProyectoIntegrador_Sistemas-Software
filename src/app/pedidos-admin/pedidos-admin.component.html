@@ -1,0 +1,357 @@
+<div class="pedidos-admin-container">
+  <div class="header">
+    <h1>Gestión de Pedidos</h1>
+    <button class="btn btn-primary" (click)="abrirModalCrear()">
+      <i class="bi bi-plus-circle"></i> Nuevo Pedido
+    </button>
+  </div>
+
+  <!-- Estadísticas -->
+  <div class="estadisticas" *ngIf="estadisticas">
+    <div class="stat-card disponibles">
+      <i class="bi bi-box-seam"></i>
+      <div class="stat-info">
+        <span class="stat-value">{{ estadisticas.disponibles }}</span>
+        <span class="stat-label">Disponibles</span>
+      </div>
+    </div>
+    <div class="stat-card asignados">
+      <i class="bi bi-person-check"></i>
+      <div class="stat-info">
+        <span class="stat-value">{{ estadisticas.asignados }}</span>
+        <span class="stat-label">Asignados</span>
+      </div>
+    </div>
+    <div class="stat-card en-camino">
+      <i class="bi bi-truck"></i>
+      <div class="stat-info">
+        <span class="stat-value">{{ estadisticas.enCamino }}</span>
+        <span class="stat-label">En Camino</span>
+      </div>
+    </div>
+    <div class="stat-card entregados">
+      <i class="bi bi-check-circle"></i>
+      <div class="stat-info">
+        <span class="stat-value">{{ estadisticas.entregados }}</span>
+        <span class="stat-label">Entregados</span>
+      </div>
+    </div>
+    <div class="stat-card cancelados">
+      <i class="bi bi-x-circle"></i>
+      <div class="stat-info">
+        <span class="stat-value">{{ estadisticas.cancelados }}</span>
+        <span class="stat-label">Cancelados</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="filtros">
+    <div class="filtro-grupo">
+      <label>Estado:</label>
+      <select [(ngModel)]="filtroEstado" (change)="aplicarFiltros()" class="form-select">
+        <option value="TODOS">Todos</option>
+        <option value="DISPONIBLE">Disponible</option>
+        <option value="ASIGNADO">Asignado</option>
+        <option value="EN_CAMINO">En Camino</option>
+        <option value="ENTREGADO">Entregado</option>
+        <option value="CANCELADO">Cancelado</option>
+      </select>
+    </div>
+    <div class="filtro-grupo">
+      <label>Buscar:</label>
+      <input type="text" [(ngModel)]="filtroBusqueda" (input)="aplicarFiltros()" 
+             class="form-control" placeholder="Cliente o ID...">
+    </div>
+  </div>
+
+  <!-- Tabla de pedidos -->
+  <div class="table-responsive">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Cliente</th>
+          <th>Dirección</th>
+          <th>Productos</th>
+          <th>Total</th>
+          <th>Estado</th>
+          <th>Asignado a</th>
+          <th>Fecha</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let pedido of pedidosFiltrados">
+          <td><small>{{ pedido.id?.substring(0, 8) }}</small></td>
+          <td>
+            <strong>{{ pedido.clienteNombre }}</strong><br>
+            <small>{{ pedido.clienteTelefono }}</small>
+          </td>
+          <td><small>{{ pedido.direccionEntrega }}</small></td>
+          <td>
+            <span class="badge bg-secondary">{{ pedido.productos.length }} items</span>
+          </td>
+          <td><strong>${{ pedido.total?.toFixed(2) }}</strong></td>
+          <td>
+            <span class="badge" [ngClass]="'bg-' + getEstadoColor(pedido.estado!)">
+              {{ getEstadoTexto(pedido.estado!) }}
+            </span>
+          </td>
+          <td>
+            <span *ngIf="pedido.usuarioAsignadoNombre">{{ pedido.usuarioAsignadoNombre }}</span>
+            <span *ngIf="!pedido.usuarioAsignadoNombre" class="text-muted">-</span>
+          </td>
+          <td><small>{{ pedido.fechaCreacion | date:'short' }}</small></td>
+          <td class="product-actions">
+            <button class="action-btn edit" (click)="abrirModalEditar(pedido)"
+                    [disabled]="pedido.estado === 'ENTREGADO' || pedido.estado === 'CANCELADO'"
+                    title="Ver/Editar">
+              ✏️
+            </button>
+            <button class="action-btn cancel" (click)="cancelarPedido(pedido)"
+                    [disabled]="pedido.estado === 'ENTREGADO' || pedido.estado === 'CANCELADO'"
+                    title="Cancelar">
+              ❌
+            </button>
+            <button class="action-btn delete" (click)="eliminarPedido(pedido)"
+                    title="Eliminar">
+              🗑️
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="pedidosFiltrados.length === 0">
+          <td colspan="9" class="text-center text-muted">No hay pedidos para mostrar</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Modal de crear/editar pedido -->
+  <div class="modal" [class.show]="mostrarModal" *ngIf="mostrarModal">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title">
+            <i class="bi bi-box-seam me-2"></i>
+            {{ modoEdicion ? 'Editar Pedido' : 'Nuevo Pedido' }}
+          </h5>
+          <button type="button" class="btn-close btn-close-white" (click)="cerrarModal()"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Paso 1: Seleccionar Cliente -->
+          <div class="form-section">
+            <h6 class="section-title">
+              <span class="step-number">1</span>
+              Información del Cliente
+            </h6>
+            <div class="row g-3">
+              <div class="col-12">
+                <label class="form-label fw-bold">
+                  <i class="bi bi-person-circle me-1"></i>
+                  Seleccionar Cliente *
+                </label>
+                <select [(ngModel)]="pedidoActual.clienteId" (change)="onClienteSeleccionado()" 
+                        class="form-select form-select-lg" required>
+                  <option value="">-- Seleccione un cliente --</option>
+                  <option *ngFor="let cliente of clientes" [value]="cliente._id">
+                    {{ cliente.nombre }} {{ cliente.apellido }} | Tel: {{ cliente.telefono }} | {{ cliente.empresa || 'Sin empresa' }}
+                  </option>
+                </select>
+                <div class="form-text" *ngIf="!pedidoActual.clienteId">
+                  <i class="bi bi-info-circle"></i> Debe seleccionar un cliente para continuar
+                </div>
+              </div>
+
+              <!-- Información automática del cliente (solo como referencia visual) -->
+              <div class="col-12" *ngIf="pedidoActual.clienteId && pedidoActual.clienteNombre">
+                <div class="alert alert-info mb-0">
+                  <strong><i class="bi bi-person-badge me-2"></i>Cliente seleccionado:</strong> 
+                  {{ pedidoActual.clienteNombre }}
+                  <br>
+                  <strong><i class="bi bi-telephone me-2"></i>Teléfono:</strong> 
+                  {{ pedidoActual.clienteTelefono }}
+                  <br>
+                  <strong><i class="bi bi-house me-2"></i>Dirección registrada:</strong> 
+                  {{ pedidoActual.clienteDireccion }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Paso 2: Dirección de Entrega -->
+          <div class="form-section" *ngIf="pedidoActual.clienteId">
+            <h6 class="section-title">
+              <span class="step-number">2</span>
+              Dirección de Entrega
+            </h6>
+            <div class="row g-3">
+              <div class="col-12">
+                <label class="form-label fw-bold">
+                  <i class="bi bi-geo-alt me-1"></i>
+                  Dirección *
+                </label>
+                <input type="text" [(ngModel)]="pedidoActual.direccionEntrega" 
+                       class="form-control form-control-lg" 
+                       placeholder="Ingrese la dirección de entrega" required>
+                <div class="form-text">
+                  <i class="bi bi-info-circle"></i> Puede ser diferente a la dirección registrada del cliente
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Paso 3: Seleccionar Productos -->
+          <div class="form-section" *ngIf="pedidoActual.clienteId && pedidoActual.direccionEntrega">
+            <h6 class="section-title">
+              <span class="step-number">3</span>
+              Productos del Pedido
+            </h6>
+            
+            <!-- Agregar producto -->
+            <div class="producto-selector-box mb-3">
+              <label class="form-label fw-bold">
+                <i class="bi bi-plus-circle me-1"></i>
+                Agregar Producto
+              </label>
+              <div class="row g-2 align-items-end">
+                <div class="col-md-5">
+                  <label class="form-label small">Producto</label>
+                  <select [(ngModel)]="productoTemp.productoId" (change)="onProductoSeleccionado()" 
+                          class="form-select">
+                    <option value="">-- Seleccione un producto --</option>
+                    <option *ngFor="let producto of productos" [value]="producto.id || producto._id">
+                      {{ producto.name }} - ${{ producto.price }} (Stock: {{ producto.stock }})
+                    </option>
+                  </select>
+                </div>
+                <div class="col-md-2">
+                  <label class="form-label small">Cantidad</label>
+                  <input type="number" [(ngModel)]="productoTemp.cantidad" min="1" 
+                         class="form-control text-center" placeholder="1">
+                </div>
+                <div class="col-md-3">
+                  <label class="form-label small">Precio Unitario</label>
+                  <div class="input-group">
+                    <span class="input-group-text">$</span>
+                    <input type="number" [(ngModel)]="productoTemp.precioUnitario" step="0.01" min="0"
+                           class="form-control" placeholder="0.00">
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <label class="form-label small d-block">&nbsp;</label>
+                  <button type="button" (click)="agregarProducto()" 
+                          class="btn btn-success w-100"
+                          [disabled]="!productoTemp.productoId || productoTemp.cantidad < 1 || productoTemp.precioUnitario <= 0"
+                          title="Agregar producto al pedido">
+                    <i class="bi bi-plus-circle me-1"></i>
+                    Agregar
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Lista de productos agregados -->
+            <div *ngIf="productosSeleccionados.length === 0" class="alert alert-info">
+              <i class="bi bi-info-circle me-2"></i>
+              No hay productos agregados. Seleccione un producto para comenzar.
+            </div>
+
+            <div class="productos-list" *ngIf="productosSeleccionados.length > 0">
+              <label class="form-label fw-bold">
+                <i class="bi bi-bag-check me-1"></i>
+                Productos Agregados ({{ productosSeleccionados.length }})
+              </label>
+              <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                  <thead class="table-light">
+                    <tr>
+                      <th style="width: 40%">Producto</th>
+                      <th style="width: 15%" class="text-center">Cantidad</th>
+                      <th style="width: 20%" class="text-end">Precio Unit.</th>
+                      <th style="width: 20%" class="text-end">Subtotal</th>
+                      <th style="width: 5%" class="text-center">Acción</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let prod of productosSeleccionados; let i = index">
+                      <td>
+                        <i class="bi bi-box text-primary me-2"></i>
+                        <strong>{{ prod.nombre }}</strong>
+                      </td>
+                      <td class="text-center">
+                        <span class="badge bg-secondary">{{ prod.cantidad }} unidades</span>
+                      </td>
+                      <td class="text-end">${{ prod.precioUnitario.toFixed(2) }}</td>
+                      <td class="text-end">
+                        <strong class="text-success">${{ (prod.cantidad * prod.precioUnitario).toFixed(2) }}</strong>
+                      </td>
+                      <td class="text-center">
+                        <button type="button" (click)="eliminarProducto(i)" 
+                                class="btn btn-sm btn-danger"
+                                title="Eliminar producto del pedido">
+                          <i class="bi bi-trash"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                  <tfoot class="table-light">
+                    <tr>
+                      <td colspan="3" class="text-end"><strong>TOTAL DEL PEDIDO:</strong></td>
+                      <td class="text-end">
+                        <h5 class="mb-0 text-success">
+                          <strong>${{ calcularTotal().toFixed(2) }}</strong>
+                        </h5>
+                      </td>
+                      <td></td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Paso 4: Observaciones (Opcional) -->
+          <div class="form-section" *ngIf="productosSeleccionados.length > 0">
+            <h6 class="section-title">
+              <span class="step-number">4</span>
+              Observaciones (Opcional)
+            </h6>
+            <div class="row g-3">
+              <div class="col-12">
+                <label class="form-label">
+                  <i class="bi bi-chat-left-text me-1"></i>
+                  Notas adicionales
+                </label>
+                <textarea [(ngModel)]="pedidoActual.observaciones" 
+                          class="form-control" rows="3"
+                          placeholder="Ejemplo: Entregar entre 2pm-4pm, llamar antes de llegar, etc."></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-secondary btn-lg" (click)="cerrarModal()">
+            <i class="bi bi-x-circle me-1"></i>
+            Cancelar
+          </button>
+          <button type="button" class="btn btn-success btn-lg px-4" (click)="guardarPedido()"
+                  [disabled]="!pedidoActual.clienteId || !pedidoActual.direccionEntrega || productosSeleccionados.length === 0">
+            <i class="bi bi-check-circle me-1"></i>
+            {{ modoEdicion ? 'Actualizar' : 'Crear' }} Pedido
+            <span *ngIf="productosSeleccionados.length > 0" class="ms-2 badge bg-white text-success">
+              ${{ calcularTotal().toFixed(2) }}
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-backdrop" *ngIf="mostrarModal" (click)="cerrarModal()"></div>
+  <!-- Modal de advertencia personalizado -->
+  <app-confirm-modal *ngIf="modalAdvertenciaVisible"
+                     [warnings]="advertenciaResultado?.warnings"
+                     (confirm)="onConfirmarAdvertencia()"
+                     (cancel)="onCancelarAdvertencia()">
+  </app-confirm-modal>
+</div>

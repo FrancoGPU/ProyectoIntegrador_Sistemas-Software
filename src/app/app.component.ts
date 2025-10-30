@@ -1,15 +1,22 @@
 import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
-import { RouterOutlet, RouterModule } from '@angular/router';
+import { RouterOutlet, RouterModule, Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterModule],
+  imports: [RouterOutlet, RouterModule, CommonModule],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit, OnDestroy {
   title = 'proyecto-integrador';
   isMenuOpen = false;
+
+  constructor(
+    public authService: AuthService,
+    private router: Router
+  ) {}
 
   @HostListener('window:scroll', ['$event'])
   onWindowScroll(event: any) {
@@ -32,6 +39,15 @@ export class AppComponent implements OnInit, OnDestroy {
   closeMenu() {
     this.isMenuOpen = false;
     document.body.style.overflow = 'auto';
+  }
+
+  logout() {
+    this.closeMenu();
+    this.authService.logout();
+  }
+
+  get isLoginPage(): boolean {
+    return this.router.url === '/login';
   }
 
   ngOnInit() {
