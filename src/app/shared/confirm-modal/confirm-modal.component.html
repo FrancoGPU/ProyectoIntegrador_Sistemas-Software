@@ -1,0 +1,22 @@
+<div class="confirm-modal-backdrop">
+  <div class="confirm-modal">
+    <div class="confirm-header">
+      <h5>{{ title }}</h5>
+    </div>
+    <div class="confirm-body">
+      <p>Los siguientes productos quedarán por debajo del stock mínimo:</p>
+      <ul>
+        <li *ngFor="let w of warnings">
+          <strong>{{ w.productName }}</strong>
+          <div class="small text-muted">
+            Stock actual: {{ w.currentStock }} • Solicitado: {{ w.requestedQuantity }} • Mínimo: {{ w.minStock }} • Resultante: {{ w.resultingStock }}
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div class="confirm-footer">
+      <button class="btn btn-secondary" (click)="onCancel()">Cancelar</button>
+      <button class="btn btn-primary ms-2" (click)="onConfirm()">Continuar de todas formas</button>
+    </div>
+  </div>
+</div>
