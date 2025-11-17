@@ -1,4 +1,42 @@
 {
-  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=827846
-  "recommendations": ["angular.ng-template"]
+  // Extensiones recomendadas para LogiStock Solutions
+  // VS Code sugerirá instalar estas extensiones al abrir el proyecto
+  "recommendations": [
+    // Backend Java/Spring Boot
+    "vscjava.vscode-java-pack",
+    "vscjava.vscode-maven",
+    "vmware.vscode-spring-boot",
+    "redhat.java",
+    
+    // Frontend Angular/TypeScript
+    "angular.ng-template",
+    "ms-vscode.vscode-typescript-next",
+    
+    // Linting y Formateo
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    
+    // Base de Datos
+    "mongodb.mongodb-vscode",
+    
+    // Git y Control de Versiones
+    "eamodio.gitlens",
+    "github.vscode-pull-request-github",
+    
+    // Docker y DevContainers
+    "ms-vscode-remote.remote-containers",
+    "ms-azuretools.vscode-docker",
+    
+    // Utilidades
+    "ms-vscode.vscode-json",
+    "pkief.material-icon-theme",
+    "streetsidesoftware.code-spell-checker",
+    "sonarsource.sonarlint-vscode"
+  ],
+  "unwantedRecommendations": [
+    // Extensiones que pueden causar conflictos o no son necesarias
+    "ms-python.python",
+    "ms-dotnettools.csharp",
+    "golang.go"
+  ]
 }
