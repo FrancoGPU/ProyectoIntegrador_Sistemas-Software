@@ -1,4 +1,9 @@
 {
   "java.configuration.updateBuildConfiguration": "automatic",
-  "java.debug.settings.onBuildFailureProceed": true
+  "java.debug.settings.onBuildFailureProceed": true,
+  
+  // Fix para timeout de shell
+  "terminal.integrated.shellIntegration.enabled": true,
+  "terminal.integrated.shellIntegration.timeout": 30,
+  "terminal.integrated.inheritEnv": false
 }
