@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   app:
-    image: mcr.microsoft.com/devcontainers/javascript-node:18
+    image: mcr.microsoft.com/devcontainers/base:ubuntu
     volumes:
       - ../..:/workspaces:cached
     command: sleep infinity
@@ -10,6 +10,8 @@ services:
       - logistock-network
     depends_on:
       - mongodb
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://logistock:logistock123@mongodb:27017/logistockdb?authSource=admin
 
   mongodb:
     image: mongo:7.0

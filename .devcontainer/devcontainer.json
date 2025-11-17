@@ -2,10 +2,14 @@
   "name": "LogiStock Solutions - Full Stack",
   "dockerComposeFile": "docker-compose.yml",
   "service": "app",
-  "workspaceFolder": "/workspace",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
   "shutdownAction": "stopCompose",
   
   "features": {
+    "ghcr.io/devcontainers/features/java:1": {
+      "version": "17",
+      "installMaven": "true"
+    },
     "ghcr.io/devcontainers/features/node:1": {
       "version": "18"
     },
@@ -15,28 +19,39 @@
   "customizations": {
     "vscode": {
       "extensions": [
+        "vscjava.vscode-java-pack",
+        "vscjava.vscode-spring-boot-dashboard",
+        "vmware.vscode-spring-boot",
+        "vscjava.vscode-maven",
         "angular.ng-template",
         "ms-vscode.vscode-typescript-next",
-        "bradlc.vscode-tailwindcss",
         "ms-vscode.vscode-json",
         "mongodb.mongodb-vscode",
         "ms-vscode.vscode-eslint",
-        "esbenp.prettier-vscode"
+        "esbenp.prettier-vscode",
+        "redhat.java"
       ],
       "settings": {
-        "terminal.integrated.defaultProfile.linux": "bash"
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "java.home": "/usr/local/sdkman/candidates/java/current",
+        "java.configuration.runtimes": [
+          {
+            "name": "JavaSE-17",
+            "path": "/usr/local/sdkman/candidates/java/current"
+          }
+        ]
       }
     }
   },
   
-  "forwardPorts": [4200, 3000, 27017],
+  "forwardPorts": [4200, 8080, 27017],
   "portsAttributes": {
     "4200": {
-      "label": "Angular App",
+      "label": "Angular Frontend",
       "onAutoForward": "notify"
     },
-    "3000": {
-      "label": "Node.js API",
+    "8080": {
+      "label": "Spring Boot Backend",
       "onAutoForward": "notify"
     },
     "27017": {
@@ -45,6 +60,6 @@
     }
   },
   
-  "postCreateCommand": "npm install && cd backend && npm install",
-  "remoteUser": "node"
+  "postCreateCommand": "npm install",
+  "remoteUser": "vscode"
 }
