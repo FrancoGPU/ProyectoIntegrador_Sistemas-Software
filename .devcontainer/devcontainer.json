@@ -1,8 +1,8 @@
 {
   "name": "LogiStock Solutions - Full Stack",
-  "dockerComposeFile": "docker-compose.yml",
+  "dockerComposeFile": "docker-compose.dev.yml",
   "service": "app",
-  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "workspaceFolder": "/workspaces/logistock",
   "shutdownAction": "stopCompose",
   
   "features": {
@@ -60,6 +60,6 @@
     }
   },
   
-  "postCreateCommand": "npm install",
+  "postCreateCommand": "npm install --prefix . && cd backend-java && mvn clean install -DskipTests",
   "remoteUser": "vscode"
 }
