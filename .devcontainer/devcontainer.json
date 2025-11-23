@@ -44,6 +44,11 @@
     }
   },
   
+  "containerEnv": {
+    "SPRING_DATA_MONGODB_URI": "mongodb://admin:password123@mongodb:27017/logistockdb?authSource=admin",
+    "SPRING_DATA_MONGODB_HOST": "mongodb"
+  },
+
   "forwardPorts": [4200, 8080, 27017],
   "portsAttributes": {
     "4200": {
@@ -60,6 +65,7 @@
     }
   },
   
-  "postCreateCommand": "npm install --prefix . && cd backend-java && mvn clean install -DskipTests",
+  "postCreateCommand": "npm install -g @angular/cli && npm install && cd backend-java && mvn clean install -DskipTests",
+  "postStartCommand": "echo '🚀 Project ready! Run \"npm start\" for frontend and \"cd backend-java && mvn spring-boot:run\" for backend.'",
   "remoteUser": "vscode"
 }

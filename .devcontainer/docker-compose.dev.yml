@@ -4,7 +4,7 @@ services:
   app:
     image: mcr.microsoft.com/devcontainers/base:jammy
     volumes:
-      - ../..:/workspaces/logistock:cached
+      - ..:/workspaces/logistock:cached
     # Overrides default command so things don't shut down after the process ends.
     command: sleep infinity
     networks:
@@ -18,11 +18,11 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: password123
-      MONGO_INITDB_DATABASE: logistock
+      MONGO_INITDB_DATABASE: logistockdb
     volumes:
       - mongodb_data:/data/db
       # Mount init script if needed, adjusting path relative to this file
-      - ../mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
     networks:
       - logistock-network
 

@@ -17,8 +17,8 @@ Este proyecto utiliza **Dev Containers** para proporcionar un entorno de desarro
 
 ### Servicios
 - 🗄️ **MongoDB 7.0** (puerto 27017)
-  - Usuario: `logistock`
-  - Contraseña: `logistock123`
+  - Usuario: `admin`
+  - Contraseña: `password123`
   - Base de datos: `logistockdb`
 
 ### Extensiones VS Code Preinstaladas
@@ -140,8 +140,8 @@ Edita `.devcontainer/devcontainer.json`:
 ⚠️ **Solo para desarrollo local:**
 
 - **MongoDB:**
-  - Usuario root: `logistock`
-  - Contraseña: `logistock123`
+  - Usuario root: `admin`
+  - Contraseña: `password123`
   - Base de datos: `logistockdb`
 
 🛡️ **IMPORTANTE:** Cambia estas credenciales antes de desplegar a producción.
@@ -154,5 +154,5 @@ Edita `.devcontainer/devcontainer.json`:
 
 ---
 
-**Última actualización:** 16 de noviembre de 2025  
+**Última actualización:** 22 de noviembre de 2025  
 **Autor:** FrancoGPU
