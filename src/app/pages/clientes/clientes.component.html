@@ -14,6 +14,14 @@
 
 <div class="clientes-container">
 
+  <div *ngIf="loading" class="loading-spinner">
+    Cargando clientes...
+  </div>
+
+  <div *ngIf="error" class="error-message">
+    {{ error }}
+  </div>
+
   <!-- Formulario para agregar/editar cliente -->
   <div class="formulario-container" *ngIf="mostrarFormulario">
     <h3>{{ clienteEditando ? 'Editar Cliente' : 'Nuevo Cliente' }}</h3>
@@ -52,6 +60,15 @@
           </select>
         </div>
       </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="isActive">Estado:</label>
+          <select id="isActive" [(ngModel)]="clienteTemp.isActive" name="isActive" required>
+            <option [value]="true">Activo</option>
+            <option [value]="false">Inactivo</option>
+          </select>
+        </div>
+      </div>
       <div class="form-actions">
         <button type="submit" class="btn-primary" [disabled]="!clienteForm.form.valid">
           {{ clienteEditando ? 'Actualizar' : 'Guardar' }}
@@ -86,30 +103,34 @@
     <table class="clientes-table">
       <thead>
         <tr>
-          <th>ID</th>
           <th>Nombre</th>
           <th>Empresa</th>
           <th>Email</th>
           <th>Teléfono</th>
           <th>Categoría</th>
+          <th>Estado</th>
           <th>Acciones</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let cliente of clientes">
-          <td>{{ cliente.id }}</td>
           <td>{{ cliente.nombre }}</td>
           <td>{{ cliente.empresa }}</td>
           <td>{{ cliente.email }}</td>
           <td>{{ cliente.telefono }}</td>
           <td>
             <span class="categoria-badge" [ngClass]="'categoria-' + cliente.categoria.toLowerCase()">
-              {{ cliente.categoria }}
+              {{ getCategoriaBadge(cliente.categoria) }} {{ cliente.categoria }}
+            </span>
+          </td>
+          <td>
+            <span class="estado-badge" [ngClass]="cliente.isActive ? 'activo' : 'inactivo'">
+              {{ cliente.isActive ? 'Activo' : 'Inactivo' }}
             </span>
           </td>
           <td class="acciones">
             <button class="btn-edit" (click)="editarCliente(cliente)">Editar</button>
-            <button class="btn-delete" (click)="eliminarCliente(cliente.id)">Eliminar</button>
+            <button class="btn-delete" (click)="eliminarCliente(cliente.id!)">Eliminar</button>
           </td>
         </tr>
       </tbody>

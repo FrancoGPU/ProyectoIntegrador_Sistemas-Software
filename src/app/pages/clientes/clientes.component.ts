@@ -1,16 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-
-interface Cliente {
-  id: number;
-  nombre: string;
-  empresa: string;
-  email: string;
-  telefono: string;
-  direccion: string;
-  categoria: 'Premium' | 'Corporativo' | 'Regular';
-}
+import { ClientesService, Cliente } from '../../services/clientes.service';
 
 @Component({
   selector: 'app-clientes',
@@ -19,58 +10,51 @@ interface Cliente {
   templateUrl: './clientes.component.html',
   styleUrl: './clientes.component.css'
 })
-export class ClientesComponent {
+export class ClientesComponent implements OnInit {
   mostrarFormulario = false;
   clienteEditando: Cliente | null = null;
+  loading = false;
+  error: string | null = null;
   
-  clienteTemp: Cliente = {
-    id: 0,
-    nombre: '',
-    empresa: '',
-    email: '',
-    telefono: '',
-    direccion: '',
-    categoria: 'Regular'
-  };
+  clienteTemp: Cliente = this.getEmptyCliente();
 
-  clientes: Cliente[] = [
-    {
-      id: 1,
-      nombre: 'Juan Pérez',
-      empresa: 'Corporación ABC',
-      email: 'juan@abc.com',
-      telefono: '987654321',
-      direccion: 'Av. Principal 123',
-      categoria: 'Premium'
-    },
-    {
-      id: 2,
-      nombre: 'María García',
-      empresa: 'Industrias XYZ',
-      email: 'maria@xyz.com',
-      telefono: '987654322',
-      direccion: 'Jr. Comercio 456',
-      categoria: 'Corporativo'
-    },
-    {
-      id: 3,
-      nombre: 'Carlos López',
-      empresa: 'Distribuidora 123',
-      email: 'carlos@dist123.com',
-      telefono: '987654323',
-      direccion: 'Av. Industrial 789',
-      categoria: 'Regular'
-    },
-    {
-      id: 4,
-      nombre: 'Ana Rodríguez',
-      empresa: 'Comercial Sur',
-      email: 'ana@sur.com',
-      telefono: '987654324',
-      direccion: 'Calle Lima 321',
-      categoria: 'Premium'
-    }
-  ];
+  clientes: Cliente[] = [];
+
+  constructor(private clientesService: ClientesService) {}
+
+  ngOnInit() {
+    this.loadClientes();
+  }
+
+  getEmptyCliente(): Cliente {
+    return {
+      nombre: '',
+      empresa: '',
+      email: '',
+      telefono: '',
+      direccion: '',
+      categoria: 'Regular',
+      isActive: true,
+      totalCompras: 0,
+      notas: ''
+    };
+  }
+
+  loadClientes() {
+    this.loading = true;
+    this.error = null;
+    this.clientesService.getClientes().subscribe({
+      next: (response) => {
+        this.clientes = response.clientes;
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Error al cargar clientes', err);
+        this.error = 'No se pudieron cargar los clientes';
+        this.loading = false;
+      }
+    });
+  }
 
   toggleFormulario() {
     this.mostrarFormulario = !this.mostrarFormulario;
@@ -80,20 +64,33 @@ export class ClientesComponent {
   }
 
   guardarCliente() {
-    if (this.clienteEditando) {
+    if (this.clienteEditando && this.clienteEditando.id) {
       // Actualizar cliente existente
-      const index = this.clientes.findIndex(c => c.id === this.clienteEditando!.id);
-      if (index !== -1) {
-        this.clientes[index] = { ...this.clienteTemp };
-      }
+      this.clientesService.updateCliente(this.clienteEditando.id, this.clienteTemp).subscribe({
+        next: () => {
+          this.loadClientes();
+          this.cancelarEdicion();
+          this.mostrarFormulario = false;
+        },
+        error: (err) => {
+          console.error('Error al actualizar cliente', err);
+          alert('Error al actualizar cliente');
+        }
+      });
     } else {
       // Agregar nuevo cliente
-      const nuevoId = Math.max(...this.clientes.map(c => c.id)) + 1;
-      this.clientes.push({ ...this.clienteTemp, id: nuevoId });
+      this.clientesService.createCliente(this.clienteTemp).subscribe({
+        next: () => {
+          this.loadClientes();
+          this.cancelarEdicion();
+          this.mostrarFormulario = false;
+        },
+        error: (err) => {
+          console.error('Error al crear cliente', err);
+          alert('Error al crear cliente');
+        }
+      });
     }
-    
-    this.cancelarEdicion();
-    this.mostrarFormulario = false;
   }
 
   editarCliente(cliente: Cliente) {
@@ -102,26 +99,30 @@ export class ClientesComponent {
     this.mostrarFormulario = true;
   }
 
-  eliminarCliente(id: number) {
+  eliminarCliente(id: string) {
     if (confirm('¿Está seguro de eliminar este cliente?')) {
-      this.clientes = this.clientes.filter(c => c.id !== id);
+      this.clientesService.deleteCliente(id).subscribe({
+        next: () => {
+          this.loadClientes();
+        },
+        error: (err) => {
+          console.error('Error al eliminar cliente', err);
+          alert('Error al eliminar cliente');
+        }
+      });
     }
   }
 
   cancelarEdicion() {
     this.clienteEditando = null;
-    this.clienteTemp = {
-      id: 0,
-      nombre: '',
-      empresa: '',
-      email: '',
-      telefono: '',
-      direccion: '',
-      categoria: 'Regular'
-    };
+    this.clienteTemp = this.getEmptyCliente();
   }
 
-  contarPorCategoria(categoria: 'Premium' | 'Corporativo' | 'Regular'): number {
+  contarPorCategoria(categoria: string): number {
     return this.clientes.filter(c => c.categoria === categoria).length;
+  }
+  
+  getCategoriaBadge(categoria: string): string {
+    return this.clientesService.getCategoriaBadge(categoria);
   }
 }

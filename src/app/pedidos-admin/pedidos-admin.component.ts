@@ -142,11 +142,11 @@ export class PedidosAdminComponent implements OnInit {
   }
 
   onClienteSeleccionado(): void {
-    const cliente = this.clientes.find(c => c._id === this.pedidoActual.clienteId);
+    const cliente = this.clientes.find(c => c.id === this.pedidoActual.clienteId);
     console.log('Cliente seleccionado:', cliente);
     
     if (cliente) {
-      this.pedidoActual.clienteNombre = `${cliente.nombre} ${cliente.apellido}`;
+      this.pedidoActual.clienteNombre = `${cliente.nombre} ${cliente.empresa ? '(' + cliente.empresa + ')' : ''}`;
       this.pedidoActual.clienteDireccion = cliente.direccion || '';
       this.pedidoActual.clienteTelefono = cliente.telefono || '';
       this.pedidoActual.direccionEntrega = cliente.direccion || '';

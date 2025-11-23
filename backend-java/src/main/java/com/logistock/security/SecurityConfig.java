@@ -21,6 +21,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -72,11 +73,12 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         
-        // Usar allowedOriginPatterns para permitir todos los orígenes con credenciales
-        configuration.addAllowedOriginPattern("*");
+        // Usar allowedOriginPatterns para permitir cualquier origen con credenciales
+        configuration.setAllowedOriginPatterns(Collections.singletonList("*"));
+        
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
-        configuration.setExposedHeaders(Arrays.asList("Authorization", "Content-Type"));
+        configuration.setExposedHeaders(Arrays.asList("Authorization", "Content-Type", "Access-Control-Allow-Origin", "Access-Control-Allow-Credentials"));
         configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);
 
@@ -84,6 +86,14 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         
         return source;
+    }
+
+    /**
+     * Bean explícito para el filtro CORS
+     */
+    @Bean
+    public org.springframework.web.filter.CorsFilter corsFilter() {
+        return new org.springframework.web.filter.CorsFilter(corsConfigurationSource());
     }
 
     /**
@@ -103,7 +113,7 @@ public class SecurityConfig {
             // Configurar autorización de peticiones
             .authorizeHttpRequests(auth -> auth
                 // Permitir OPTIONS para CORS preflight
-                .requestMatchers("OPTIONS", "/**").permitAll()
+                .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
                 // Permitir acceso público a endpoints de autenticación
                 .requestMatchers("/auth/**").permitAll()
                 // Permitir acceso a Swagger y actuator

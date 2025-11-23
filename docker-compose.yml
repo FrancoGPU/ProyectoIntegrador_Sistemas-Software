@@ -14,7 +14,7 @@ services:
       - "27017:27017"
     volumes:
       - mongodb_data:/data/db
-      - ./mongo-init:/docker-entrypoint-initdb.d
+      # - ./mongo-init:/docker-entrypoint-initdb.d
     networks:
       - logistock-network
 
@@ -65,7 +65,7 @@ services:
     container_name: logistock-frontend
     restart: unless-stopped
     ports:
-      - "4200:4200"
+      - "4200:80"
     environment:
       - NODE_ENV=development
       - API_BASE_URL=http://backend-java:8080

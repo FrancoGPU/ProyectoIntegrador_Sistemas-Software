@@ -75,6 +75,8 @@ export class ProveedoresComponent implements OnInit {
   }
 
   guardarProveedor() {
+    console.log('Enviando proveedor:', this.proveedorTemp);
+    
     if (this.proveedorEditando && this.proveedorEditando.id) {
       // Actualizar proveedor existente
       this.proveedoresService
@@ -87,7 +89,7 @@ export class ProveedoresComponent implements OnInit {
           },
           error: (error) => {
             console.error('Error al actualizar:', error);
-            alert('No se pudo actualizar el proveedor');
+            this.mostrarError(error, 'No se pudo actualizar el proveedor');
           },
         });
     } else {
@@ -100,10 +102,28 @@ export class ProveedoresComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error al crear:', error);
-          alert('No se pudo crear el proveedor');
+          this.mostrarError(error, 'No se pudo crear el proveedor');
         },
       });
     }
+  }
+
+  private mostrarError(error: any, defaultMsg: string) {
+    let msg = defaultMsg;
+    if (error.error) {
+      if (error.error.errors && Array.isArray(error.error.errors)) {
+        // Spring Boot validation errors
+        const validationErrors = error.error.errors.map((e: any) => `${e.field}: ${e.defaultMessage}`).join('\n');
+        msg += '\n' + validationErrors;
+      } else if (error.error.message) {
+        msg += ': ' + error.error.message;
+      } else if (typeof error.error === 'string') {
+        msg += ': ' + error.error;
+      }
+    } else if (error.message) {
+      msg += ': ' + error.message;
+    }
+    alert(msg);
   }
 
   editarProveedor(proveedor: Proveedor) {

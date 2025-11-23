@@ -56,8 +56,8 @@ export class RutasComponent implements OnInit {
       nombre: '',
       origen: '',
       destino: '',
-      distanciaKm: 0,
-      tiempoEstimadoMinutos: 0,
+      distanciaKm: 1,
+      tiempoEstimadoMinutos: 60,
       estado: 'Planificada',
       vehiculoAsignado: '',
       conductorAsignado: '',
@@ -78,6 +78,19 @@ export class RutasComponent implements OnInit {
   }
 
   guardarRuta() {
+    console.log('Enviando ruta:', this.rutaTemp);
+    
+    // Asegurar que los campos requeridos por el backend estén presentes
+    // Si el usuario ingresó tiempo en horas (si existiera ese campo en el formulario), convertir a minutos
+    if (this.rutaTemp.tiempoEstimadoHoras && !this.rutaTemp.tiempoEstimadoMinutos) {
+      this.rutaTemp.tiempoEstimadoMinutos = Math.round(this.rutaTemp.tiempoEstimadoHoras * 60);
+    }
+    
+    // Si el usuario ingresó costo estimado (si existiera), asignarlo a otrosCostos si costoTotal es 0
+    if (this.rutaTemp.costoEstimado && (!this.rutaTemp.otrosCostos || this.rutaTemp.otrosCostos === 0)) {
+      this.rutaTemp.otrosCostos = this.rutaTemp.costoEstimado;
+    }
+
     if (this.rutaEditando && this.rutaEditando.id) {
       this.rutasService
         .updateRuta(this.rutaEditando.id, this.rutaTemp)
@@ -89,7 +102,7 @@ export class RutasComponent implements OnInit {
           },
           error: (error) => {
             console.error('Error al actualizar:', error);
-            alert('No se pudo actualizar la ruta');
+            this.mostrarError(error, 'No se pudo actualizar la ruta');
           },
         });
     } else {
@@ -101,10 +114,27 @@ export class RutasComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error al crear:', error);
-          alert('No se pudo crear la ruta');
+          this.mostrarError(error, 'No se pudo crear la ruta');
         },
       });
     }
+  }
+
+  private mostrarError(error: any, defaultMsg: string) {
+    let msg = defaultMsg;
+    if (error.error) {
+      if (error.error.errors && Array.isArray(error.error.errors)) {
+        const validationErrors = error.error.errors.map((e: any) => `${e.field}: ${e.defaultMessage}`).join('\n');
+        msg += '\n' + validationErrors;
+      } else if (error.error.message) {
+        msg += ': ' + error.error.message;
+      } else if (typeof error.error === 'string') {
+        msg += ': ' + error.error;
+      }
+    } else if (error.message) {
+      msg += ': ' + error.message;
+    }
+    alert(msg);
   }
 
   editarRuta(ruta: Ruta) {

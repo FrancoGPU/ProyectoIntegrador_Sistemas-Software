@@ -48,7 +48,8 @@
         </div>
         <div class="form-group">
           <label for="telefono">Teléfono:</label>
-          <input type="tel" id="telefono" [(ngModel)]="proveedorTemp.telefono" name="telefono" required>
+          <input type="tel" id="telefono" [(ngModel)]="proveedorTemp.telefono" name="telefono" 
+                 pattern="^[\d\s\-\+\(\)]+$" title="Solo números, espacios, guiones y paréntesis" required>
         </div>
       </div>
       <div class="form-row">
@@ -84,7 +85,7 @@
         <div class="form-group">
           <label for="diasPago">Días de Pago:</label>
           <input type="number" id="diasPago" [(ngModel)]="proveedorTemp.diasPago" 
-                 name="diasPago" min="0" required>
+                 name="diasPago" min="1" max="365" required>
         </div>
       </div>
       <div class="form-row">

@@ -154,8 +154,8 @@
                 <select [(ngModel)]="pedidoActual.clienteId" (change)="onClienteSeleccionado()" 
                         class="form-select form-select-lg" required>
                   <option value="">-- Seleccione un cliente --</option>
-                  <option *ngFor="let cliente of clientes" [value]="cliente._id">
-                    {{ cliente.nombre }} {{ cliente.apellido }} | Tel: {{ cliente.telefono }} | {{ cliente.empresa || 'Sin empresa' }}
+                  <option *ngFor="let cliente of clientes" [value]="cliente.id">
+                    {{ cliente.nombre }} | Tel: {{ cliente.telefono }} | {{ cliente.empresa || 'Sin empresa' }}
                   </option>
                 </select>
                 <div class="form-text" *ngIf="!pedidoActual.clienteId">
