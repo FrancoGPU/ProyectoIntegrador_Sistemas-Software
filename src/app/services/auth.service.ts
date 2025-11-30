@@ -80,6 +80,38 @@ export class AuthService {
   }
 
   /**
+   * Registrar nuevo usuario (Rol USER)
+   */
+  register(user: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/auth/register`, user)
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          let errorMessage = 'Error al registrar usuario';
+          if (error.error && error.error.error) {
+            errorMessage = error.error.error;
+          }
+          return throwError(() => new Error(errorMessage));
+        })
+      );
+  }
+
+  /**
+   * Crear nuevo administrador (Solo para ADMIN)
+   */
+  createAdmin(user: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/users/create-admin`, user)
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          let errorMessage = 'Error al crear administrador';
+          if (error.error && error.error.error) {
+            errorMessage = error.error.error;
+          }
+          return throwError(() => new Error(errorMessage));
+        })
+      );
+  }
+
+  /**
    * Cerrar sesión
    */
   logout(): void {

@@ -9,10 +9,11 @@
         </svg>
         <h1>LogiStock Solutions</h1>
       </div>
-      <p class="subtitle">Sistema de Gestión Logística</p>
+      <p class="subtitle">{{ isRegistering ? 'Crear Nueva Cuenta' : 'Sistema de Gestión Logística' }}</p>
     </div>
 
-    <form class="login-form" (ngSubmit)="onSubmit()">
+    <!-- Formulario de Login -->
+    <form class="login-form" (ngSubmit)="onSubmit()" *ngIf="!isRegistering">
       <div class="form-group">
         <label for="username">
           <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -88,9 +89,49 @@
           Iniciando...
         </span>
       </button>
+
+      <div class="text-center mt-3">
+        <a href="javascript:void(0)" (click)="toggleRegister()" class="text-decoration-none">¿No tienes cuenta? Regístrate</a>
+      </div>
     </form>
 
-    <div class="login-footer">
+    <!-- Formulario de Registro -->
+    <form class="login-form" (ngSubmit)="onRegister()" *ngIf="isRegistering">
+      <div class="form-group">
+        <label for="regUsername">Usuario</label>
+        <input type="text" id="regUsername" name="regUsername" [(ngModel)]="regUsername" required [disabled]="loading" />
+      </div>
+
+      <div class="form-group">
+        <label for="regEmail">Email</label>
+        <input type="email" id="regEmail" name="regEmail" [(ngModel)]="regEmail" required [disabled]="loading" />
+      </div>
+
+      <div class="form-group">
+        <label for="regPassword">Contraseña</label>
+        <input type="password" id="regPassword" name="regPassword" [(ngModel)]="regPassword" required [disabled]="loading" />
+      </div>
+
+      <div class="form-group">
+        <label for="regConfirmPassword">Confirmar Contraseña</label>
+        <input type="password" id="regConfirmPassword" name="regConfirmPassword" [(ngModel)]="regConfirmPassword" required [disabled]="loading" />
+      </div>
+
+      <div class="error-message" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </div>
+
+      <button type="submit" class="login-button" [disabled]="loading">
+        <span *ngIf="!loading">Registrarse</span>
+        <span *ngIf="loading">Registrando...</span>
+      </button>
+
+      <div class="text-center mt-3">
+        <a href="javascript:void(0)" (click)="toggleRegister()" class="text-decoration-none">¿Ya tienes cuenta? Inicia Sesión</a>
+      </div>
+    </form>
+
+    <div class="login-footer" *ngIf="!isRegistering">
       <div class="demo-credentials">
         <p class="demo-title">🔑 Credenciales de demostración:</p>
         <div class="credential-box">

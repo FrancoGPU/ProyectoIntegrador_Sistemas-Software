@@ -17,6 +17,13 @@ export class LoginComponent {
   errorMessage: string = '';
   loading: boolean = false;
   showPassword: boolean = false;
+  isRegistering: boolean = false;
+
+  // Campos de registro
+  regUsername: string = '';
+  regEmail: string = '';
+  regPassword: string = '';
+  regConfirmPassword: string = '';
 
   constructor(
     private authService: AuthService,
@@ -26,6 +33,51 @@ export class LoginComponent {
     if (this.authService.isAuthenticated()) {
       this.redirectByRole();
     }
+  }
+
+  toggleRegister(): void {
+    this.isRegistering = !this.isRegistering;
+    this.errorMessage = '';
+    this.username = '';
+    this.password = '';
+    this.regUsername = '';
+    this.regEmail = '';
+    this.regPassword = '';
+    this.regConfirmPassword = '';
+  }
+
+  onRegister(): void {
+    if (!this.regUsername || !this.regEmail || !this.regPassword || !this.regConfirmPassword) {
+      this.errorMessage = 'Todos los campos son obligatorios';
+      return;
+    }
+
+    if (this.regPassword !== this.regConfirmPassword) {
+      this.errorMessage = 'Las contraseñas no coinciden';
+      return;
+    }
+
+    this.loading = true;
+    this.errorMessage = '';
+
+    const newUser = {
+      username: this.regUsername,
+      email: this.regEmail,
+      password: this.regPassword
+    };
+
+    this.authService.register(newUser).subscribe({
+      next: () => {
+        this.loading = false;
+        this.isRegistering = false;
+        this.errorMessage = '';
+        alert('Registro exitoso. Por favor inicie sesión.');
+      },
+      error: (error) => {
+        this.loading = false;
+        this.errorMessage = error.message || 'Error al registrar usuario';
+      }
+    });
   }
 
   onSubmit(): void {

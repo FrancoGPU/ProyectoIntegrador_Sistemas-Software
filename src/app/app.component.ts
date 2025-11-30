@@ -1,17 +1,27 @@
 import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { RouterOutlet, RouterModule, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterModule, CommonModule],
+  imports: [RouterOutlet, RouterModule, CommonModule, FormsModule],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit, OnDestroy {
   title = 'proyecto-integrador';
   isMenuOpen = false;
+  
+  // Modal de Admin
+  showAdminModal = false;
+  adminUsername = '';
+  adminEmail = '';
+  adminPassword = '';
+  adminConfirmPassword = '';
+  adminError = '';
+  adminLoading = false;
 
   constructor(
     public authService: AuthService,
@@ -44,6 +54,53 @@ export class AppComponent implements OnInit, OnDestroy {
   logout() {
     this.closeMenu();
     this.authService.logout();
+  }
+
+  // Métodos para el modal de Admin
+  openAdminModal() {
+    this.showAdminModal = true;
+    this.adminUsername = '';
+    this.adminEmail = '';
+    this.adminPassword = '';
+    this.adminConfirmPassword = '';
+    this.adminError = '';
+  }
+
+  closeAdminModal() {
+    this.showAdminModal = false;
+  }
+
+  createAdmin() {
+    if (!this.adminUsername || !this.adminEmail || !this.adminPassword || !this.adminConfirmPassword) {
+      this.adminError = 'Todos los campos son obligatorios';
+      return;
+    }
+
+    if (this.adminPassword !== this.adminConfirmPassword) {
+      this.adminError = 'Las contraseñas no coinciden';
+      return;
+    }
+
+    this.adminLoading = true;
+    this.adminError = '';
+
+    const newAdmin = {
+      username: this.adminUsername,
+      email: this.adminEmail,
+      password: this.adminPassword
+    };
+
+    this.authService.createAdmin(newAdmin).subscribe({
+      next: () => {
+        this.adminLoading = false;
+        this.closeAdminModal();
+        alert('Administrador creado exitosamente');
+      },
+      error: (error) => {
+        this.adminLoading = false;
+        this.adminError = error.message || 'Error al crear administrador';
+      }
+    });
   }
 
   get isLoginPage(): boolean {

@@ -15,6 +15,17 @@
           <li class="nav-item"><a routerLink="/rutas" routerLinkActive="active">Rutas</a></li>
           <li class="nav-item"><a routerLink="/pedidos" routerLinkActive="active">Pedidos</a></li>
           <li class="nav-item"><a routerLink="/reportes" routerLinkActive="active">Reportes</a></li>
+          <li class="nav-item">
+            <button class="btn-new-admin" (click)="openAdminModal()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="16" height="16">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="8.5" cy="7" r="4"></circle>
+                <line x1="20" y1="8" x2="20" y2="14"></line>
+                <line x1="23" y1="11" x2="17" y2="11"></line>
+              </svg>
+              Nuevo Admin
+            </button>
+          </li>
         </ng-container>
 
         <!-- Enlaces para USER (Delivery) -->
@@ -82,4 +93,41 @@
   <main class="main-content" [class.no-navbar]="isLoginPage">
     <router-outlet></router-outlet>
   </main>
+
+  <!-- Modal para crear Admin -->
+  <div class="modal-overlay" *ngIf="showAdminModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Crear Nuevo Administrador</h3>
+        <button class="close-button" (click)="closeAdminModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="createAdmin()">
+          <div class="form-group">
+            <label>Usuario</label>
+            <input type="text" [(ngModel)]="adminUsername" name="adminUsername" required>
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" [(ngModel)]="adminEmail" name="adminEmail" required>
+          </div>
+          <div class="form-group">
+            <label>Contraseña</label>
+            <input type="password" [(ngModel)]="adminPassword" name="adminPassword" required>
+          </div>
+          <div class="form-group">
+            <label>Confirmar Contraseña</label>
+            <input type="password" [(ngModel)]="adminConfirmPassword" name="adminConfirmPassword" required>
+          </div>
+          <div class="error-message" *ngIf="adminError">{{ adminError }}</div>
+          <div class="modal-actions">
+            <button type="button" class="btn-cancel" (click)="closeAdminModal()">Cancelar</button>
+            <button type="submit" class="btn-submit" [disabled]="adminLoading">
+              {{ adminLoading ? 'Creando...' : 'Crear Admin' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 </div>
