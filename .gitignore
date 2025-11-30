@@ -57,3 +57,4 @@ backend-java/target/
 *.nar
 hs_err_pid*
 *.log
+scripts/node_modules/
