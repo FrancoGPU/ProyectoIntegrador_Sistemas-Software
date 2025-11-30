@@ -125,6 +125,7 @@ public class JwtUtil {
                     .parseSignedClaims(token);
             return !isTokenExpired(token);
         } catch (Exception e) {
+            System.out.println("JwtUtil: Token validation error: " + e.getMessage());
             return false;
         }
     }

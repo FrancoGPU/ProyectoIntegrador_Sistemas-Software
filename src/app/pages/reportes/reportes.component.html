@@ -1,0 +1,32 @@
+<div class="container-fluid p-4">
+    <h2 class="mb-4">Centro de Reportes</h2>
+    
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">📦 Inventario General</h5>
+                    <p class="card-text">Descarga el reporte completo de todos los productos en stock, incluyendo precios y ubicaciones.</p>
+                    <div class="d-flex gap-2">
+                        <button (click)="downloadPdf()" class="btn btn-danger">
+                            <i class="bi bi-file-earmark-pdf"></i> Descargar PDF
+                        </button>
+                        <button (click)="downloadExcel()" class="btn btn-success">
+                            <i class="bi bi-file-earmark-excel"></i> Descargar Excel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 shadow-sm opacity-50">
+                <div class="card-body">
+                    <h5 class="card-title">🚚 Reporte de Rutas (Próximamente)</h5>
+                    <p class="card-text">Historial de rutas completadas y eficiencia de entregas.</p>
+                    <button class="btn btn-secondary" disabled>No disponible</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -103,6 +103,18 @@ export class ApiService {
   }
 
   /**
+   * Descargar archivo (Blob)
+   */
+  download(endpoint: string): Observable<Blob> {
+    this.setLoading(true);
+    return this.http.get(`${this.baseUrl}/${endpoint}`, { responseType: 'blob' })
+      .pipe(
+        finalize(() => this.setLoading(false)),
+        catchError(this.handleError.bind(this))
+      );
+  }
+
+  /**
    * Manejo de errores
    */
   private handleError(error: HttpErrorResponse) {

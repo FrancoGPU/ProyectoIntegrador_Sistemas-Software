@@ -9,6 +9,7 @@ import {
 import { LoginComponent } from './pages/login/login.component';
 import { PedidosAdminComponent } from './pedidos-admin/pedidos-admin.component';
 import { EntregasComponent } from './entregas/entregas.component';
+import { ReportesComponent } from './pages/reportes/reportes.component';
 import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
@@ -21,5 +22,6 @@ export const routes: Routes = [
   { path: 'rutas', component: RutasComponent, canActivate: [authGuard] },
   { path: 'pedidos', component: PedidosAdminComponent, canActivate: [authGuard] },
   { path: 'entregas', component: EntregasComponent, canActivate: [authGuard] },
+  { path: 'reportes', component: ReportesComponent, canActivate: [authGuard] },
   { path: '**', redirectTo: '/login' },
 ];
