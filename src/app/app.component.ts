@@ -13,6 +13,7 @@ import { AuthService } from './services/auth.service';
 export class AppComponent implements OnInit, OnDestroy {
   title = 'proyecto-integrador';
   isMenuOpen = false;
+  isDarkMode = false;
   
   // Modal de Admin
   showAdminModal = false;
@@ -110,6 +111,27 @@ export class AppComponent implements OnInit, OnDestroy {
   ngOnInit() {
     // Listener adicional para scroll del contenido principal
     document.addEventListener('scroll', this.handleScroll.bind(this));
+
+    // Inicializar tema
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      this.isDarkMode = true;
+      document.documentElement.setAttribute('data-theme', 'dark');
+    } else if (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      this.isDarkMode = true;
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  }
+
+  toggleTheme() {
+    this.isDarkMode = !this.isDarkMode;
+    if (this.isDarkMode) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+      localStorage.setItem('theme', 'light');
+    }
   }
 
   ngOnDestroy() {

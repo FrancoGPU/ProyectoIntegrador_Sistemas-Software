@@ -1,9 +1,17 @@
+<div class="page-header">
+  <div class="page-header-content">
+    <div>
+      <h1 class="page-title">Mis Entregas</h1>
+      <p class="page-subtitle">Gestión de entregas y pedidos disponibles</p>
+    </div>
+  </div>
+</div>
+
 <div class="entregas-container">
-  <h1>Mis Entregas</h1>
 
   <!-- Mensaje de error -->
   <div class="alert alert-danger" *ngIf="mensajeError">
-    <i class="bi bi-exclamation-circle"></i> {{ mensajeError }}
+    <i class="fas fa-exclamation-circle"></i> {{ mensajeError }}
   </div>
 
   <!-- Loader -->
@@ -14,8 +22,8 @@
 
   <!-- Mis entregas activas -->
   <section class="section-mis-entregas" *ngIf="!cargando">
-    <h2>
-      <i class="bi bi-truck"></i> Entregas Activas
+    <h2 class="section-title">
+      <i class="fas fa-truck"></i> Entregas Activas
       <span class="badge bg-primary">{{ misEntregas.length }}</span>
     </h2>
 
@@ -29,46 +37,48 @@
         </div>
 
         <div class="card-body">
-          <div class="cliente-info">
+          <div class="info-group cliente-info">
             <h3>
-              <i class="bi bi-person-circle"></i>
+              <i class="fas fa-user-circle"></i>
               {{ pedido.clienteNombre }}
             </h3>
-            <p>
-              <i class="bi bi-telephone"></i>
-              {{ pedido.clienteTelefono }}
-            </p>
+            <div class="info-row">
+              <i class="fas fa-phone"></i>
+              <span>{{ pedido.clienteTelefono }}</span>
+            </div>
           </div>
 
-          <div class="direccion-info">
-            <p>
-              <i class="bi bi-geo-alt"></i>
-              <strong>Dirección:</strong>
-            </p>
-            <p class="direccion">{{ pedido.direccionEntrega }}</p>
+          <div class="info-group">
+            <div class="info-row">
+              <i class="fas fa-map-marker-alt"></i>
+              <span class="info-value">{{ pedido.direccionEntrega }}</span>
+            </div>
           </div>
 
-          <div class="productos-info">
-            <p>
-              <i class="bi bi-box-seam"></i>
-              <strong>{{ pedido.productos.length }} productos</strong>
-              ({{ calcularTotalProductos(pedido.productos) }} items)
-            </p>
-            <p class="total">
-              <strong>Total: ${{ pedido.total?.toFixed(2) }}</strong>
-            </p>
+          <div class="info-group">
+            <div class="info-row">
+              <i class="fas fa-box-open"></i>
+              <span>
+                <strong>{{ pedido.productos.length }} productos</strong>
+                ({{ calcularTotalProductos(pedido.productos) }} items)
+              </span>
+            </div>
+            <div class="info-row">
+              <i class="fas fa-dollar-sign"></i>
+              <span class="total-amount">{{ pedido.total?.toFixed(2) }}</span>
+            </div>
           </div>
 
           <div class="observaciones" *ngIf="pedido.observaciones">
-            <p><strong>Observaciones:</strong></p>
+            <strong><i class="fas fa-comment-alt me-1"></i> Observaciones:</strong>
             <p class="obs-text">{{ pedido.observaciones }}</p>
           </div>
 
           <div class="fechas">
-            <small *ngIf="pedido.fechaAsignacion">
-              <i class="bi bi-clock"></i>
-              Asignado: {{ pedido.fechaAsignacion | date:'short' }}
-            </small>
+            <div class="info-row">
+              <i class="fas fa-clock"></i>
+              <small>Asignado: {{ pedido.fechaAsignacion | date:'short' }}</small>
+            </div>
           </div>
         </div>
 
@@ -77,21 +87,21 @@
             class="btn btn-warning" 
             *ngIf="pedido.estado === 'ASIGNADO'"
             (click)="iniciarEntrega(pedido)">
-            <i class="bi bi-truck"></i> Iniciar Entrega
+            <i class="fas fa-truck-moving"></i> Iniciar Entrega
           </button>
 
           <button 
             class="btn btn-success" 
             *ngIf="pedido.estado === 'EN_CAMINO'"
             (click)="marcarEntregado(pedido)">
-            <i class="bi bi-check-circle"></i> Marcar como Entregado
+            <i class="fas fa-check-circle"></i> Marcar Entregado
           </button>
         </div>
       </div>
     </div>
 
     <div class="empty-state" *ngIf="misEntregas.length === 0">
-      <i class="bi bi-inbox"></i>
+      <i class="fas fa-inbox"></i>
       <p>No tienes entregas activas</p>
       <small>Toma pedidos disponibles para comenzar</small>
     </div>
@@ -99,8 +109,8 @@
 
   <!-- Pedidos disponibles -->
   <section class="section-disponibles" *ngIf="!cargando">
-    <h2>
-      <i class="bi bi-box-seam"></i> Pedidos Disponibles
+    <h2 class="section-title">
+      <i class="fas fa-box-open"></i> Pedidos Disponibles
       <span class="badge bg-success">{{ pedidosDisponibles.length }}</span>
     </h2>
 
@@ -112,59 +122,61 @@
         </div>
 
         <div class="card-body">
-          <div class="cliente-info">
+          <div class="info-group cliente-info">
             <h3>
-              <i class="bi bi-person-circle"></i>
+              <i class="fas fa-user-circle"></i>
               {{ pedido.clienteNombre }}
             </h3>
-            <p>
-              <i class="bi bi-telephone"></i>
-              {{ pedido.clienteTelefono }}
-            </p>
+            <div class="info-row">
+              <i class="fas fa-phone"></i>
+              <span>{{ pedido.clienteTelefono }}</span>
+            </div>
           </div>
 
-          <div class="direccion-info">
-            <p>
-              <i class="bi bi-geo-alt"></i>
-              <strong>Dirección:</strong>
-            </p>
-            <p class="direccion">{{ pedido.direccionEntrega }}</p>
+          <div class="info-group">
+            <div class="info-row">
+              <i class="fas fa-map-marker-alt"></i>
+              <span class="info-value">{{ pedido.direccionEntrega }}</span>
+            </div>
           </div>
 
-          <div class="productos-info">
-            <p>
-              <i class="bi bi-box-seam"></i>
-              {{ pedido.productos.length }} productos
-              ({{ calcularTotalProductos(pedido.productos) }} items)
-            </p>
-            <p class="total">
-              Total: <strong>${{ pedido.total?.toFixed(2) }}</strong>
-            </p>
+          <div class="info-group">
+            <div class="info-row">
+              <i class="fas fa-box-open"></i>
+              <span>
+                {{ pedido.productos.length }} productos
+                ({{ calcularTotalProductos(pedido.productos) }} items)
+              </span>
+            </div>
+            <div class="info-row">
+              <i class="fas fa-dollar-sign"></i>
+              <span class="total-amount">{{ pedido.total?.toFixed(2) }}</span>
+            </div>
           </div>
 
           <div class="observaciones" *ngIf="pedido.observaciones">
-            <p><strong>Observaciones:</strong></p>
+            <strong><i class="fas fa-comment-alt me-1"></i> Observaciones:</strong>
             <p class="obs-text">{{ pedido.observaciones }}</p>
           </div>
 
           <div class="fechas">
-            <small>
-              <i class="bi bi-calendar"></i>
-              Creado: {{ pedido.fechaCreacion | date:'short' }}
-            </small>
+            <div class="info-row">
+              <i class="fas fa-calendar-alt"></i>
+              <small>Creado: {{ pedido.fechaCreacion | date:'short' }}</small>
+            </div>
           </div>
         </div>
 
         <div class="card-actions">
           <button class="btn btn-primary" (click)="tomarPedido(pedido)">
-            <i class="bi bi-hand-thumbs-up"></i> Tomar Pedido
+            <i class="fas fa-hand-holding"></i> Tomar Pedido
           </button>
         </div>
       </div>
     </div>
 
     <div class="empty-state" *ngIf="pedidosDisponibles.length === 0">
-      <i class="bi bi-check-circle"></i>
+      <i class="fas fa-check-circle"></i>
       <p>No hay pedidos disponibles en este momento</p>
       <small>Vuelve más tarde para ver nuevos pedidos</small>
     </div>

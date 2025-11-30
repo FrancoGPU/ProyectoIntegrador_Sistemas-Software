@@ -2,7 +2,9 @@
   <div class="page-header-content">
     <div>
       <h1 class="page-title">Gestión de Inventario</h1>
-      <p class="page-subtitle">Control y seguimiento de productos en tiempo real</p>
+      <p class="page-subtitle">
+        Control y seguimiento de productos en tiempo real
+      </p>
     </div>
     <div class="page-actions">
       <button class="btn-primary" (click)="openAddProductModal()">
@@ -14,12 +16,21 @@
 </div>
 
 <div class="inventario-container">
-
   <!-- Controles superiores -->
   <div class="inventory-controls">
     <div class="search-controls">
-      <input type="text" placeholder="Buscar productos..." class="search-input" [(ngModel)]="searchTerm" (input)="onSearch()">
-      <select class="filter-select" [(ngModel)]="selectedCategory" (change)="onCategoryChange()">
+      <input
+        type="text"
+        placeholder="Buscar productos..."
+        class="search-input"
+        [(ngModel)]="searchTerm"
+        (input)="onSearch()"
+      />
+      <select
+        class="filter-select"
+        [(ngModel)]="selectedCategory"
+        (change)="onCategoryChange()"
+      >
         <option value="">Todas las categorías</option>
         <option value="Tecnología">Tecnología</option>
         <option value="Oficina">Oficina</option>
@@ -27,7 +38,11 @@
         <option value="Consumo">Consumo</option>
         <option value="Otros">Otros</option>
       </select>
-      <button class="btn-secondary" (click)="clearFilters()" *ngIf="searchTerm || selectedCategory">
+      <button
+        class="btn-secondary"
+        (click)="clearFilters()"
+        *ngIf="searchTerm || selectedCategory"
+      >
         Limpiar Filtros
       </button>
     </div>
@@ -38,28 +53,30 @@
     <div class="summary-card" [class.loading]="loadingStats">
       <div class="summary-icon">📦</div>
       <div class="summary-content">
-        <h3>{{loadingStats ? '...' : formatNumber(stats.totalProducts)}}</h3>
+        <h3>{{ loadingStats ? "..." : formatNumber(stats.totalProducts) }}</h3>
         <p>Total Productos</p>
       </div>
     </div>
     <div class="summary-card" [class.loading]="loadingStats">
       <div class="summary-icon">📊</div>
       <div class="summary-content">
-        <h3>{{loadingStats ? '...' : formatCurrency(stats.totalValue)}}</h3>
+        <h3>{{ loadingStats ? "..." : formatCurrency(stats.totalValue) }}</h3>
         <p>Valor Total</p>
       </div>
     </div>
     <div class="summary-card warning" [class.loading]="loadingStats">
       <div class="summary-icon">⚠️</div>
       <div class="summary-content">
-        <h3>{{loadingStats ? '...' : stats.lowStock}}</h3>
+        <h3>{{ loadingStats ? "..." : stats.lowStock }}</h3>
         <p>Stock Bajo</p>
       </div>
     </div>
     <div class="summary-card success" [class.loading]="loadingStats">
       <div class="summary-icon">✅</div>
       <div class="summary-content">
-        <h3>{{loadingStats ? '...' : (stats.totalProducts - stats.lowStock)}}</h3>
+        <h3>
+          {{ loadingStats ? "..." : stats.totalProducts - stats.lowStock }}
+        </h3>
         <p>Disponibles</p>
       </div>
     </div>
@@ -70,7 +87,7 @@
     <div *ngIf="loading" class="loading-container">
       <div class="loading-spinner">Cargando productos...</div>
     </div>
-    
+
     <table class="inventory-table" *ngIf="!loading">
       <thead>
         <tr>
@@ -85,36 +102,54 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let product of products" [class.low-stock]="product.stock <= product.minStock">
-          <td class="product-code">{{product.code}}</td>
+        <tr
+          *ngFor="let product of products"
+          [class.low-stock]="product.stock <= product.minStock"
+        >
+          <td class="product-code">{{ product.code }}</td>
           <td class="product-name">
             <div class="product-info">
-              <strong>{{product.name}}</strong>
-              <span class="product-description">{{product.description}}</span>
+              <strong>{{ product.name }}</strong>
+              <span class="product-description">{{ product.description }}</span>
             </div>
           </td>
           <td class="product-category">
-            <span class="category-badge" [class]="getCategoryClass(product.category)">
-              {{product.category}}
+            <span
+              class="category-badge"
+              [class]="getCategoryClass(product.category)"
+            >
+              {{ product.category }}
             </span>
           </td>
-          <td class="stock-current">{{product.stock}}</td>
-          <td class="stock-min">{{product.minStock}}</td>
-          <td class="product-price">{{formatCurrency(product.price)}}</td>
+          <td class="stock-current">{{ product.stock }}</td>
+          <td class="stock-min">{{ product.minStock }}</td>
+          <td class="product-price">{{ formatCurrency(product.price) }}</td>
           <td class="product-status">
             <span class="status-badge" [class]="getStatusClass(product)">
-              {{getStatusText(product)}}
+              {{ getStatusText(product) }}
             </span>
           </td>
           <td class="product-actions">
-            <button class="action-btn edit" (click)="editProduct(product)" title="Editar">
-              ✏️
+            <button
+              class="action-btn action-btn-edit"
+              (click)="editProduct(product)"
+              title="Editar"
+            >
+              <i class="fas fa-edit"></i>
             </button>
-            <button class="action-btn stock" (click)="updateStock(product)" title="Actualizar Stock">
-              📊
+            <button
+              class="action-btn action-btn-view"
+              (click)="updateStock(product)"
+              title="Actualizar Stock"
+            >
+              <i class="fas fa-box"></i>
             </button>
-            <button class="action-btn delete" (click)="deleteProduct(product)" title="Eliminar">
-              🗑️
+            <button
+              class="action-btn action-btn-delete"
+              (click)="deleteProduct(product)"
+              title="Eliminar"
+            >
+              <i class="fas fa-trash"></i>
             </button>
           </td>
         </tr>
@@ -123,75 +158,136 @@
         </tr>
       </tbody>
     </table>
-    
+
     <!-- Paginación -->
     <div class="pagination" *ngIf="!loading && totalPages > 1">
-      <button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1" class="pagination-btn">
+      <button
+        (click)="goToPage(currentPage - 1)"
+        [disabled]="currentPage === 1"
+        class="pagination-btn"
+      >
         ← Anterior
       </button>
       <span class="pagination-info">
-        Página {{currentPage}} de {{totalPages}} ({{totalProducts}} productos)
+        Página {{ currentPage }} de {{ totalPages }} ({{
+          totalProducts
+        }}
+        productos)
       </span>
-      <button (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages" class="pagination-btn">
+      <button
+        (click)="goToPage(currentPage + 1)"
+        [disabled]="currentPage === totalPages"
+        class="pagination-btn"
+      >
         Siguiente →
       </button>
     </div>
   </div>
 
   <!-- Modal para agregar/editar producto -->
-  <div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
-    <div class="modal-content" (click)="$event.stopPropagation()">
-      <div class="modal-header">
-        <h2>{{isEditing ? 'Editar' : 'Agregar'}} Producto</h2>
-        <button class="close-btn" (click)="closeModal()">✕</button>
-      </div>
-      <div class="modal-body">
-        <form class="product-form">
-          <div class="form-group">
-            <label>Código del Producto</label>
-            <input type="text" [(ngModel)]="currentProduct.code" name="code" required>
-          </div>
-          <div class="form-group">
-            <label>Nombre del Producto</label>
-            <input type="text" [(ngModel)]="currentProduct.name" name="name" required>
-          </div>
-          <div class="form-group">
-            <label>Descripción</label>
-            <textarea [(ngModel)]="currentProduct.description" name="description" rows="3"></textarea>
-          </div>
-          <div class="form-row">
+  <div class="modal show" *ngIf="showModal" (click)="closeModal()">
+    <div class="modal-dialog" (click)="$event.stopPropagation()">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title">
+            {{ isEditing ? "Editar" : "Agregar" }} Producto
+          </h2>
+          <button class="btn-close" (click)="closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <form class="product-form">
             <div class="form-group">
-              <label>Categoría</label>
-              <select [(ngModel)]="currentProduct.category" name="category" required>
-                <option value="Tecnología">Tecnología</option>
-                <option value="Oficina">Oficina</option>
-                <option value="Industrial">Industrial</option>
-                <option value="Consumo">Consumo</option>
-                <option value="Otros">Otros</option>
-              </select>
+              <label class="form-label">Código del Producto</label>
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="currentProduct.code"
+                name="code"
+                required
+              />
             </div>
             <div class="form-group">
-              <label>Precio Unitario (S/.)</label>
-              <input type="number" [(ngModel)]="currentProduct.price" name="price" step="0.01" min="0" required>
+              <label class="form-label">Nombre del Producto</label>
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="currentProduct.name"
+                name="name"
+                required
+              />
             </div>
-          </div>
-          <div class="form-row">
             <div class="form-group">
-              <label>Stock Actual</label>
-              <input type="number" [(ngModel)]="currentProduct.stock" name="stock" min="0" required>
+              <label class="form-label">Descripción</label>
+              <textarea
+                class="form-control"
+                [(ngModel)]="currentProduct.description"
+                name="description"
+                rows="3"
+              ></textarea>
             </div>
-            <div class="form-group">
-              <label>Stock Mínimo</label>
-              <input type="number" [(ngModel)]="currentProduct.minStock" name="minStock" min="0" required>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Categoría</label>
+                <select
+                  class="form-select"
+                  [(ngModel)]="currentProduct.category"
+                  name="category"
+                  required
+                >
+                  <option value="Tecnología">Tecnología</option>
+                  <option value="Oficina">Oficina</option>
+                  <option value="Industrial">Industrial</option>
+                  <option value="Consumo">Consumo</option>
+                  <option value="Otros">Otros</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Precio Unitario (S/.)</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  [(ngModel)]="currentProduct.price"
+                  name="price"
+                  step="0.01"
+                  min="0"
+                  required
+                />
+              </div>
             </div>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button class="btn-secondary" (click)="closeModal()">Cancelar</button>
-        <button class="btn-primary" (click)="saveProduct()">
-          {{isEditing ? 'Actualizar' : 'Guardar'}}
-        </button>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Stock Actual</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  [(ngModel)]="currentProduct.stock"
+                  name="stock"
+                  min="0"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Stock Mínimo</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  [(ngModel)]="currentProduct.minStock"
+                  name="minStock"
+                  min="0"
+                  required
+                />
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" (click)="closeModal()">
+            Cancelar
+          </button>
+          <button class="btn btn-primary" (click)="saveProduct()">
+            {{ isEditing ? "Actualizar" : "Guardar" }}
+          </button>
+        </div>
       </div>
     </div>
   </div>

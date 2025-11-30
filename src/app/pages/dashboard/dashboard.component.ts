@@ -19,10 +19,10 @@ export class DashboardComponent implements OnInit {
   rutasActivas: number = 0;
   totalProveedores: number = 0;
 
-  // Datos operacionales
-  entregasHoy: number = 23;
-  eficienciaRutas: number = 94;
-  tiempoPromedio: number = 2.4;
+  // Datos para la nueva vista
+  lowStockProducts: any[] = [];
+  recentActivity: any[] = [];
+  pendingOrders: any[] = [];
 
   // Estado de carga
   loading: boolean = true;
@@ -45,6 +45,33 @@ export class DashboardComponent implements OnInit {
         this.totalClientes = data.clientesActivos;
         this.totalProveedores = data.proveedoresActivos;
         this.rutasActivas = data.rutasEnProceso;
+
+        // Mapear productos con bajo stock
+        this.lowStockProducts = (data.lowStockProducts || []).map((p: any) => ({
+          name: p.name,
+          stock: p.stock,
+          minStock: p.minStock,
+          status: p.stock <= (p.minStock || 0) / 2 ? 'Crítico' : 'Bajo'
+        }));
+
+        // Mapear pedidos pendientes
+        this.pendingOrders = (data.pendingOrders || []).map((o: any) => ({
+          id: '#' + o.id.substring(0, 8), // ID corto
+          customer: o.clienteNombre || 'Cliente General',
+          total: this.dashboardService.formatCurrency(o.total || 0),
+          status: o.estado === 'DISPONIBLE' ? 'Pendiente' : o.estado,
+          date: new Date(o.fechaCreacion).toLocaleDateString()
+        }));
+
+        // Mapear actividad reciente (usando pedidos recientes)
+        this.recentActivity = (data.recentActivity || []).map((o: any) => ({
+          action: `Nuevo pedido creado`,
+          user: 'Sistema', // El backend no siempre devuelve el usuario creador en el pedido simple
+          time: this.dashboardService.formatTimeAgo(o.fechaCreacion),
+          icon: 'fas fa-shopping-cart',
+          type: 'info'
+        }));
+
         this.loading = false;
       },
       error: (error) => {

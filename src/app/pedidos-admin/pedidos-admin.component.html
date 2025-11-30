@@ -1,43 +1,51 @@
-<div class="pedidos-admin-container">
-  <div class="header">
-    <h1>Gestión de Pedidos</h1>
-    <button class="btn btn-primary" (click)="abrirModalCrear()">
-      <i class="bi bi-plus-circle"></i> Nuevo Pedido
-    </button>
+<div class="page-header">
+  <div class="page-header-content">
+    <div>
+      <h1 class="page-title">Gestión de Pedidos</h1>
+      <p class="page-subtitle">Administración centralizada de órdenes y despachos</p>
+    </div>
+    <div class="page-actions">
+      <button class="btn btn-primary" (click)="abrirModalCrear()">
+        <i class="fas fa-plus-circle"></i> Nuevo Pedido
+      </button>
+    </div>
   </div>
+</div>
+
+<div class="pedidos-admin-container">
 
   <!-- Estadísticas -->
   <div class="estadisticas" *ngIf="estadisticas">
     <div class="stat-card disponibles">
-      <i class="bi bi-box-seam"></i>
+      <i class="fas fa-box-open"></i>
       <div class="stat-info">
         <span class="stat-value">{{ estadisticas.disponibles }}</span>
         <span class="stat-label">Disponibles</span>
       </div>
     </div>
     <div class="stat-card asignados">
-      <i class="bi bi-person-check"></i>
+      <i class="fas fa-user-check"></i>
       <div class="stat-info">
         <span class="stat-value">{{ estadisticas.asignados }}</span>
         <span class="stat-label">Asignados</span>
       </div>
     </div>
     <div class="stat-card en-camino">
-      <i class="bi bi-truck"></i>
+      <i class="fas fa-truck"></i>
       <div class="stat-info">
         <span class="stat-value">{{ estadisticas.enCamino }}</span>
         <span class="stat-label">En Camino</span>
       </div>
     </div>
     <div class="stat-card entregados">
-      <i class="bi bi-check-circle"></i>
+      <i class="fas fa-check-circle"></i>
       <div class="stat-info">
         <span class="stat-value">{{ estadisticas.entregados }}</span>
         <span class="stat-label">Entregados</span>
       </div>
     </div>
     <div class="stat-card cancelados">
-      <i class="bi bi-x-circle"></i>
+      <i class="fas fa-times-circle"></i>
       <div class="stat-info">
         <span class="stat-value">{{ estadisticas.cancelados }}</span>
         <span class="stat-label">Cancelados</span>
@@ -49,7 +57,7 @@
   <div class="filtros">
     <div class="filtro-grupo">
       <label>Estado:</label>
-      <select [(ngModel)]="filtroEstado" (change)="aplicarFiltros()" class="form-select">
+      <select [(ngModel)]="filtroEstado" (change)="aplicarFiltros()">
         <option value="TODOS">Todos</option>
         <option value="DISPONIBLE">Disponible</option>
         <option value="ASIGNADO">Asignado</option>
@@ -61,7 +69,7 @@
     <div class="filtro-grupo">
       <label>Buscar:</label>
       <input type="text" [(ngModel)]="filtroBusqueda" (input)="aplicarFiltros()" 
-             class="form-control" placeholder="Cliente o ID...">
+             placeholder="Cliente o ID...">
     </div>
   </div>
 
@@ -104,19 +112,19 @@
           </td>
           <td><small>{{ pedido.fechaCreacion | date:'short' }}</small></td>
           <td class="product-actions">
-            <button class="action-btn edit" (click)="abrirModalEditar(pedido)"
+            <button class="action-btn edit-btn" (click)="abrirModalEditar(pedido)"
                     [disabled]="pedido.estado === 'ENTREGADO' || pedido.estado === 'CANCELADO'"
                     title="Ver/Editar">
-              ✏️
+              <i class="fas fa-edit"></i>
             </button>
-            <button class="action-btn cancel" (click)="cancelarPedido(pedido)"
+            <button class="action-btn delete-btn" (click)="cancelarPedido(pedido)"
                     [disabled]="pedido.estado === 'ENTREGADO' || pedido.estado === 'CANCELADO'"
                     title="Cancelar">
-              ❌
+              <i class="fas fa-ban"></i>
             </button>
-            <button class="action-btn delete" (click)="eliminarPedido(pedido)"
+            <button class="action-btn delete-btn" (click)="eliminarPedido(pedido)"
                     title="Eliminar">
-              🗑️
+              <i class="fas fa-trash"></i>
             </button>
           </td>
         </tr>
@@ -128,15 +136,17 @@
   </div>
 
   <!-- Modal de crear/editar pedido -->
-  <div class="modal" [class.show]="mostrarModal" *ngIf="mostrarModal">
+  <div class="modal" [class.show]="mostrarModal" *ngIf="mostrarModal" style="display: block; background: rgba(0,0,0,0.5);">
     <div class="modal-dialog modal-xl">
       <div class="modal-content">
-        <div class="modal-header bg-primary text-white">
+        <div class="modal-header">
           <h5 class="modal-title">
-            <i class="bi bi-box-seam me-2"></i>
+            <i class="fas fa-box-open me-2"></i>
             {{ modoEdicion ? 'Editar Pedido' : 'Nuevo Pedido' }}
           </h5>
-          <button type="button" class="btn-close btn-close-white" (click)="cerrarModal()"></button>
+          <button type="button" class="btn-close btn-close-white" (click)="cerrarModal()" aria-label="Close">
+            <i class="fas fa-times"></i>
+          </button>
         </div>
         <div class="modal-body">
           <!-- Paso 1: Seleccionar Cliente -->
@@ -148,7 +158,7 @@
             <div class="row g-3">
               <div class="col-12">
                 <label class="form-label fw-bold">
-                  <i class="bi bi-person-circle me-1"></i>
+                  <i class="fas fa-user-circle me-1"></i>
                   Seleccionar Cliente *
                 </label>
                 <select [(ngModel)]="pedidoActual.clienteId" (change)="onClienteSeleccionado()" 
@@ -159,20 +169,20 @@
                   </option>
                 </select>
                 <div class="form-text" *ngIf="!pedidoActual.clienteId">
-                  <i class="bi bi-info-circle"></i> Debe seleccionar un cliente para continuar
+                  <i class="fas fa-info-circle"></i> Debe seleccionar un cliente para continuar
                 </div>
               </div>
 
               <!-- Información automática del cliente (solo como referencia visual) -->
               <div class="col-12" *ngIf="pedidoActual.clienteId && pedidoActual.clienteNombre">
                 <div class="alert alert-info mb-0">
-                  <strong><i class="bi bi-person-badge me-2"></i>Cliente seleccionado:</strong> 
+                  <strong><i class="fas fa-id-badge me-2"></i>Cliente seleccionado:</strong> 
                   {{ pedidoActual.clienteNombre }}
                   <br>
-                  <strong><i class="bi bi-telephone me-2"></i>Teléfono:</strong> 
+                  <strong><i class="fas fa-phone me-2"></i>Teléfono:</strong> 
                   {{ pedidoActual.clienteTelefono }}
                   <br>
-                  <strong><i class="bi bi-house me-2"></i>Dirección registrada:</strong> 
+                  <strong><i class="fas fa-home me-2"></i>Dirección registrada:</strong> 
                   {{ pedidoActual.clienteDireccion }}
                 </div>
               </div>
@@ -188,14 +198,14 @@
             <div class="row g-3">
               <div class="col-12">
                 <label class="form-label fw-bold">
-                  <i class="bi bi-geo-alt me-1"></i>
+                  <i class="fas fa-map-marker-alt me-1"></i>
                   Dirección *
                 </label>
                 <input type="text" [(ngModel)]="pedidoActual.direccionEntrega" 
                        class="form-control form-control-lg" 
                        placeholder="Ingrese la dirección de entrega" required>
                 <div class="form-text">
-                  <i class="bi bi-info-circle"></i> Puede ser diferente a la dirección registrada del cliente
+                  <i class="fas fa-info-circle"></i> Puede ser diferente a la dirección registrada del cliente
                 </div>
               </div>
             </div>
@@ -211,7 +221,7 @@
             <!-- Agregar producto -->
             <div class="producto-selector-box mb-3">
               <label class="form-label fw-bold">
-                <i class="bi bi-plus-circle me-1"></i>
+                <i class="fas fa-plus-circle me-1"></i>
                 Agregar Producto
               </label>
               <div class="row g-2 align-items-end">
@@ -244,7 +254,7 @@
                           class="btn btn-success w-100"
                           [disabled]="!productoTemp.productoId || productoTemp.cantidad < 1 || productoTemp.precioUnitario <= 0"
                           title="Agregar producto al pedido">
-                    <i class="bi bi-plus-circle me-1"></i>
+                    <i class="fas fa-plus me-1"></i>
                     Agregar
                   </button>
                 </div>
@@ -253,13 +263,13 @@
 
             <!-- Lista de productos agregados -->
             <div *ngIf="productosSeleccionados.length === 0" class="alert alert-info">
-              <i class="bi bi-info-circle me-2"></i>
+              <i class="fas fa-info-circle me-2"></i>
               No hay productos agregados. Seleccione un producto para comenzar.
             </div>
 
             <div class="productos-list" *ngIf="productosSeleccionados.length > 0">
               <label class="form-label fw-bold">
-                <i class="bi bi-bag-check me-1"></i>
+                <i class="fas fa-shopping-bag me-1"></i>
                 Productos Agregados ({{ productosSeleccionados.length }})
               </label>
               <div class="table-responsive">
@@ -276,7 +286,7 @@
                   <tbody>
                     <tr *ngFor="let prod of productosSeleccionados; let i = index">
                       <td>
-                        <i class="bi bi-box text-primary me-2"></i>
+                        <i class="fas fa-box text-primary me-2"></i>
                         <strong>{{ prod.nombre }}</strong>
                       </td>
                       <td class="text-center">
@@ -290,7 +300,7 @@
                         <button type="button" (click)="eliminarProducto(i)" 
                                 class="btn btn-sm btn-danger"
                                 title="Eliminar producto del pedido">
-                          <i class="bi bi-trash"></i>
+                          <i class="fas fa-trash"></i>
                         </button>
                       </td>
                     </tr>
@@ -320,7 +330,7 @@
             <div class="row g-3">
               <div class="col-12">
                 <label class="form-label">
-                  <i class="bi bi-chat-left-text me-1"></i>
+                  <i class="fas fa-comment-alt me-1"></i>
                   Notas adicionales
                 </label>
                 <textarea [(ngModel)]="pedidoActual.observaciones" 
@@ -332,12 +342,12 @@
         </div>
         <div class="modal-footer bg-light">
           <button type="button" class="btn btn-secondary btn-lg" (click)="cerrarModal()">
-            <i class="bi bi-x-circle me-1"></i>
+            <i class="fas fa-times-circle me-1"></i>
             Cancelar
           </button>
           <button type="button" class="btn btn-success btn-lg px-4" (click)="guardarPedido()"
                   [disabled]="!pedidoActual.clienteId || !pedidoActual.direccionEntrega || productosSeleccionados.length === 0">
-            <i class="bi bi-check-circle me-1"></i>
+            <i class="fas fa-check-circle me-1"></i>
             {{ modoEdicion ? 'Actualizar' : 'Crear' }} Pedido
             <span *ngIf="productosSeleccionados.length > 0" class="ms-2 badge bg-white text-success">
               ${{ calcularTotal().toFixed(2) }}

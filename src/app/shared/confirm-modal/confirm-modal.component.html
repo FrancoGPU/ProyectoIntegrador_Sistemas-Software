@@ -1,22 +1,35 @@
 <div class="confirm-modal-backdrop">
   <div class="confirm-modal">
     <div class="confirm-header">
-      <h5>{{ title }}</h5>
+      <h5>
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        {{ title }}
+      </h5>
     </div>
     <div class="confirm-body">
-      <p>Los siguientes productos quedarán por debajo del stock mínimo:</p>
-      <ul>
-        <li *ngFor="let w of warnings">
-          <strong>{{ w.productName }}</strong>
-          <div class="small text-muted">
-            Stock actual: {{ w.currentStock }} • Solicitado: {{ w.requestedQuantity }} • Mínimo: {{ w.minStock }} • Resultante: {{ w.resultingStock }}
+      <p class="mb-3">Los siguientes productos quedarán por debajo del stock mínimo:</p>
+      <ul class="warning-list">
+        <li *ngFor="let w of warnings" class="warning-item">
+          <div class="d-flex align-items-center mb-1">
+            <i class="fas fa-box text-warning me-2"></i>
+            <strong>{{ w.productName }}</strong>
+          </div>
+          <div class="stock-details">
+            <span class="badge bg-light text-dark border">Actual: {{ w.currentStock }}</span>
+            <i class="fas fa-arrow-right text-muted mx-1"></i>
+            <span class="badge bg-danger">Resultante: {{ w.resultingStock }}</span>
+            <span class="ms-2 text-muted small">(Mín: {{ w.minStock }})</span>
           </div>
         </li>
       </ul>
     </div>
     <div class="confirm-footer">
-      <button class="btn btn-secondary" (click)="onCancel()">Cancelar</button>
-      <button class="btn btn-primary ms-2" (click)="onConfirm()">Continuar de todas formas</button>
+      <button class="btn btn-secondary" (click)="onCancel()">
+        <i class="fas fa-times me-1"></i> Cancelar
+      </button>
+      <button class="btn btn-warning ms-2" (click)="onConfirm()">
+        <i class="fas fa-check me-1"></i> Continuar de todas formas
+      </button>
     </div>
   </div>
 </div>

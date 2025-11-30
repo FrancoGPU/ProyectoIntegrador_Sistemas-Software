@@ -1,15 +1,15 @@
-<div class="page-header rutas">
+<div class="page-header">
   <div class="page-header-content">
     <div>
       <h1 class="page-title">Optimización de Rutas</h1>
       <p class="page-subtitle">Planificación inteligente y optimización de rutas de distribución</p>
     </div>
     <div class="page-actions">
-      <button class="btn-warning" (click)="optimizarRutas()">
-        <span>🚀</span> Optimizar Rutas
+      <button class="btn btn-warning" (click)="optimizarRutas()">
+        <i class="fas fa-rocket"></i> Optimizar Rutas
       </button>
-      <button class="btn-primary" (click)="toggleFormulario()">
-        <span>{{ mostrarFormulario ? '✖️' : '➕' }}</span>
+      <button class="btn btn-primary" (click)="toggleFormulario()">
+        <i class="fas" [ngClass]="mostrarFormulario ? 'fa-times' : 'fa-plus'"></i>
         {{ mostrarFormulario ? 'Cancelar' : 'Nueva Ruta' }}
       </button>
     </div>
@@ -20,49 +20,52 @@
 
   <!-- Formulario para agregar/editar ruta -->
   <div class="formulario-container" *ngIf="mostrarFormulario">
-    <h3>{{ rutaEditando ? 'Editar Ruta' : 'Nueva Ruta' }}</h3>
+    <h3>
+      <i class="fas" [ngClass]="rutaEditando ? 'fa-edit' : 'fa-route'"></i>
+      {{ rutaEditando ? 'Editar Ruta' : 'Nueva Ruta' }}
+    </h3>
     <form (ngSubmit)="guardarRuta()" #rutaForm="ngForm">
       <div class="form-row">
         <div class="form-group">
           <label for="nombre">Nombre de la Ruta:</label>
-          <input type="text" id="nombre" [(ngModel)]="rutaTemp.nombre" name="nombre" required>
+          <input type="text" id="nombre" [(ngModel)]="rutaTemp.nombre" name="nombre" required placeholder="Ruta Norte-01">
         </div>
         <div class="form-group">
           <label for="conductorAsignado">Conductor:</label>
-          <input type="text" id="conductorAsignado" [(ngModel)]="rutaTemp.conductorAsignado" name="conductorAsignado" required>
+          <input type="text" id="conductorAsignado" [(ngModel)]="rutaTemp.conductorAsignado" name="conductorAsignado" required placeholder="Nombre del conductor">
         </div>
       </div>
       <div class="form-row">
         <div class="form-group">
           <label for="origen">Origen:</label>
-          <input type="text" id="origen" [(ngModel)]="rutaTemp.origen" name="origen" required>
+          <input type="text" id="origen" [(ngModel)]="rutaTemp.origen" name="origen" required placeholder="Almacén Central">
         </div>
         <div class="form-group">
           <label for="destino">Destino:</label>
-          <input type="text" id="destino" [(ngModel)]="rutaTemp.destino" name="destino" required>
+          <input type="text" id="destino" [(ngModel)]="rutaTemp.destino" name="destino" required placeholder="Cliente / Sucursal">
         </div>
       </div>
       <div class="form-row">
         <div class="form-group">
           <label for="distanciaKm">Distancia (km):</label>
           <input type="number" id="distanciaKm" [(ngModel)]="rutaTemp.distanciaKm" 
-                 name="distanciaKm" min="0.1" step="0.1" required>
+                 name="distanciaKm" min="0.1" step="0.1" required placeholder="0.0">
         </div>
         <div class="form-group">
           <label for="tiempoEstimadoMinutos">Tiempo Estimado (minutos):</label>
           <input type="number" id="tiempoEstimadoMinutos" [(ngModel)]="rutaTemp.tiempoEstimadoMinutos" 
-                 name="tiempoEstimadoMinutos" min="1" step="1" required>
+                 name="tiempoEstimadoMinutos" min="1" step="1" required placeholder="60">
         </div>
       </div>
       <div class="form-row">
         <div class="form-group">
           <label for="vehiculoAsignado">Vehículo:</label>
-          <input type="text" id="vehiculoAsignado" [(ngModel)]="rutaTemp.vehiculoAsignado" name="vehiculoAsignado" required>
+          <input type="text" id="vehiculoAsignado" [(ngModel)]="rutaTemp.vehiculoAsignado" name="vehiculoAsignado" required placeholder="Placa o ID">
         </div>
         <div class="form-group">
           <label for="otrosCostos">Costo Estimado (S/):</label>
           <input type="number" id="otrosCostos" [(ngModel)]="rutaTemp.otrosCostos" 
-                 name="otrosCostos" min="0" step="0.01" required>
+                 name="otrosCostos" min="0" step="0.01" required placeholder="0.00">
         </div>
       </div>
       <div class="form-row">
@@ -77,10 +80,12 @@
         </div>
       </div>
       <div class="form-actions">
-        <button type="submit" class="btn-primary" [disabled]="!rutaForm.form.valid">
-          {{ rutaEditando ? 'Actualizar' : 'Guardar' }}
+        <button type="button" class="btn btn-secondary" (click)="cancelarEdicion()">
+          <i class="fas fa-times"></i> Cancelar
         </button>
-        <button type="button" class="btn-secondary" (click)="cancelarEdicion()">Cancelar</button>
+        <button type="submit" class="btn btn-primary" [disabled]="!rutaForm.form.valid">
+          <i class="fas fa-save"></i> {{ rutaEditando ? 'Actualizar' : 'Guardar' }}
+        </button>
       </div>
     </form>
   </div>
@@ -107,14 +112,14 @@
 
   <!-- Optimización automática -->
   <div class="optimization-panel" *ngIf="optimizedRoutes.length > 0">
-    <h3>🚀 Rutas Optimizadas Sugeridas</h3>
+    <h3><i class="fas fa-rocket"></i> Rutas Optimizadas Sugeridas</h3>
     <div class="optimization-results">
       <div class="optimization-card" *ngFor="let suggestion of optimizedRoutes">
         <h4>{{ suggestion.tipo }}</h4>
         <p>{{ suggestion.descripcion }}</p>
         <div class="savings">
-          <span class="savings-time">⏱️ Ahorro: {{ suggestion.ahorroTiempo }}h</span>
-          <span class="savings-distance">📍 Distancia: -{{ suggestion.ahorroDistancia }}km</span>
+          <span class="savings-time"><i class="fas fa-clock"></i> Ahorro: {{ suggestion.ahorroTiempo }}h</span>
+          <span class="savings-distance"><i class="fas fa-road"></i> Distancia: -{{ suggestion.ahorroDistancia }}km</span>
         </div>
       </div>
     </div>
@@ -144,7 +149,7 @@
           <td>
             <div class="ruta-info">
               <span class="origen">{{ ruta.origen }}</span>
-              <span class="arrow">→</span>
+              <span class="arrow"><i class="fas fa-arrow-right"></i></span>
               <span class="destino">{{ ruta.destino }}</span>
             </div>
           </td>
@@ -157,8 +162,12 @@
             </span>
           </td>
           <td class="acciones">
-            <button class="btn-edit" (click)="editarRuta(ruta)">Editar</button>
-            <button class="btn-delete" (click)="eliminarRuta(ruta.id || '')">Eliminar</button>
+            <button class="action-btn edit-btn" (click)="editarRuta(ruta)" title="Editar">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button class="action-btn delete-btn" (click)="eliminarRuta(ruta.id || '')" title="Eliminar">
+              <i class="fas fa-trash"></i>
+            </button>
           </td>
         </tr>
       </tbody>

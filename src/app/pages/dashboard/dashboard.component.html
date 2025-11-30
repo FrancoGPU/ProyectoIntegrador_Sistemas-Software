@@ -17,167 +17,170 @@
 
   <!-- Mensaje de error -->
   <div *ngIf="error && !loading" class="error-message">
-    <p>⚠️ {{error}}</p>
-    <button (click)="loadDashboardData()" class="btn-retry">Reintentar</button>
+    <p><i class="fas fa-exclamation-triangle me-2"></i> {{error}}</p>
+    <button (click)="loadDashboardData()" class="btn-retry">
+      <i class="fas fa-sync-alt me-1"></i> Reintentar
+    </button>
   </div>
 
   <!-- Contenido del dashboard -->
   <div *ngIf="!loading && !error">
     <div class="metrics-grid">
     <div class="metric-card primary">
-      <div class="metric-icon">📦</div>
+      <div class="metric-icon"><i class="fas fa-boxes"></i></div>
       <div class="metric-content">
         <h3>{{totalInventario}}</h3>
         <p>Productos en Inventario</p>
-        <span class="metric-change positive">+12% vs mes anterior</span>
+        <span class="metric-change positive"><i class="fas fa-arrow-up me-1"></i> +12% vs mes anterior</span>
       </div>
     </div>
 
     <div class="metric-card success">
-      <div class="metric-icon">👥</div>
+      <div class="metric-icon"><i class="fas fa-users"></i></div>
       <div class="metric-content">
         <h3>{{totalClientes}}</h3>
         <p>Clientes Activos</p>
-        <span class="metric-change positive">+8% vs mes anterior</span>
+        <span class="metric-change positive"><i class="fas fa-arrow-up me-1"></i> +8% vs mes anterior</span>
       </div>
     </div>
 
     <div class="metric-card warning">
-      <div class="metric-icon">🚚</div>
+      <div class="metric-icon"><i class="fas fa-truck"></i></div>
       <div class="metric-content">
         <h3>{{rutasActivas}}</h3>
         <p>Rutas en Proceso</p>
-        <span class="metric-change neutral">Estable</span>
+        <span class="metric-change neutral"><i class="fas fa-minus me-1"></i> Estable</span>
       </div>
     </div>
 
     <div class="metric-card info">
-      <div class="metric-icon">🏭</div>
+      <div class="metric-icon"><i class="fas fa-industry"></i></div>
       <div class="metric-content">
         <h3>{{totalProveedores}}</h3>
         <p>Proveedores Registrados</p>
-        <span class="metric-change positive">+3 nuevos</span>
+        <span class="metric-change positive"><i class="fas fa-plus me-1"></i> +3 nuevos</span>
       </div>
     </div>
   </div>
 
-  <!-- Gráficos y análisis avanzados -->
-  <div class="analytics-section">
-    <div class="chart-container">
-      <h3>📊 Rendimiento Mensual</h3>
-      <div class="chart-placeholder">
-        <div class="chart-bars">
-          <div class="bar" style="height: 60%" data-value="85">
-            <span class="bar-label">Ene</span>
-            <span class="bar-value">85%</span>
-          </div>
-          <div class="bar" style="height: 75%" data-value="92">
-            <span class="bar-label">Feb</span>
-            <span class="bar-value">92%</span>
-          </div>
-          <div class="bar" style="height: 85%" data-value="96">
-            <span class="bar-label">Mar</span>
-            <span class="bar-value">96%</span>
-          </div>
-          <div class="bar" style="height: 70%" data-value="88">
-            <span class="bar-label">Abr</span>
-            <span class="bar-value">88%</span>
-          </div>
-          <div class="bar" style="height: 90%" data-value="98">
-            <span class="bar-label">May</span>
-            <span class="bar-value">98%</span>
-          </div>
-          <div class="bar" style="height: 95%" data-value="99">
-            <span class="bar-label">Jun</span>
-            <span class="bar-value">99%</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="kpi-container">
-      <h3>🎯 KPIs Clave</h3>
-      <div class="kpi-list">
-        <div class="kpi-item">
-          <span class="kpi-label">Tiempo promedio de entrega</span>
-          <span class="kpi-value">2.3 días</span>
-          <span class="kpi-status good">✓</span>
-        </div>
-        <div class="kpi-item">
-          <span class="kpi-label">Satisfacción del cliente</span>
-          <span class="kpi-value">94.5%</span>
-          <span class="kpi-status excellent">★</span>
-        </div>
-        <div class="kpi-item">
-          <span class="kpi-label">Costos operativos</span>
-          <span class="kpi-value">-12.3%</span>
-          <span class="kpi-status good">↓</span>
-        </div>
-        <div class="kpi-item">
-          <span class="kpi-label">Rotación de inventario</span>
-          <span class="kpi-value">8.2x</span>
-          <span class="kpi-status warning">⚠</span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="dashboard-content">
-    <div class="content-section">
+  <!-- Nueva sección de información útil -->
+  <div class="dashboard-grid-layout">
+    
+    <!-- Columna Principal (Izquierda) -->
+    <div class="main-column">
+      
+      <!-- Alertas de Stock Bajo -->
       <div class="section-card">
-        <h2>Resumen de Operaciones</h2>
-        <div class="operation-summary">
-          <div class="operation-item">
-            <span class="operation-label">Entregas Completadas Hoy:</span>
-            <span class="operation-value">{{entregasHoy}}</span>
-          </div>
-          <div class="operation-item">
-            <span class="operation-label">Eficiencia de Rutas:</span>
-            <span class="operation-value success">{{eficienciaRutas}}%</span>
-          </div>
-          <div class="operation-item">
-            <span class="operation-label">Tiempo Promedio de Entrega:</span>
-            <span class="operation-value">{{tiempoPromedio}} horas</span>
-          </div>
+        <div class="card-header-custom">
+          <h2><i class="fas fa-exclamation-triangle me-2 text-warning"></i> Alertas de Stock Bajo</h2>
+          <button class="btn-link" routerLink="/inventario">Ver todo</button>
+        </div>
+        <div class="table-responsive">
+          <table class="dashboard-table">
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th>Stock Actual</th>
+                <th>Mínimo</th>
+                <th>Estado</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let product of lowStockProducts">
+                <td class="fw-bold">{{product.name}}</td>
+                <td class="text-center">{{product.stock}}</td>
+                <td class="text-center text-muted">{{product.minStock}}</td>
+                <td>
+                  <span class="badge" [ngClass]="{'badge-danger': product.status === 'Crítico', 'badge-warning': product.status === 'Bajo'}">
+                    {{product.status}}
+                  </span>
+                </td>
+                <td>
+                  <button class="btn-icon-sm" title="Reabastecer"><i class="fas fa-cart-plus"></i></button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
 
-      <div class="section-card">
-        <h2>Análisis Estratégico</h2>
-        <div class="strategic-points">
-          <div class="strategic-item strength">
-            <h4>💪 Fortalezas Clave</h4>
-            <p>Capacidad de distribución amplia y experiencia consolidada en el mercado</p>
-          </div>
-          <div class="strategic-item opportunity">
-            <h4>🎯 Oportunidades</h4>
-            <p>Expansión de distribución y atracción de nuevos clientes mediante tecnología</p>
-          </div>
+      <!-- Pedidos Pendientes -->
+      <div class="section-card mt-4">
+        <div class="card-header-custom">
+          <h2><i class="fas fa-clock me-2 text-info"></i> Pedidos Pendientes</h2>
+          <button class="btn-link" routerLink="/pedidos">Gestionar</button>
         </div>
-        <button class="btn-primary" routerLink="/foda">Ver Análisis FODA Completo</button>
+        <div class="table-responsive">
+          <table class="dashboard-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Cliente</th>
+                <th>Total</th>
+                <th>Fecha</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let order of pendingOrders">
+                <td class="text-primary fw-bold">{{order.id}}</td>
+                <td>{{order.customer}}</td>
+                <td class="fw-bold">{{order.total}}</td>
+                <td class="text-muted">{{order.date}}</td>
+                <td>
+                  <span class="badge" [ngClass]="{'badge-warning': order.status === 'Pendiente', 'badge-info': order.status === 'Procesando'}">
+                    {{order.status}}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
+
     </div>
 
-    <div class="quick-actions">
-      <h2>Acciones Rápidas</h2>
-      <div class="actions-grid">
-        <button class="action-btn" routerLink="/inventario">
-          <span class="action-icon">📦</span>
-          Gestionar Inventario
-        </button>
-        <button class="action-btn" routerLink="/clientes">
-          <span class="action-icon">👥</span>
-          Ver Clientes
-        </button>
-        <button class="action-btn" routerLink="/rutas">
-          <span class="action-icon">🗺️</span>
-          Optimizar Rutas
-        </button>
-        <button class="action-btn" routerLink="/proveedores">
-          <span class="action-icon">🏭</span>
-          Gestionar Proveedores
-        </button>
+    <!-- Columna Lateral (Derecha) -->
+    <div class="side-column">
+      
+      <!-- Actividad Reciente -->
+      <div class="section-card">
+        <h2><i class="fas fa-history me-2 text-primary"></i> Actividad Reciente</h2>
+        <div class="activity-feed">
+          <div class="activity-item" *ngFor="let activity of recentActivity">
+            <div class="activity-icon" [ngClass]="activity.type">
+              <i [class]="activity.icon"></i>
+            </div>
+            <div class="activity-details">
+              <p class="activity-text">{{activity.action}}</p>
+              <span class="activity-meta">
+                <span class="activity-user">{{activity.user}}</span> • {{activity.time}}
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
+
+      <!-- Acciones Rápidas (Compacto) -->
+      <div class="quick-actions-compact mt-4">
+        <h3>Accesos Directos</h3>
+        <div class="actions-grid-compact">
+          <button class="action-btn-compact" routerLink="/inventario">
+            <i class="fas fa-boxes"></i> Inventario
+          </button>
+          <button class="action-btn-compact" routerLink="/clientes">
+            <i class="fas fa-users"></i> Clientes
+          </button>
+          <button class="action-btn-compact" routerLink="/rutas">
+            <i class="fas fa-route"></i> Rutas
+          </button>
+          <button class="action-btn-compact" routerLink="/reportes">
+            <i class="fas fa-file-alt"></i> Reportes
+          </button>
+        </div>
+      </div>
+
     </div>
   </div>
   </div>

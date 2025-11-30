@@ -8,6 +8,9 @@ export interface DashboardStats {
   clientesActivos: number;
   proveedoresActivos: number;
   rutasEnProceso: number;
+  lowStockProducts: any[];
+  pendingOrders: any[];
+  recentActivity: any[];
 }
 
 @Injectable({

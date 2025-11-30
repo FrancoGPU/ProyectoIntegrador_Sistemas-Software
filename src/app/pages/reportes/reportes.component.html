@@ -1,86 +1,108 @@
-<div class="container-fluid p-4">
-    <h2 class="mb-4">Centro de Reportes</h2>
-    
-    <div class="row">
-        <div class="col-md-6 mb-4">
-            <div class="card h-100 shadow-sm">
+<div class="page-header">
+  <div class="page-header-content">
+    <div>
+      <h1 class="page-title">Centro de Reportes</h1>
+      <p class="page-subtitle">Generación y descarga de informes del sistema</p>
+    </div>
+  </div>
+</div>
+
+<div class="reportes-container">
+    <div class="row g-4">
+        <!-- Inventario -->
+        <div class="col-md-6 col-lg-4">
+            <div class="report-card">
                 <div class="card-body">
-                    <h5 class="card-title">📦 Inventario General</h5>
+                    <h5 class="card-title">
+                        <i class="fas fa-boxes"></i> Inventario General
+                    </h5>
                     <p class="card-text">Descarga el reporte completo de todos los productos en stock, incluyendo precios y ubicaciones.</p>
-                    <div class="d-flex gap-2">
-                        <button (click)="downloadPdf()" class="btn btn-danger">
-                            <i class="bi bi-file-earmark-pdf"></i> Descargar PDF
+                    <div class="btn-group">
+                        <button (click)="downloadPdf()" class="btn btn-pdf">
+                            <i class="fas fa-file-pdf"></i> PDF
                         </button>
-                        <button (click)="downloadExcel()" class="btn btn-success">
-                            <i class="bi bi-file-earmark-excel"></i> Descargar Excel
+                        <button (click)="downloadExcel()" class="btn btn-excel">
+                            <i class="fas fa-file-excel"></i> Excel
                         </button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-6 mb-4">
-            <div class="card h-100 shadow-sm">
+        <!-- Rutas -->
+        <div class="col-md-6 col-lg-4">
+            <div class="report-card">
                 <div class="card-body">
-                    <h5 class="card-title">🚚 Reporte de Rutas</h5>
+                    <h5 class="card-title">
+                        <i class="fas fa-route"></i> Reporte de Rutas
+                    </h5>
                     <p class="card-text">Historial de rutas completadas y eficiencia de entregas.</p>
-                    <div class="d-flex gap-2">
-                        <button (click)="downloadRoutesPdf()" class="btn btn-danger">
-                            <i class="bi bi-file-earmark-pdf"></i> Descargar PDF
+                    <div class="btn-group">
+                        <button (click)="downloadRoutesPdf()" class="btn btn-pdf">
+                            <i class="fas fa-file-pdf"></i> PDF
                         </button>
-                        <button (click)="downloadRoutesExcel()" class="btn btn-success">
-                            <i class="bi bi-file-earmark-excel"></i> Descargar Excel
+                        <button (click)="downloadRoutesExcel()" class="btn btn-excel">
+                            <i class="fas fa-file-excel"></i> Excel
                         </button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-6 mb-4">
-            <div class="card h-100 shadow-sm">
+        <!-- Clientes -->
+        <div class="col-md-6 col-lg-4">
+            <div class="report-card">
                 <div class="card-body">
-                    <h5 class="card-title">👥 Reporte de Clientes</h5>
+                    <h5 class="card-title">
+                        <i class="fas fa-users"></i> Reporte de Clientes
+                    </h5>
                     <p class="card-text">Listado de clientes, información de contacto y volumen de compras.</p>
-                    <div class="d-flex gap-2">
-                        <button (click)="downloadClientsPdf()" class="btn btn-danger">
-                            <i class="bi bi-file-earmark-pdf"></i> Descargar PDF
+                    <div class="btn-group">
+                        <button (click)="downloadClientsPdf()" class="btn btn-pdf">
+                            <i class="fas fa-file-pdf"></i> PDF
                         </button>
-                        <button (click)="downloadClientsExcel()" class="btn btn-success">
-                            <i class="bi bi-file-earmark-excel"></i> Descargar Excel
+                        <button (click)="downloadClientsExcel()" class="btn btn-excel">
+                            <i class="fas fa-file-excel"></i> Excel
                         </button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-6 mb-4">
-            <div class="card h-100 shadow-sm">
+        <!-- Proveedores -->
+        <div class="col-md-6 col-lg-4">
+            <div class="report-card">
                 <div class="card-body">
-                    <h5 class="card-title">🏭 Reporte de Proveedores</h5>
+                    <h5 class="card-title">
+                        <i class="fas fa-truck-loading"></i> Reporte de Proveedores
+                    </h5>
                     <p class="card-text">Directorio de proveedores y análisis de suministros.</p>
-                    <div class="d-flex gap-2">
-                        <button (click)="downloadSuppliersPdf()" class="btn btn-danger">
-                            <i class="bi bi-file-earmark-pdf"></i> Descargar PDF
+                    <div class="btn-group">
+                        <button (click)="downloadSuppliersPdf()" class="btn btn-pdf">
+                            <i class="fas fa-file-pdf"></i> PDF
                         </button>
-                        <button (click)="downloadSuppliersExcel()" class="btn btn-success">
-                            <i class="bi bi-file-earmark-excel"></i> Descargar Excel
+                        <button (click)="downloadSuppliersExcel()" class="btn btn-excel">
+                            <i class="fas fa-file-excel"></i> Excel
                         </button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-6 mb-4">
-            <div class="card h-100 shadow-sm">
+        <!-- Pedidos -->
+        <div class="col-md-6 col-lg-4">
+            <div class="report-card">
                 <div class="card-body">
-                    <h5 class="card-title">🛒 Reporte de Pedidos</h5>
+                    <h5 class="card-title">
+                        <i class="fas fa-shopping-cart"></i> Reporte de Pedidos
+                    </h5>
                     <p class="card-text">Resumen de pedidos, estados y facturación.</p>
-                    <div class="d-flex gap-2">
-                        <button (click)="downloadOrdersPdf()" class="btn btn-danger">
-                            <i class="bi bi-file-earmark-pdf"></i> Descargar PDF
+                    <div class="btn-group">
+                        <button (click)="downloadOrdersPdf()" class="btn btn-pdf">
+                            <i class="fas fa-file-pdf"></i> PDF
                         </button>
-                        <button (click)="downloadOrdersExcel()" class="btn btn-success">
-                            <i class="bi bi-file-earmark-excel"></i> Descargar Excel
+                        <button (click)="downloadOrdersExcel()" class="btn btn-excel">
+                            <i class="fas fa-file-excel"></i> Excel
                         </button>
                     </div>
                 </div>

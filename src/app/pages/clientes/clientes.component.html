@@ -2,21 +2,20 @@
   <div class="page-header-content">
     <div>
       <h1 class="page-title">Gestión de Clientes</h1>
-      <p class="page-subtitle">Administración integral de la cartera de clientes</p>
+      <p class="page-subtitle">
+        Administración integral de la cartera de clientes
+      </p>
     </div>
     <div class="page-actions">
-      <button class="btn-primary" (click)="toggleFormulario()">
-        {{ mostrarFormulario ? 'Cancelar' : 'Nuevo Cliente' }}
+      <button class="btn btn-primary" (click)="toggleFormulario()">
+        {{ mostrarFormulario ? "Cancelar" : "Nuevo Cliente" }}
       </button>
     </div>
   </div>
 </div>
 
 <div class="clientes-container">
-
-  <div *ngIf="loading" class="loading-spinner">
-    Cargando clientes...
-  </div>
+  <div *ngIf="loading" class="loading-spinner">Cargando clientes...</div>
 
   <div *ngIf="error" class="error-message">
     {{ error }}
@@ -24,36 +23,71 @@
 
   <!-- Formulario para agregar/editar cliente -->
   <div class="formulario-container" *ngIf="mostrarFormulario">
-    <h3>{{ clienteEditando ? 'Editar Cliente' : 'Nuevo Cliente' }}</h3>
+    <h3>{{ clienteEditando ? "Editar Cliente" : "Nuevo Cliente" }}</h3>
     <form (ngSubmit)="guardarCliente()" #clienteForm="ngForm">
       <div class="form-row">
         <div class="form-group">
           <label for="nombre">Nombre:</label>
-          <input type="text" id="nombre" [(ngModel)]="clienteTemp.nombre" name="nombre" required>
+          <input
+            type="text"
+            id="nombre"
+            [(ngModel)]="clienteTemp.nombre"
+            name="nombre"
+            required
+          />
         </div>
         <div class="form-group">
           <label for="empresa">Empresa:</label>
-          <input type="text" id="empresa" [(ngModel)]="clienteTemp.empresa" name="empresa" required>
+          <input
+            type="text"
+            id="empresa"
+            [(ngModel)]="clienteTemp.empresa"
+            name="empresa"
+            required
+          />
         </div>
       </div>
       <div class="form-row">
         <div class="form-group">
           <label for="email">Email:</label>
-          <input type="email" id="email" [(ngModel)]="clienteTemp.email" name="email" required>
+          <input
+            type="email"
+            id="email"
+            [(ngModel)]="clienteTemp.email"
+            name="email"
+            required
+          />
         </div>
         <div class="form-group">
           <label for="telefono">Teléfono:</label>
-          <input type="tel" id="telefono" [(ngModel)]="clienteTemp.telefono" name="telefono" required>
+          <input
+            type="tel"
+            id="telefono"
+            [(ngModel)]="clienteTemp.telefono"
+            name="telefono"
+            required
+          />
         </div>
       </div>
       <div class="form-row">
         <div class="form-group">
           <label for="direccion">Dirección:</label>
-          <input type="text" id="direccion" [(ngModel)]="clienteTemp.direccion" name="direccion" required>
+          <input
+            type="text"
+            id="direccion"
+            [(ngModel)]="clienteTemp.direccion"
+            name="direccion"
+            required
+          />
         </div>
         <div class="form-group">
           <label for="categoria">Categoría:</label>
-          <select id="categoria" [(ngModel)]="clienteTemp.categoria" name="categoria" required>
+          <select
+            id="categoria"
+            [(ngModel)]="clienteTemp.categoria"
+            name="categoria"
+            required
+          >
             <option value="Premium">Premium</option>
             <option value="Corporativo">Corporativo</option>
             <option value="Regular">Regular</option>
@@ -63,17 +97,32 @@
       <div class="form-row">
         <div class="form-group">
           <label for="isActive">Estado:</label>
-          <select id="isActive" [(ngModel)]="clienteTemp.isActive" name="isActive" required>
+          <select
+            id="isActive"
+            [(ngModel)]="clienteTemp.isActive"
+            name="isActive"
+            required
+          >
             <option [value]="true">Activo</option>
             <option [value]="false">Inactivo</option>
           </select>
         </div>
       </div>
       <div class="form-actions">
-        <button type="submit" class="btn-primary" [disabled]="!clienteForm.form.valid">
-          {{ clienteEditando ? 'Actualizar' : 'Guardar' }}
+        <button
+          type="submit"
+          class="btn btn-primary"
+          [disabled]="!clienteForm.form.valid"
+        >
+          {{ clienteEditando ? "Actualizar" : "Guardar" }}
         </button>
-        <button type="button" class="btn-secondary" (click)="cancelarEdicion()">Cancelar</button>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="cancelarEdicion()"
+        >
+          Cancelar
+        </button>
       </div>
     </form>
   </div>
@@ -86,15 +135,15 @@
     </div>
     <div class="stat-card">
       <h3>Clientes Premium</h3>
-      <p class="stat-number">{{ contarPorCategoria('Premium') }}</p>
+      <p class="stat-number">{{ contarPorCategoria("Premium") }}</p>
     </div>
     <div class="stat-card">
       <h3>Clientes Corporativos</h3>
-      <p class="stat-number">{{ contarPorCategoria('Corporativo') }}</p>
+      <p class="stat-number">{{ contarPorCategoria("Corporativo") }}</p>
     </div>
     <div class="stat-card">
       <h3>Clientes Regulares</h3>
-      <p class="stat-number">{{ contarPorCategoria('Regular') }}</p>
+      <p class="stat-number">{{ contarPorCategoria("Regular") }}</p>
     </div>
   </div>
 
@@ -119,18 +168,36 @@
           <td>{{ cliente.email }}</td>
           <td>{{ cliente.telefono }}</td>
           <td>
-            <span class="categoria-badge" [ngClass]="'categoria-' + cliente.categoria.toLowerCase()">
+            <span
+              class="categoria-badge"
+              [ngClass]="'categoria-' + cliente.categoria.toLowerCase()"
+            >
               {{ getCategoriaBadge(cliente.categoria) }} {{ cliente.categoria }}
             </span>
           </td>
           <td>
-            <span class="estado-badge" [ngClass]="cliente.isActive ? 'activo' : 'inactivo'">
-              {{ cliente.isActive ? 'Activo' : 'Inactivo' }}
+            <span
+              class="estado-badge"
+              [ngClass]="cliente.isActive ? 'activo' : 'inactivo'"
+            >
+              {{ cliente.isActive ? "Activo" : "Inactivo" }}
             </span>
           </td>
           <td class="acciones">
-            <button class="btn-edit" (click)="editarCliente(cliente)">Editar</button>
-            <button class="btn-delete" (click)="eliminarCliente(cliente.id!)">Eliminar</button>
+            <button
+              class="action-btn action-btn-edit"
+              (click)="editarCliente(cliente)"
+              title="Editar"
+            >
+              <i class="fas fa-edit"></i>
+            </button>
+            <button
+              class="action-btn action-btn-delete"
+              (click)="eliminarCliente(cliente.id!)"
+              title="Eliminar"
+            >
+              <i class="fas fa-trash"></i>
+            </button>
           </td>
         </tr>
       </tbody>

@@ -4,6 +4,8 @@ import com.logistock.service.ProductService;
 import com.logistock.service.ClienteService;
 import com.logistock.service.ProveedorService;
 import com.logistock.service.RutaService;
+import com.logistock.service.PedidoService;
+import com.logistock.model.EstadoPedido;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Controlador REST para el dashboard y estadísticas generales
@@ -29,6 +32,7 @@ public class DashboardController {
     private final ClienteService clienteService;
     private final ProveedorService proveedorService;
     private final RutaService rutaService;
+    private final PedidoService pedidoService;
 
     /**
      * Obtener estadísticas generales del sistema
@@ -86,6 +90,12 @@ public class DashboardController {
             Map<String, Object> rutasStats = rutaService.getStats();
             long rutasEnProceso = (Long) rutasStats.get("rutasEnProceso");
             
+            // Pedidos pendientes (DISPONIBLE)
+            var pendingOrders = pedidoService.obtenerPorEstado(EstadoPedido.DISPONIBLE);
+            
+            // Actividad reciente (Últimos 5 pedidos creados)
+            var recentOrders = pedidoService.obtenerTodos().stream().limit(5).collect(Collectors.toList());
+
             Map<String, Object> response = new HashMap<>();
             response.put("inventario", inventarioStats);
             response.put("clientes", clientesStats);
@@ -99,6 +109,11 @@ public class DashboardController {
             response.put("proveedoresActivos", proveedoresStats.get("totalProveedores"));
             response.put("estadoEstable", lowStockCount == 0 ? "Estable" : "Atención Requerida");
             
+            // Listas para las nuevas secciones del dashboard
+            response.put("lowStockProducts", lowStockProducts.stream().limit(5).collect(Collectors.toList()));
+            response.put("pendingOrders", pendingOrders.stream().limit(5).collect(Collectors.toList()));
+            response.put("recentActivity", recentOrders); // Usamos pedidos recientes como actividad
+
             // Cambios vs mes anterior (placeholder - en producción calcular con datos reales)
             response.put("cambioProductos", "+12%");
             response.put("cambioClientes", "+8%");
