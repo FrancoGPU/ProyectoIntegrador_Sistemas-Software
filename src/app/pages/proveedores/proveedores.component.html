@@ -6,8 +6,8 @@
     </div>
     <div class="page-actions">
       <button class="btn btn-primary" (click)="toggleFormulario()">
-        <i class="fas" [ngClass]="mostrarFormulario ? 'fa-times' : 'fa-plus'"></i>
-        {{ mostrarFormulario ? 'Cancelar' : 'Nuevo Proveedor' }}
+        <i class="fas fa-plus"></i>
+        Nuevo Proveedor
       </button>
     </div>
   </div>
@@ -30,93 +30,102 @@
   </div>
 
   <div *ngIf="!loading && !error">
-    <!-- Formulario para agregar/editar proveedor -->
-    <div class="formulario-container" *ngIf="mostrarFormulario">
-      <h3>
-        <i class="fas" [ngClass]="proveedorEditando ? 'fa-edit' : 'fa-user-plus'"></i>
-        {{ proveedorEditando ? 'Editar Proveedor' : 'Nuevo Proveedor' }}
-      </h3>
-      <form (ngSubmit)="guardarProveedor()" #proveedorForm="ngForm">
-        <div class="form-row">
-          <div class="form-group">
-            <label for="nombre">Nombre:</label>
-            <input type="text" id="nombre" [(ngModel)]="proveedorTemp.nombre" name="nombre" required placeholder="Nombre del contacto">
+    <!-- Modal para agregar/editar proveedor -->
+    <div class="modal show" *ngIf="mostrarFormulario" (click)="toggleFormulario()">
+      <div class="modal-dialog" (click)="$event.stopPropagation()">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title">
+              <i class="fas" [ngClass]="proveedorEditando ? 'fa-edit' : 'fa-user-plus'"></i>
+              {{ proveedorEditando ? 'Editar Proveedor' : 'Nuevo Proveedor' }}
+            </h2>
+            <button class="btn-close" (click)="toggleFormulario()">✕</button>
           </div>
-          <div class="form-group">
-            <label for="empresa">Empresa:</label>
-            <input type="text" id="empresa" [(ngModel)]="proveedorTemp.empresa" name="empresa" required placeholder="Nombre de la empresa">
+          <div class="modal-body">
+            <form (ngSubmit)="guardarProveedor()" #proveedorForm="ngForm">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="nombre">Nombre:</label>
+                  <input type="text" id="nombre" [(ngModel)]="proveedorTemp.nombre" name="nombre" required placeholder="Nombre del contacto" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label for="empresa">Empresa:</label>
+                  <input type="text" id="empresa" [(ngModel)]="proveedorTemp.empresa" name="empresa" required placeholder="Nombre de la empresa" class="form-control">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="email">Email:</label>
+                  <input type="email" id="email" [(ngModel)]="proveedorTemp.email" name="email" required placeholder="correo@ejemplo.com" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label for="telefono">Teléfono:</label>
+                  <input type="tel" id="telefono" [(ngModel)]="proveedorTemp.telefono" name="telefono" 
+                         pattern="^[\d\s\-\+\(\)]+$" title="Solo números, espacios, guiones y paréntesis" required placeholder="+51 999 999 999" class="form-control">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="direccion">Dirección:</label>
+                  <input type="text" id="direccion" [(ngModel)]="proveedorTemp.direccion" name="direccion" required placeholder="Dirección fiscal" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label for="tipo">Tipo:</label>
+                  <select id="tipo" [(ngModel)]="proveedorTemp.tipo" name="tipo" required class="form-select">
+                    <option value="Nacional">Nacional</option>
+                    <option value="Internacional">Internacional</option>
+                    <option value="Regional">Regional</option>
+                    <option value="Local">Local</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="rucNit">RUC/NIT:</label>
+                  <input type="text" id="rucNit" [(ngModel)]="proveedorTemp.rucNit" name="rucNit" required placeholder="Número de identificación fiscal" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label for="pais">País:</label>
+                  <input type="text" id="pais" [(ngModel)]="proveedorTemp.pais" name="pais" required placeholder="País de origen" class="form-control">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="ciudad">Ciudad:</label>
+                  <input type="text" id="ciudad" [(ngModel)]="proveedorTemp.ciudad" name="ciudad" required placeholder="Ciudad" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label for="diasPago">Días de Pago:</label>
+                  <input type="number" id="diasPago" [(ngModel)]="proveedorTemp.diasPago" 
+                         name="diasPago" min="1" max="365" required placeholder="30" class="form-control">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="descuentoGeneral">Descuento General (%):</label>
+                  <input type="number" id="descuentoGeneral" [(ngModel)]="proveedorTemp.descuentoGeneral" 
+                         name="descuentoGeneral" min="0" max="100" step="0.1" required placeholder="0.0" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label for="isActive">Estado:</label>
+                  <select id="isActive" [(ngModel)]="proveedorTemp.isActive" name="isActive" required class="form-select">
+                    <option [value]="true">Activo</option>
+                    <option [value]="false">Inactivo</option>
+                  </select>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="cancelarEdicion(); toggleFormulario()">
+                  <i class="fas fa-times"></i> Cancelar
+                </button>
+                <button type="submit" class="btn btn-primary" [disabled]="!proveedorForm.form.valid">
+                  <i class="fas fa-save"></i> {{ proveedorEditando ? 'Actualizar' : 'Guardar' }}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="email">Email:</label>
-            <input type="email" id="email" [(ngModel)]="proveedorTemp.email" name="email" required placeholder="correo@ejemplo.com">
-          </div>
-          <div class="form-group">
-            <label for="telefono">Teléfono:</label>
-            <input type="tel" id="telefono" [(ngModel)]="proveedorTemp.telefono" name="telefono" 
-                   pattern="^[\d\s\-\+\(\)]+$" title="Solo números, espacios, guiones y paréntesis" required placeholder="+51 999 999 999">
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="direccion">Dirección:</label>
-            <input type="text" id="direccion" [(ngModel)]="proveedorTemp.direccion" name="direccion" required placeholder="Dirección fiscal">
-          </div>
-          <div class="form-group">
-            <label for="tipo">Tipo:</label>
-            <select id="tipo" [(ngModel)]="proveedorTemp.tipo" name="tipo" required>
-              <option value="Nacional">Nacional</option>
-              <option value="Internacional">Internacional</option>
-              <option value="Regional">Regional</option>
-              <option value="Local">Local</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="rucNit">RUC/NIT:</label>
-            <input type="text" id="rucNit" [(ngModel)]="proveedorTemp.rucNit" name="rucNit" required placeholder="Número de identificación fiscal">
-          </div>
-          <div class="form-group">
-            <label for="pais">País:</label>
-            <input type="text" id="pais" [(ngModel)]="proveedorTemp.pais" name="pais" required placeholder="País de origen">
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="ciudad">Ciudad:</label>
-            <input type="text" id="ciudad" [(ngModel)]="proveedorTemp.ciudad" name="ciudad" required placeholder="Ciudad">
-          </div>
-          <div class="form-group">
-            <label for="diasPago">Días de Pago:</label>
-            <input type="number" id="diasPago" [(ngModel)]="proveedorTemp.diasPago" 
-                   name="diasPago" min="1" max="365" required placeholder="30">
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="descuentoGeneral">Descuento General (%):</label>
-            <input type="number" id="descuentoGeneral" [(ngModel)]="proveedorTemp.descuentoGeneral" 
-                   name="descuentoGeneral" min="0" max="100" step="0.1" required placeholder="0.0">
-          </div>
-          <div class="form-group">
-            <label for="isActive">Estado:</label>
-            <select id="isActive" [(ngModel)]="proveedorTemp.isActive" name="isActive" required>
-              <option [value]="true">Activo</option>
-              <option [value]="false">Inactivo</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-actions">
-          <button type="button" class="btn btn-secondary" (click)="cancelarEdicion()">
-            <i class="fas fa-times"></i> Cancelar
-          </button>
-          <button type="submit" class="btn btn-primary" [disabled]="!proveedorForm.form.valid">
-            <i class="fas fa-save"></i> {{ proveedorEditando ? 'Actualizar' : 'Guardar' }}
-          </button>
-        </div>
-      </form>
+      </div>
     </div>
 
     <!-- Estadísticas de proveedores -->

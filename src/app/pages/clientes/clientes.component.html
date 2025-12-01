@@ -8,7 +8,8 @@
     </div>
     <div class="page-actions">
       <button class="btn btn-primary" (click)="toggleFormulario()">
-        {{ mostrarFormulario ? "Cancelar" : "Nuevo Cliente" }}
+        <i class="fas fa-plus"></i>
+        Nuevo Cliente
       </button>
     </div>
   </div>
@@ -21,110 +22,126 @@
     {{ error }}
   </div>
 
-  <!-- Formulario para agregar/editar cliente -->
-  <div class="formulario-container" *ngIf="mostrarFormulario">
-    <h3>{{ clienteEditando ? "Editar Cliente" : "Nuevo Cliente" }}</h3>
-    <form (ngSubmit)="guardarCliente()" #clienteForm="ngForm">
-      <div class="form-row">
-        <div class="form-group">
-          <label for="nombre">Nombre:</label>
-          <input
-            type="text"
-            id="nombre"
-            [(ngModel)]="clienteTemp.nombre"
-            name="nombre"
-            required
-          />
+  <!-- Modal para agregar/editar cliente -->
+  <div class="modal show" *ngIf="mostrarFormulario" (click)="toggleFormulario()">
+    <div class="modal-dialog" (click)="$event.stopPropagation()">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title">{{ clienteEditando ? "Editar Cliente" : "Nuevo Cliente" }}</h2>
+          <button class="btn-close" (click)="toggleFormulario()">✕</button>
         </div>
-        <div class="form-group">
-          <label for="empresa">Empresa:</label>
-          <input
-            type="text"
-            id="empresa"
-            [(ngModel)]="clienteTemp.empresa"
-            name="empresa"
-            required
-          />
+        <div class="modal-body">
+          <form (ngSubmit)="guardarCliente()" #clienteForm="ngForm">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="nombre">Nombre:</label>
+                <input
+                  type="text"
+                  id="nombre"
+                  [(ngModel)]="clienteTemp.nombre"
+                  name="nombre"
+                  required
+                  class="form-control"
+                />
+              </div>
+              <div class="form-group">
+                <label for="empresa">Empresa:</label>
+                <input
+                  type="text"
+                  id="empresa"
+                  [(ngModel)]="clienteTemp.empresa"
+                  name="empresa"
+                  required
+                  class="form-control"
+                />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="email">Email:</label>
+                <input
+                  type="email"
+                  id="email"
+                  [(ngModel)]="clienteTemp.email"
+                  name="email"
+                  required
+                  class="form-control"
+                />
+              </div>
+              <div class="form-group">
+                <label for="telefono">Teléfono:</label>
+                <input
+                  type="tel"
+                  id="telefono"
+                  [(ngModel)]="clienteTemp.telefono"
+                  name="telefono"
+                  required
+                  class="form-control"
+                />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="direccion">Dirección:</label>
+                <input
+                  type="text"
+                  id="direccion"
+                  [(ngModel)]="clienteTemp.direccion"
+                  name="direccion"
+                  required
+                  class="form-control"
+                />
+              </div>
+              <div class="form-group">
+                <label for="categoria">Categoría:</label>
+                <select
+                  id="categoria"
+                  [(ngModel)]="clienteTemp.categoria"
+                  name="categoria"
+                  required
+                  class="form-select"
+                >
+                  <option value="Premium">Premium</option>
+                  <option value="Corporativo">Corporativo</option>
+                  <option value="Regular">Regular</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="isActive">Estado:</label>
+                <select
+                  id="isActive"
+                  [(ngModel)]="clienteTemp.isActive"
+                  name="isActive"
+                  required
+                  class="form-select"
+                >
+                  <option [value]="true">Activo</option>
+                  <option [value]="false">Inactivo</option>
+                </select>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                (click)="cancelarEdicion(); toggleFormulario()"
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                class="btn btn-primary"
+                [disabled]="!clienteForm.form.valid"
+              >
+                {{ clienteEditando ? "Actualizar" : "Guardar" }}
+              </button>
+            </div>
+          </form>
         </div>
       </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label for="email">Email:</label>
-          <input
-            type="email"
-            id="email"
-            [(ngModel)]="clienteTemp.email"
-            name="email"
-            required
-          />
-        </div>
-        <div class="form-group">
-          <label for="telefono">Teléfono:</label>
-          <input
-            type="tel"
-            id="telefono"
-            [(ngModel)]="clienteTemp.telefono"
-            name="telefono"
-            required
-          />
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label for="direccion">Dirección:</label>
-          <input
-            type="text"
-            id="direccion"
-            [(ngModel)]="clienteTemp.direccion"
-            name="direccion"
-            required
-          />
-        </div>
-        <div class="form-group">
-          <label for="categoria">Categoría:</label>
-          <select
-            id="categoria"
-            [(ngModel)]="clienteTemp.categoria"
-            name="categoria"
-            required
-          >
-            <option value="Premium">Premium</option>
-            <option value="Corporativo">Corporativo</option>
-            <option value="Regular">Regular</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label for="isActive">Estado:</label>
-          <select
-            id="isActive"
-            [(ngModel)]="clienteTemp.isActive"
-            name="isActive"
-            required
-          >
-            <option [value]="true">Activo</option>
-            <option [value]="false">Inactivo</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-actions">
-        <button
-          type="submit"
-          class="btn btn-primary"
-          [disabled]="!clienteForm.form.valid"
-        >
-          {{ clienteEditando ? "Actualizar" : "Guardar" }}
-        </button>
-        <button
-          type="button"
-          class="btn btn-secondary"
-          (click)="cancelarEdicion()"
-        >
-          Cancelar
-        </button>
-      </div>
-    </form>
+    </div>
   </div>
 
   <!-- Estadísticas de clientes -->

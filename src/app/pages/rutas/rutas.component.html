@@ -9,8 +9,8 @@
         <i class="fas fa-rocket"></i> Optimizar Rutas
       </button>
       <button class="btn btn-primary" (click)="toggleFormulario()">
-        <i class="fas" [ngClass]="mostrarFormulario ? 'fa-times' : 'fa-plus'"></i>
-        {{ mostrarFormulario ? 'Cancelar' : 'Nueva Ruta' }}
+        <i class="fas fa-plus"></i>
+        Nueva Ruta
       </button>
     </div>
   </div>
@@ -18,76 +18,85 @@
 
 <div class="rutas-container">
 
-  <!-- Formulario para agregar/editar ruta -->
-  <div class="formulario-container" *ngIf="mostrarFormulario">
-    <h3>
-      <i class="fas" [ngClass]="rutaEditando ? 'fa-edit' : 'fa-route'"></i>
-      {{ rutaEditando ? 'Editar Ruta' : 'Nueva Ruta' }}
-    </h3>
-    <form (ngSubmit)="guardarRuta()" #rutaForm="ngForm">
-      <div class="form-row">
-        <div class="form-group">
-          <label for="nombre">Nombre de la Ruta:</label>
-          <input type="text" id="nombre" [(ngModel)]="rutaTemp.nombre" name="nombre" required placeholder="Ruta Norte-01">
+  <!-- Modal para agregar/editar ruta -->
+  <div class="modal show" *ngIf="mostrarFormulario" (click)="toggleFormulario()">
+    <div class="modal-dialog" (click)="$event.stopPropagation()">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title">
+            <i class="fas" [ngClass]="rutaEditando ? 'fa-edit' : 'fa-route'"></i>
+            {{ rutaEditando ? 'Editar Ruta' : 'Nueva Ruta' }}
+          </h2>
+          <button class="btn-close" (click)="toggleFormulario()">✕</button>
         </div>
-        <div class="form-group">
-          <label for="conductorAsignado">Conductor:</label>
-          <input type="text" id="conductorAsignado" [(ngModel)]="rutaTemp.conductorAsignado" name="conductorAsignado" required placeholder="Nombre del conductor">
+        <div class="modal-body">
+          <form (ngSubmit)="guardarRuta()" #rutaForm="ngForm">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="nombre">Nombre de la Ruta:</label>
+                <input type="text" id="nombre" [(ngModel)]="rutaTemp.nombre" name="nombre" required placeholder="Ruta Norte-01" class="form-control">
+              </div>
+              <div class="form-group">
+                <label for="conductorAsignado">Conductor:</label>
+                <input type="text" id="conductorAsignado" [(ngModel)]="rutaTemp.conductorAsignado" name="conductorAsignado" required placeholder="Nombre del conductor" class="form-control">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="origen">Origen:</label>
+                <input type="text" id="origen" [(ngModel)]="rutaTemp.origen" name="origen" required placeholder="Almacén Central" class="form-control">
+              </div>
+              <div class="form-group">
+                <label for="destino">Destino:</label>
+                <input type="text" id="destino" [(ngModel)]="rutaTemp.destino" name="destino" required placeholder="Cliente / Sucursal" class="form-control">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="distanciaKm">Distancia (km):</label>
+                <input type="number" id="distanciaKm" [(ngModel)]="rutaTemp.distanciaKm" 
+                       name="distanciaKm" min="0.1" step="0.1" required placeholder="0.0" class="form-control">
+              </div>
+              <div class="form-group">
+                <label for="tiempoEstimadoMinutos">Tiempo Estimado (minutos):</label>
+                <input type="number" id="tiempoEstimadoMinutos" [(ngModel)]="rutaTemp.tiempoEstimadoMinutos" 
+                       name="tiempoEstimadoMinutos" min="1" step="1" required placeholder="60" class="form-control">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="vehiculoAsignado">Vehículo:</label>
+                <input type="text" id="vehiculoAsignado" [(ngModel)]="rutaTemp.vehiculoAsignado" name="vehiculoAsignado" required placeholder="Placa o ID" class="form-control">
+              </div>
+              <div class="form-group">
+                <label for="otrosCostos">Costo Estimado (S/):</label>
+                <input type="number" id="otrosCostos" [(ngModel)]="rutaTemp.otrosCostos" 
+                       name="otrosCostos" min="0" step="0.01" required placeholder="0.00" class="form-control">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="estado">Estado:</label>
+                <select id="estado" [(ngModel)]="rutaTemp.estado" name="estado" required class="form-select">
+                  <option value="Planificada">Planificada</option>
+                  <option value="En Proceso">En Proceso</option>
+                  <option value="Completada">Completada</option>
+                  <option value="Suspendida">Suspendida</option>
+                </select>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" (click)="cancelarEdicion(); toggleFormulario()">
+                <i class="fas fa-times"></i> Cancelar
+              </button>
+              <button type="submit" class="btn btn-primary" [disabled]="!rutaForm.form.valid">
+                <i class="fas fa-save"></i> {{ rutaEditando ? 'Actualizar' : 'Guardar' }}
+              </button>
+            </div>
+          </form>
         </div>
       </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label for="origen">Origen:</label>
-          <input type="text" id="origen" [(ngModel)]="rutaTemp.origen" name="origen" required placeholder="Almacén Central">
-        </div>
-        <div class="form-group">
-          <label for="destino">Destino:</label>
-          <input type="text" id="destino" [(ngModel)]="rutaTemp.destino" name="destino" required placeholder="Cliente / Sucursal">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label for="distanciaKm">Distancia (km):</label>
-          <input type="number" id="distanciaKm" [(ngModel)]="rutaTemp.distanciaKm" 
-                 name="distanciaKm" min="0.1" step="0.1" required placeholder="0.0">
-        </div>
-        <div class="form-group">
-          <label for="tiempoEstimadoMinutos">Tiempo Estimado (minutos):</label>
-          <input type="number" id="tiempoEstimadoMinutos" [(ngModel)]="rutaTemp.tiempoEstimadoMinutos" 
-                 name="tiempoEstimadoMinutos" min="1" step="1" required placeholder="60">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label for="vehiculoAsignado">Vehículo:</label>
-          <input type="text" id="vehiculoAsignado" [(ngModel)]="rutaTemp.vehiculoAsignado" name="vehiculoAsignado" required placeholder="Placa o ID">
-        </div>
-        <div class="form-group">
-          <label for="otrosCostos">Costo Estimado (S/):</label>
-          <input type="number" id="otrosCostos" [(ngModel)]="rutaTemp.otrosCostos" 
-                 name="otrosCostos" min="0" step="0.01" required placeholder="0.00">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label for="estado">Estado:</label>
-          <select id="estado" [(ngModel)]="rutaTemp.estado" name="estado" required>
-            <option value="Planificada">Planificada</option>
-            <option value="En Proceso">En Proceso</option>
-            <option value="Completada">Completada</option>
-            <option value="Suspendida">Suspendida</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-actions">
-        <button type="button" class="btn btn-secondary" (click)="cancelarEdicion()">
-          <i class="fas fa-times"></i> Cancelar
-        </button>
-        <button type="submit" class="btn btn-primary" [disabled]="!rutaForm.form.valid">
-          <i class="fas fa-save"></i> {{ rutaEditando ? 'Actualizar' : 'Guardar' }}
-        </button>
-      </div>
-    </form>
+    </div>
   </div>
 
   <!-- Estadísticas de rutas -->
