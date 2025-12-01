@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LogiStock - Monitor del Sistema</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background-color: #f0f2f5; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        h1 { color: #1a73e8; border-bottom: 2px solid #1a73e8; padding-bottom: 10px; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .card h2 { margin-top: 0; color: #444; font-size: 1.2em; }
+        .status-ok { color: green; font-weight: bold; }
+        .status-error { color: red; font-weight: bold; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 4px; overflow-x: auto; font-size: 0.9em; }
+        button { background: #1a73e8; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #1557b0; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .metric-value { font-size: 2em; font-weight: bold; color: #333; }
+        .metric-label { color: #666; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>LogiStock - Panel de Monitoreo (Actuator)</h1>
+        
+        <div class="card">
+            <h2>Estado del Sistema (Health)</h2>
+            <div id="health-status">Cargando...</div>
+            <pre id="health-details" style="display:none;"></pre>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <h2>Memoria Usada (JVM)</h2>
+                <div id="memory-metric" class="metric-value">-</div>
+                <div class="metric-label">Megabytes</div>
+            </div>
+            <div class="card">
+                <h2>Tiempo de Actividad</h2>
+                <div id="uptime-metric" class="metric-value">-</div>
+                <div class="metric-label">Segundos</div>
+            </div>
+            <div class="card">
+                <h2>Uso de CPU (Sistema)</h2>
+                <div id="cpu-metric" class="metric-value">-</div>
+                <div class="metric-label">Porcentaje</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Acciones de Mantenimiento</h2>
+            <p>Ejecutar tareas de mantenimiento bajo demanda (Backup, Limpieza, Health Check).</p>
+            <button onclick="runMaintenance()" style="background-color: #e37400;">🛠️ Ejecutar Mantenimiento Ahora</button>
+            <pre id="maintenance-result" style="display:none; margin-top: 15px; border-left: 4px solid #e37400;"></pre>
+        </div>
+
+        <div class="card">
+            <h2>Detalles Técnicos</h2>
+            <p>Estos datos provienen directamente de los endpoints de Spring Boot Actuator.</p>
+            <button onclick="refreshData()">Actualizar Datos</button>
+            <br><br>
+            <details>
+                <summary>Ver JSON Crudo de Métricas</summary>
+                <pre id="raw-metrics">Cargando...</pre>
+            </details>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '/api/actuator';
+
+        async function fetchHealth() {
+            try {
+                const response = await fetch(`${API_BASE}/health`);
+                const data = await response.json();
+                const statusDiv = document.getElementById('health-status');
+                const detailsPre = document.getElementById('health-details');
+                
+                statusDiv.className = data.status === 'UP' ? 'status-ok' : 'status-error';
+                statusDiv.textContent = `Estado: ${data.status}`;
+                
+                detailsPre.style.display = 'block';
+                detailsPre.textContent = JSON.stringify(data, null, 2);
+            } catch (e) {
+                document.getElementById('health-status').textContent = 'Error al conectar con Actuator';
+            }
+        }
+
+        async function fetchMetric(name) {
+            try {
+                const response = await fetch(`${API_BASE}/metrics/${name}`);
+                const data = await response.json();
+                return data.measurements[0].value;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        async function fetchAllMetrics() {
+            try {
+                // Memoria
+                const memBytes = await fetchMetric('jvm.memory.used');
+                if (memBytes) {
+                    document.getElementById('memory-metric').textContent = (memBytes / 1024 / 1024).toFixed(2);
+                }
+
+                // Uptime
+                const uptime = await fetchMetric('process.uptime');
+                if (uptime) {
+                    document.getElementById('uptime-metric').textContent = uptime.toFixed(0);
+                }
+
+                // CPU
+                const cpu = await fetchMetric('system.cpu.usage');
+                if (cpu !== null) {
+                    document.getElementById('cpu-metric').textContent = (cpu * 100).toFixed(1) + '%';
+                }
+
+                // Raw list
+                const response = await fetch(`${API_BASE}/metrics`);
+                const data = await response.json();
+                document.getElementById('raw-metrics').textContent = JSON.stringify(data, null, 2);
+
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        function refreshData() {
+            fetchHealth();
+            fetchAllMetrics();
+        }
+
+        async function runMaintenance() {
+            const resultPre = document.getElementById('maintenance-result');
+            resultPre.style.display = 'block';
+            resultPre.textContent = 'Ejecutando mantenimiento... por favor espere.';
+            
+            try {
+                const response = await fetch('/api/maintenance/run', { method: 'POST' });
+                const data = await response.json();
+                resultPre.textContent = data.report;
+            } catch (e) {
+                resultPre.textContent = 'Error al ejecutar mantenimiento: ' + e;
+            }
+        }
+
+        // Iniciar
+        refreshData();
+        // Auto-refrescar cada 5 segundos
+        setInterval(refreshData, 5000);
+    </script>
+</body>
+</html>

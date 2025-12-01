@@ -116,8 +116,8 @@ public class SecurityConfig {
                 .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
                 // Permitir acceso público a endpoints de autenticación
                 .requestMatchers("/auth/**").permitAll()
-                // Permitir acceso a Swagger y actuator
-                .requestMatchers("/swagger-ui/**", "/api-docs/**", "/actuator/**").permitAll()
+                // Permitir acceso a Swagger, actuator, monitor y endpoint de mantenimiento
+                .requestMatchers("/swagger-ui/**", "/api-docs/**", "/actuator/**", "/monitor.html", "/maintenance/**").permitAll()
                 // Proteger todos los demás endpoints
                 .anyRequest().authenticated()
             )

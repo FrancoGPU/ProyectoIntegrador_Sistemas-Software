@@ -41,40 +41,48 @@ ProyectoIntegrador_Sistemas-Software/
 
 ## ✨ Características Principales
 
-- 📊 **Dashboard Ejecutivo** - Panel principal con métricas y estadísticas
-- 📦 **Gestión de Inventario** - Control completo de productos y categorías
-- 👥 **Administración de Clientes** - Base de datos de clientes con información detallada
-- 🏢 **Gestión de Proveedores** - Directorio completo de proveedores
-- 🚚 **Optimización de Rutas** - Planificación inteligente de rutas de distribución
+- 📊 **Dashboard Ejecutivo** - Panel principal con métricas y estadísticas en tiempo real.
+- 📦 **Gestión de Inventario** - Control completo de productos, categorías y alertas de stock bajo.
+- 👥 **Administración de Clientes** - Base de datos de clientes con historial de compras.
+- 🏢 **Gestión de Proveedores** - Directorio completo de proveedores y gestión de suministros.
+- 🚚 **Optimización de Rutas (Nuevo)** 
+  - Integración con **Leaflet Maps** para visualización interactiva.
+  - Cálculo automático de rutas, distancias y tiempos usando **OSRM API**.
+  - Geocodificación inversa con **Nominatim** para obtener direcciones reales.
+  - Herramienta de **Análisis de Rutas** para detectar ineficiencias de costos y riesgos de fatiga.
+- 📦 **Gestión de Pedidos (Nuevo)**
+  - Creación y seguimiento de pedidos.
+  - Integración con rutas para autocompletado de direcciones.
+  - Validación de stock en tiempo real.
+- 📄 **Reportes Avanzados** - Generación de reportes en PDF y Excel para todos los módulos.
 
 ## 🎨 Diseño y UX
 
-- **Responsive Design** - Optimizado para desktop, tablet y móvil
-- **Menú móvil inteligente** - Navegación fluida con auto-cierre al scroll
-- **Gradientes únicos** - Cada sección tiene su identidad visual distintiva
-- **Glassmorphism effects** - Interfaz moderna con efectos de vidrio
-- **Animaciones suaves** - Transiciones y efectos hover profesionales
+- **Responsive Design** - Optimizado para desktop, tablet y móvil.
+- **Modales Interactivos** - Formularios de creación y edición en ventanas modales para mejor flujo de trabajo.
+- **Tablas Avanzadas** - Columnas fijas (sticky), scroll horizontal y acciones rápidas.
+- **Menú móvil inteligente** - Navegación fluida con auto-cierre al scroll.
+- **Glassmorphism effects** - Interfaz moderna con efectos de vidrio.
 
 ## 🛠️ Tecnologías Utilizadas
 
 ### Frontend
 
-- **Angular 19.2.17** - Framework principal
-- **TypeScript** - Programación tipada
-- **CSS Grid & Flexbox** - Layouts responsivos
-- **CSS Custom Properties** - Sistema de variables para temas
-- **Angular Router** - Navegación SPA
-- **Angular Forms** - Formularios reactivos
-- **RxJS** - Programación reactiva
+- **Angular 19** - Framework principal (Standalone Components).
+- **Leaflet** - Librería de mapas interactivos.
+- **TypeScript** - Programación tipada.
+- **CSS Grid & Flexbox** - Layouts responsivos.
+- **Angular Router** - Navegación SPA.
+- **RxJS** - Programación reactiva.
 
 ### Backend
 
-- **Spring Boot 3.2.x** - Framework Java
-- **MongoDB** - Base de datos NoSQL
-- **Spring Data MongoDB** - ORM para MongoDB
-- **Lombok** - Reducción de código boilerplate
-- **Swagger/OpenAPI** - Documentación de API
-- **Maven** - Gestión de dependencias
+- **Spring Boot 3.2.x** - Framework Java.
+- **MongoDB** - Base de datos NoSQL.
+- **Spring Data MongoDB** - ORM para MongoDB.
+- **iText / Apache POI** - Generación de reportes PDF y Excel.
+- **Lombok** - Reducción de código boilerplate.
+- **Swagger/OpenAPI** - Documentación de API.
 
 ## 🚀 Instalación y Uso
 

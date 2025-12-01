@@ -6,7 +6,7 @@
     </div>
     <div class="page-actions">
       <button class="btn btn-warning" (click)="optimizarRutas()">
-        <i class="fas fa-rocket"></i> Optimizar Rutas
+        <i class="fas fa-chart-pie"></i> Analizar Rutas
       </button>
       <button class="btn btn-primary" (click)="toggleFormulario()">
         <i class="fas fa-plus"></i>
@@ -31,14 +31,19 @@
         </div>
         <div class="modal-body">
           <form (ngSubmit)="guardarRuta()" #rutaForm="ngForm">
+            <!-- Mapa para selección de ruta -->
+            <div class="map-container" style="margin-bottom: 1.5rem;">
+              <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Planificador de Ruta (Click para Origen/Destino)</label>
+              <div id="map" style="height: 300px; width: 100%; border-radius: 8px; border: 1px solid var(--border-color); z-index: 1;"></div>
+              <div class="map-help" style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">
+                <i class="fas fa-info-circle"></i> Click izquierdo: Marcar Origen | Click derecho: Marcar Destino
+              </div>
+            </div>
+
             <div class="form-row">
-              <div class="form-group">
+              <div class="form-group" style="width: 100%;">
                 <label for="nombre">Nombre de la Ruta:</label>
                 <input type="text" id="nombre" [(ngModel)]="rutaTemp.nombre" name="nombre" required placeholder="Ruta Norte-01" class="form-control">
-              </div>
-              <div class="form-group">
-                <label for="conductorAsignado">Conductor:</label>
-                <input type="text" id="conductorAsignado" [(ngModel)]="rutaTemp.conductorAsignado" name="conductorAsignado" required placeholder="Nombre del conductor" class="form-control">
               </div>
             </div>
             <div class="form-row">
@@ -64,11 +69,7 @@
               </div>
             </div>
             <div class="form-row">
-              <div class="form-group">
-                <label for="vehiculoAsignado">Vehículo:</label>
-                <input type="text" id="vehiculoAsignado" [(ngModel)]="rutaTemp.vehiculoAsignado" name="vehiculoAsignado" required placeholder="Placa o ID" class="form-control">
-              </div>
-              <div class="form-group">
+              <div class="form-group" style="width: 100%;">
                 <label for="otrosCostos">Costo Estimado (S/):</label>
                 <input type="number" id="otrosCostos" [(ngModel)]="rutaTemp.otrosCostos" 
                        name="otrosCostos" min="0" step="0.01" required placeholder="0.00" class="form-control">
@@ -121,14 +122,14 @@
 
   <!-- Optimización automática -->
   <div class="optimization-panel" *ngIf="optimizedRoutes.length > 0">
-    <h3><i class="fas fa-rocket"></i> Rutas Optimizadas Sugeridas</h3>
+    <h3><i class="fas fa-chart-line"></i> Análisis de Rutas</h3>
     <div class="optimization-results">
-      <div class="optimization-card" *ngFor="let suggestion of optimizedRoutes">
-        <h4>{{ suggestion.tipo }}</h4>
+      <div class="optimization-card" *ngFor="let suggestion of optimizedRoutes" [ngStyle]="{'border-left': '4px solid var(--' + (suggestion.color || 'primary') + ')'}">
+        <h4><i class="fas" [ngClass]="suggestion.icon || 'fa-lightbulb'"></i> {{ suggestion.tipo }}</h4>
         <p>{{ suggestion.descripcion }}</p>
-        <div class="savings">
-          <span class="savings-time"><i class="fas fa-clock"></i> Ahorro: {{ suggestion.ahorroTiempo }}h</span>
-          <span class="savings-distance"><i class="fas fa-road"></i> Distancia: -{{ suggestion.ahorroDistancia }}km</span>
+        <div class="savings" *ngIf="suggestion.ahorroTiempo > 0 || suggestion.ahorroDistancia > 0">
+          <span class="savings-time" *ngIf="suggestion.ahorroTiempo > 0"><i class="fas fa-clock"></i> Ahorro Est.: {{ suggestion.ahorroTiempo }}h</span>
+          <span class="savings-distance" *ngIf="suggestion.ahorroDistancia > 0"><i class="fas fa-road"></i> Distancia Est.: -{{ suggestion.ahorroDistancia }}km</span>
         </div>
       </div>
     </div>
@@ -141,7 +142,6 @@
         <tr>
           <th>Código</th>
           <th>Nombre</th>
-          <th>Conductor</th>
           <th>Ruta</th>
           <th>Distancia</th>
           <th>Tiempo Est.</th>
@@ -154,7 +154,6 @@
         <tr *ngFor="let ruta of rutas">
           <td>{{ ruta.codigo }}</td>
           <td>{{ ruta.nombre }}</td>
-          <td>{{ ruta.conductorAsignado || ruta.conductor || 'N/A' }}</td>
           <td>
             <div class="ruta-info">
               <span class="origen">{{ ruta.origen }}</span>

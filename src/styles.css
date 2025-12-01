@@ -3,6 +3,7 @@
 /* Importar estilos compartidos reutilizables */
 @import './app/shared/shared-styles.css';
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import 'leaflet/dist/leaflet.css';
 
 /* Reset y configuración base */
 * {

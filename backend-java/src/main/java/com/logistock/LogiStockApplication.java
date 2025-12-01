@@ -3,6 +3,7 @@ package com.logistock;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * LogiStock Solutions Backend Application
@@ -14,6 +15,7 @@ import org.springframework.data.mongodb.config.EnableMongoAuditing;
  */
 @SpringBootApplication
 @EnableMongoAuditing
+@EnableScheduling
 public class LogiStockApplication {
 
     public static void main(String[] args) {

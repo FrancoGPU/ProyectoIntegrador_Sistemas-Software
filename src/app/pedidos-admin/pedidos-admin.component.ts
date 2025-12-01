@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { PedidosService, Pedido, ProductoPedido, PedidoEstadisticas } from '../services/pedidos.service';
 import { ClientesService } from '../services/clientes.service';
 import { InventarioService } from '../services/inventario.service';
+import { RutasService, Ruta } from '../services/rutas.service';
 import { ConfirmModalComponent } from '../shared/confirm-modal/confirm-modal.component';
 
 @Component({
@@ -18,6 +19,7 @@ export class PedidosAdminComponent implements OnInit {
   pedidosFiltrados: Pedido[] = [];
   clientes: any[] = [];
   productos: any[] = [];
+  rutas: Ruta[] = [];
   estadisticas?: PedidoEstadisticas;
 
   // Filtros
@@ -28,6 +30,8 @@ export class PedidosAdminComponent implements OnInit {
   mostrarModal: boolean = false;
   modoEdicion: boolean = false;
   pedidoActual: Pedido = this.nuevoPedidoVacio();
+  rutaSeleccionadaId: string = ''; // Para el select de rutas
+
   // Modal de advertencia personalizado
   modalAdvertenciaVisible: boolean = false;
   advertenciaResultado: any = null;
@@ -44,7 +48,8 @@ export class PedidosAdminComponent implements OnInit {
   constructor(
     private pedidosService: PedidosService,
     private clientesService: ClientesService,
-    private inventarioService: InventarioService
+    private inventarioService: InventarioService,
+    private rutasService: RutasService
   ) {}
 
   ngOnInit(): void {
@@ -56,6 +61,17 @@ export class PedidosAdminComponent implements OnInit {
     this.cargarEstadisticas();
     this.cargarClientes();
     this.cargarProductos();
+    this.cargarRutas();
+  }
+
+  cargarRutas(): void {
+    this.rutasService.getRutas({ page: 0, size: 100 }).subscribe({
+      next: (response: any) => {
+        this.rutas = response.rutas || response.content || response;
+        console.log('Rutas cargadas:', this.rutas.length);
+      },
+      error: (error) => console.error('Error al cargar rutas:', error)
+    });
   }
 
   cargarPedidos(): void {
@@ -161,6 +177,17 @@ export class PedidosAdminComponent implements OnInit {
     }
   }
 
+  onRutaSeleccionada(): void {
+    if (this.rutaSeleccionadaId) {
+      const ruta = this.rutas.find(r => r.id === this.rutaSeleccionadaId || r.codigo === this.rutaSeleccionadaId);
+      if (ruta) {
+        // Usar el destino de la ruta como dirección de entrega
+        this.pedidoActual.direccionEntrega = ruta.destino;
+        console.log('Dirección actualizada desde ruta:', ruta.destino);
+      }
+    }
+  }
+
   onProductoSeleccionado(): void {
     if (this.productoTemp.productoId) {
       const producto = this.productos.find(p => (p.id || p._id) === this.productoTemp.productoId);
@@ -168,7 +195,9 @@ export class PedidosAdminComponent implements OnInit {
       
       if (producto) {
         this.productoTemp.nombre = producto.name || producto.nombre || 'Producto sin nombre';
-        this.productoTemp.precioUnitario = producto.price || producto.precio || 0;
+        const precio = producto.price || producto.precio || 0;
+        // Redondear a 2 decimales
+        this.productoTemp.precioUnitario = Math.round(precio * 100) / 100;
         
         console.log('Producto temporal actualizado:', this.productoTemp);
       } else {

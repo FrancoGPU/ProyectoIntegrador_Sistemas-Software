@@ -182,12 +182,12 @@ public class ReportService {
             document.add(Chunk.NEWLINE);
 
             // Tabla
-            PdfPTable table = new PdfPTable(6); // Código, Nombre, Origen, Destino, Estado, Conductor
+            PdfPTable table = new PdfPTable(5); // Código, Nombre, Origen, Destino, Estado
             table.setWidthPercentage(100);
-            table.setWidths(new int[]{3, 5, 4, 4, 3, 4});
+            table.setWidths(new int[]{3, 5, 5, 5, 3});
 
             // Encabezados
-            String[] headers = {"Código", "Nombre", "Origen", "Destino", "Estado", "Conductor"};
+            String[] headers = {"Código", "Nombre", "Origen", "Destino", "Estado"};
             for (String header : headers) {
                 PdfPCell cell = new PdfPCell(new Phrase(header));
                 cell.setBackgroundColor(java.awt.Color.LIGHT_GRAY);
@@ -204,7 +204,6 @@ public class ReportService {
                 table.addCell(ruta.getOrigen() != null ? ruta.getOrigen() : "");
                 table.addCell(ruta.getDestino() != null ? ruta.getDestino() : "");
                 table.addCell(ruta.getEstado() != null ? ruta.getEstado() : "");
-                table.addCell(ruta.getConductorAsignado() != null ? ruta.getConductorAsignado() : "Sin asignar");
             }
 
             document.add(table);
@@ -218,7 +217,7 @@ public class ReportService {
     }
 
     public ByteArrayInputStream generateRoutesExcel() throws IOException {
-        String[] columns = {"Código", "Nombre", "Origen", "Destino", "Distancia (km)", "Estado", "Prioridad", "Vehículo", "Conductor", "Costo Total"};
+        String[] columns = {"Código", "Nombre", "Origen", "Destino", "Distancia (km)", "Estado", "Prioridad", "Costo Total"};
 
         try (Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream()) {
             Sheet sheet = workbook.createSheet("Rutas");
@@ -261,10 +260,8 @@ public class ReportService {
 
                 row.createCell(5).setCellValue(ruta.getEstado() != null ? ruta.getEstado() : "");
                 row.createCell(6).setCellValue(ruta.getPrioridad() != null ? ruta.getPrioridad() : "");
-                row.createCell(7).setCellValue(ruta.getVehiculoAsignado() != null ? ruta.getVehiculoAsignado() : "");
-                row.createCell(8).setCellValue(ruta.getConductorAsignado() != null ? ruta.getConductorAsignado() : "");
                 
-                org.apache.poi.ss.usermodel.Cell costCell = row.createCell(9);
+                org.apache.poi.ss.usermodel.Cell costCell = row.createCell(7);
                 if (ruta.getCostoTotal() != null) {
                     costCell.setCellValue(ruta.getCostoTotal().doubleValue());
                 } else {

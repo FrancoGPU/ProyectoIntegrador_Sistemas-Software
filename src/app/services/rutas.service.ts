@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from './api.service';
+import { HttpClient } from '@angular/common/http';
 
 // Interfaz que coincide con el modelo del backend Java
 export interface Ruta {
@@ -49,7 +50,31 @@ export interface RutaStats {
 })
 export class RutasService {
 
-  constructor(private apiService: ApiService) {}
+  constructor(private apiService: ApiService, private http: HttpClient) {}
+
+  /**
+   * Obtener ruta desde OSRM
+   */
+  getRouteOSRM(start: [number, number], end: [number, number]): Observable<any> {
+    const url = `https://router.project-osrm.org/route/v1/driving/${start[1]},${start[0]};${end[1]},${end[0]}?overview=full&geometries=geojson`;
+    return this.http.get(url);
+  }
+
+  /**
+   * Buscar dirección con Nominatim
+   */
+  searchAddress(query: string): Observable<any[]> {
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`;
+    return this.http.get<any[]>(url);
+  }
+
+  /**
+   * Obtener dirección desde coordenadas (Geocoding Inverso)
+   */
+  getAddressFromCoords(lat: number, lon: number): Observable<any> {
+    const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`;
+    return this.http.get<any>(url);
+  }
 
   /**
    * Obtener todas las rutas con paginación y filtros
@@ -220,7 +245,7 @@ export class RutasService {
   exportToCSV(rutas: Ruta[]): string {
     const headers = [
       'Código', 'Nombre', 'Origen', 'Destino', 'Distancia (km)', 'Tiempo (h)',
-      'Estado', 'Vehículo', 'Conductor', 'Costo', 'Fecha Salida', 'Fecha Llegada'
+      'Estado', 'Costo', 'Fecha Salida', 'Fecha Llegada'
     ];
 
     const csvContent = [
@@ -233,8 +258,6 @@ export class RutasService {
         r.distanciaKm,
         r.tiempoEstimadoHoras || (r.tiempoEstimadoMinutos ? r.tiempoEstimadoMinutos / 60 : 0),
         r.estado,
-        r.vehiculoAsignado || r.vehiculo || '',
-        r.conductorAsignado || r.conductor || '',
         r.costoTotal || r.costoEstimado || 0,
         r.fechaSalida ? new Date(r.fechaSalida).toLocaleDateString() : '',
         r.fechaLlegadaEstimada ? new Date(r.fechaLlegadaEstimada).toLocaleDateString() : ''

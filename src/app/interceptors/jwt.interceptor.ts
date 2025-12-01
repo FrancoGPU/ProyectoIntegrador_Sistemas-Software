@@ -9,8 +9,11 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
   
   console.log('JwtInterceptor processing:', req.url);
 
-  // Si existe token y la petición es a la API (no a auth/login o auth/register)
-  if (token && !req.url.includes('/auth/login') && !req.url.includes('/auth/register')) {
+  // Dominios externos que no requieren autenticación
+  const isExternalApi = req.url.includes('openstreetmap.org') || req.url.includes('project-osrm.org');
+
+  // Si existe token y la petición es a la API (no a auth/login o auth/register) y no es externa
+  if (token && !req.url.includes('/auth/login') && !req.url.includes('/auth/register') && !isExternalApi) {
     console.log('JwtInterceptor: Adding Authorization header');
     // Clonar la petición y agregar el header Authorization
     req = req.clone({

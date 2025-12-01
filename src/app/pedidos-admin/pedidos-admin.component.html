@@ -198,6 +198,19 @@
             <div class="row g-3">
               <div class="col-12">
                 <label class="form-label fw-bold">
+                  <i class="fas fa-route me-1"></i>
+                  Seleccionar Ruta (Opcional)
+                </label>
+                <select [(ngModel)]="rutaSeleccionadaId" (change)="onRutaSeleccionada()" 
+                        class="form-select form-select-lg mb-3">
+                  <option value="">-- Usar dirección manual --</option>
+                  <option *ngFor="let ruta of rutas" [value]="ruta.id || ruta.codigo">
+                    {{ ruta.nombre }} ({{ ruta.origen }} -> {{ ruta.destino }})
+                  </option>
+                </select>
+              </div>
+              <div class="col-12">
+                <label class="form-label fw-bold">
                   <i class="fas fa-map-marker-alt me-1"></i>
                   Dirección *
                 </label>
@@ -231,7 +244,7 @@
                           class="form-select">
                     <option value="">-- Seleccione un producto --</option>
                     <option *ngFor="let producto of productos" [value]="producto.id || producto._id">
-                      {{ producto.name }} - ${{ producto.price }} (Stock: {{ producto.stock }})
+                      {{ producto.name }} - ${{ (producto.price || producto.precio) | number:'1.2-2' }} (Stock: {{ producto.stock }})
                     </option>
                   </select>
                 </div>
