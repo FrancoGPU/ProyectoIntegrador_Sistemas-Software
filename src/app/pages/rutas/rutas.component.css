@@ -168,13 +168,14 @@
 .tabla-container {
   background: var(--bg-card);
   border-radius: var(--border-radius-lg);
-  overflow: hidden;
+  overflow-x: auto;
   box-shadow: var(--box-shadow);
   border: 1px solid var(--border-color);
 }
 
 .rutas-table {
   width: 100%;
+  min-width: 1000px; /* Ensure table has enough width to show all columns */
   border-collapse: collapse;
   font-size: 0.9rem;
 }
@@ -205,6 +206,42 @@
 
 .rutas-table tbody tr:hover {
   background-color: var(--light-color);
+}
+
+/* Sticky Actions Column */
+.rutas-table th:last-child,
+.rutas-table td:last-child {
+  position: sticky;
+  right: 0;
+  z-index: 10;
+  text-align: center;
+}
+
+.rutas-table th:last-child {
+  background: var(--light-color);
+  box-shadow: -2px 0 5px rgba(0,0,0,0.05);
+}
+
+.rutas-table td:last-child {
+  background: var(--bg-card);
+  box-shadow: -2px 0 5px rgba(0,0,0,0.05);
+}
+
+.rutas-table tbody tr:hover td:last-child {
+  background: var(--light-color);
+}
+
+/* Dark Mode Sticky Overrides */
+:host-context([data-theme="dark"]) .rutas-table th:last-child {
+  background: #0f172a;
+}
+
+:host-context([data-theme="dark"]) .rutas-table td:last-child {
+  background: var(--bg-card);
+}
+
+:host-context([data-theme="dark"]) .rutas-table tbody tr:hover td:last-child {
+  background: #374151;
 }
 
 .ruta-info {

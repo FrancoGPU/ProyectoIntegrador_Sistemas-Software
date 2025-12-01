@@ -159,6 +159,42 @@
   background: #f9fafb;
 }
 
+/* Sticky Actions Column */
+.inventory-table th:last-child,
+.inventory-table td:last-child {
+  position: sticky;
+  right: 0;
+  z-index: 10;
+  text-align: center;
+}
+
+.inventory-table th:last-child {
+  background: #f9fafb;
+  box-shadow: -2px 0 5px rgba(0,0,0,0.05);
+}
+
+.inventory-table td:last-child {
+  background: var(--bg-card);
+  box-shadow: -2px 0 5px rgba(0,0,0,0.05);
+}
+
+.inventory-table tr:hover td:last-child {
+  background: #f9fafb;
+}
+
+/* Dark Mode Sticky Overrides */
+:host-context([data-theme="dark"]) .inventory-table th:last-child {
+  background: #0f172a;
+}
+
+:host-context([data-theme="dark"]) .inventory-table td:last-child {
+  background: var(--bg-card);
+}
+
+:host-context([data-theme="dark"]) .inventory-table tr:hover td:last-child {
+  background: #374151;
+}
+
 .inventory-table tr.low-stock {
   background: #fef2f2;
 }
@@ -556,13 +592,14 @@
   background: var(--bg-card);
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-  overflow: hidden;
+  overflow-x: auto;
   margin-bottom: 2rem;
   transition: background-color 0.3s ease;
 }
 
 .inventory-table {
   width: 100%;
+  min-width: 1000px; /* Ensure table has enough width to show all columns */
   border-collapse: collapse;
 }
 
